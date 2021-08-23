@@ -26,9 +26,10 @@ public class Move {
 
     public boolean isMoveValid(Move move) {
         return false; // default
-    }
+    } // checks if a move is valid
 
     public void implementMove(Move move) {
+        // implements move. Return type as of now is unclear
 
     }
 }

@@ -9,9 +9,9 @@ public class Game {
 
     public Board getB() {
         return board;
-    }
+    } // returns the board
 
     public boolean isGameOver(Board board) {
         return false; // default
-    }
+    } // checks if the game is over
 }

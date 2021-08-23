@@ -12,11 +12,11 @@ public class Piece {
     public Piece[] getAdjacentPieces(Board board) {
         Piece[] def = new Piece[4];
         return def;
-    }
+    } // returns the adjacent pieces as a list
 
     public void setFacing(int facing) {
         this.facing = facing;
-    }
+    } // returns the number that is facing up on the dice
 
     public int getFacing() {
         return facing;
@@ -25,5 +25,5 @@ public class Piece {
         ArrayList <Move> legalMoves = new ArrayList<>();
         return legalMoves;
 
-    }
+    } // returns the set of legal moves for a piece on a board
 }

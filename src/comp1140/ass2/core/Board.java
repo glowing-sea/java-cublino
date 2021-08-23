@@ -16,7 +16,10 @@ public class Board {
         return pieces;
     }
 
+    // getter and setter methods
+
     public ArrayList<Piece> initialiseBoard() {
         return new ArrayList<>(); // default
     }
+    // initialises the board
 }
