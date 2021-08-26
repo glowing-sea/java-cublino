@@ -39,6 +39,86 @@ build:
       - src/comp1140/ass2/*.class
       - src/comp1140/ass2/*/*.class
 
+task3:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.isStateWellFormedTest
+  allow_failure: true
+
+task4:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.isStateValidTest
+  allow_failure: true
+
+task6:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.isGameOverPurTest
+  allow_failure: true
+
+task7:
+    tags:
+      - comp1110
+    stage: test
+    script:
+      - $JUNIT -c=comp1140.ass2.isValidStepPurTest
+    allow_failure: true
+
+task8:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.isValidMovePurTest
+  allow_failure: true
+
+task9:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.applyMovePurTest
+  allow_failure: true
+
+task11:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.generateMovePurTest
+  allow_failure: true
+
+task14a:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.isGameOverContraTest
+  allow_failure: true
+
+task14b:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.applyMoveContraTest
+  allow_failure: true
+
+task14c:
+  tags:
+    - comp1110
+  stage: test
+  script:
+    - $JUNIT -c=comp1140.ass2.generateMoveContraTest
+  allow_failure: true
+
 ## Local Variables:
 ## mode: yaml
 ## End:
