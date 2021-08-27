@@ -113,6 +113,39 @@ The first player who reaches the opponent's end of the board with one of their d
 
 In both variants it is possible for the game to last forever, for example if both players just move a dice horizontally back and forth without moving forwards. The tasks of the assignment do not consider this scenario however as part of task 14 you may introduce a rule to check when players are stalling the game and end the game with a draw. How you define this is up to you (should you choose to implement it) as long as it does not conflict with the existing rules as stated above.
 
+### Encoding Game State
+
+In order to test your implementation of the game we have designed a standardised interface for our testing functions. This interface encodes the game `state` as a string.
+
+The first character of the string is either the letter `p` or the letter `c` indicating which set of rules the game state is using. The case of the letter indicates which player's turn it is. An upper case letter indicates it's player one's turn, and a lower case letter indicates player two. If a move is played that ends the game, the case of this character is determined by the player who would have played next had the game not ended.
+
+The rest of the `state` string consists of groups of three characters indicating the positions and orientations of the various dice on the board.
+
+#### Encoding a Die
+
+Each die is represented as a three character string as follows:
+- `1st` character is the orientation and the owner (See below for encoding)
+- `2nd` character is the column of the die represented as a character from `a`-`g`
+- `3rd` character is the row of the die represented as a character from `1`-`7`
+
+The white dice start in row `1` and the black in row `7`.
+
+##### Die Orientation
+
+The orientation of the die is encoded as a character from `a`-`x`. The case of the character determines the player the die belongs to. An upper case character indicates the dice belongs to player one, a lower case character indicates that it belongs to player two.
+
+The dice orientations are numbered sequentially, first by the number facing upwards, then the number facing forwards (towards row `7` of the board). The following rules allow for all dice faces to be determined:
+- The numbers on the opposite sides of a die sum to seven
+- The dice used in this game are known as 'right-handed'. This means if the number one is facing up and the number two is facing away from you, the number three will be on the left face of the die. All dice provided by the course have this orientation as do most western dice. If you are using your own dice to visualise the placement of the faces please check they have this arrangement.
+
+For example, the character `A` indicates the dice belongs to player one, the number on the top face is one and the number on the forward face is two (the lowest available number as there cannot be two faces with one on them). The character `b` indicates the dice belongs to player two, the number on the top face is one and the number on the forward face is three. The character `e` indicates the orientation where the top face is two and the forward face is one (the lowest number of those on the side of the die). The character `f` indicates the orientation where the top face is two and the forward face is three (the next lowest number of those on the side of the die as the two is already facing upwards).
+
+The starting orientation of the white dice encoded as `W` and the starting orientation of the black dice is encoded as `v`.
+
+#### Encoding a Move
+
+A step is encoded as a four character string. The first two characters are the starting location of the step. The third and fourth characters are the ending location of the step. Each pair of characters encodes a position using the same format as the second and third characters of a die encoding. A move is encoded as a sequence of positions where each pair of positions indicates a step.
+
 ## Use Your Creativity!
 
 Software development is fundamentally a creative exercise.   You are building something new.   This is all the more
