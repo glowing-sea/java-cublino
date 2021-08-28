@@ -1,12 +1,16 @@
 package comp1140.ass2;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+@Timeout(value = 1000, unit = MILLISECONDS)
 class generateMovePurTest {
 
     private String errorPrefix(String inputState, String move) {
