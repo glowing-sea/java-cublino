@@ -13,7 +13,7 @@ class isStateWellFormedTest {
 
     private void test(String in, boolean expected) {
         boolean out = isStateWellFormed(in);
-        assertEquals(out, expected, "Expected isStateWellFormed called on \"" + in +
+        assertEquals(expected, out, "Expected isStateWellFormed called on \"" + in +
                 "\" to be " + expected +
                 " but got " + out + ".");
     }
