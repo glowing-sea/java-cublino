@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class isGameOverContraTest {
 
     private void test(String in, int expected, String msg) {
-        int out = Cublino.isGameOverPur(in);
+        int out = Cublino.isGameOverContra(in);
         assertEquals(expected, out, "State \"" + in + "\" is " + msg);
     }
 

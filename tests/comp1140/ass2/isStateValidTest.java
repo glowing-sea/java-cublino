@@ -3,7 +3,7 @@ package comp1140.ass2;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import static comp1140.ass2.Cublino.isStateWellFormed;
+import static comp1140.ass2.Cublino.isStateValid;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.*;
 class isStateValidTest {
 
     private void test(String in, boolean expected) {
-        boolean out = isStateWellFormed(in);
-        assertEquals(expected, out, "Expected isStateWellFormed called on \"" + in +
+        boolean out = isStateValid(in);
+        assertEquals(expected, out, "Expected isStateValid called on \"" + in +
                 "\" to be " + expected +
                 " but got " + out + ".");
     }
