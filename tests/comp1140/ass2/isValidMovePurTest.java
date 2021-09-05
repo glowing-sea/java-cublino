@@ -1,9 +1,12 @@
 package comp1140.ass2;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Timeout(value = 1000, unit = MILLISECONDS)
 class isValidMovePurTest {
 
     @Test

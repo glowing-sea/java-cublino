@@ -1,13 +1,16 @@
 package comp1140.ass2;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Timeout(value = 1000, unit = MILLISECONDS)
 class isGameOverContraTest {
 
     private void test(String in, int expected, String msg) {
-        int out = Cublino.isGameOverPur(in);
+        int out = Cublino.isGameOverContra(in);
         assertEquals(expected, out, "State \"" + in + "\" is " + msg);
     }
 

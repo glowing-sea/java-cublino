@@ -1,16 +1,19 @@
 package comp1140.ass2;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static comp1140.ass2.Cublino.*;
 
-
+@Timeout(value = 1000, unit = MILLISECONDS)
 class isStateWellFormedTest {
 
     private void test(String in, boolean expected) {
         boolean out = isStateWellFormed(in);
-        assertEquals(out, expected, "Expected isStateWellFormed called on \"" + in +
+        assertEquals(expected, out, "Expected isStateWellFormed called on \"" + in +
                 "\" to be " + expected +
                 " but got " + out + ".");
     }
@@ -20,8 +23,8 @@ class isStateWellFormedTest {
         String[] cases = {
                 "" // Empty string
                 , "aa1ob1kc1kd1se1wf1dg1"
-                , "POe2db3Qc4ae4oc6"
-                , "Crd1Gd7"
+                , "Oe2db3Qc4ae4oc6"
+                , "5rd1Gd7"
                 , "_rd1Aa2Gd7tg7"
                 , "xGa1Fb1Ec1Dd1Ce1Bf1Ag1Na2Mb2Kc2Kd2Je2If2Hg2Ua3Tb3Sc3Rd3Qe3Of3Og3va4wb4xc4Xe4Wf4Vg4oa5ob5qc5rd5se5tf5ug5ha6ib6jc6kd6ke6mf6ng6aa7bb7cc7dd7ee7ff7gg7"
         };

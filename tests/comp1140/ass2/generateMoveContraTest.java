@@ -1,13 +1,16 @@
 package comp1140.ass2;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Timeout(value = 1000, unit = MILLISECONDS)
 class generateMoveContraTest {
 
     private String errorPrefix(String inputState, String move) {
@@ -20,7 +23,7 @@ class generateMoveContraTest {
     @Test
     public void testGenerateContraMove() {
         for (int i = 0; i < states.length; i++) {
-            String move = Cublino.generateMovePur(states[i]);
+            String move = Cublino.generateMoveContra(states[i]);
             Set<String> legalMoves = new HashSet<>(Arrays.asList(moves[i]));
             assertTrue(legalMoves.contains(move), errorPrefix(states[i], move) + "expected a move from \n" + Arrays.toString(moves[i]));
         }
