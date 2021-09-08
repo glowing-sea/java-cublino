@@ -1,5 +1,9 @@
 package comp1140.ass2;
 
+import comp1140.ass2.core.Location;
+
+import java.util.ArrayList;
+
 public class Cublino {
 
     /**
@@ -69,8 +73,16 @@ public class Cublino {
      * @return true if the input state is valid, otherwise false
      */
     public static Boolean isStateValid(String state) {
-        return null; // FIXME Task 4 (P)
+
+        if (!isStateWellFormed(state)) {
+            return false;
+        } // checking if the string is well formed
+        ArrayList<Location> tempLoc = new ArrayList<>();
+        char[] pieces = state.toCharArray();
+
+        return true;
     }
+    // FIXME Task 4 (P)
 
     /**
      * Task 6:
