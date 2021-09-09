@@ -77,6 +77,10 @@ public class Cublino {
         if (!isStateWellFormed(state)) {
             return false;
         }
+        if (state.length() == 1) { // I don't think this is meant to be a well formed string, So Henry maybe you need to fix. Otherwise this passes my tests too
+            return false;
+        }
+
         // checking if the string is well formed
         ArrayList<Location> tempLoc = new ArrayList<>();
         char[] pieces = state.toCharArray();
@@ -118,6 +122,7 @@ public class Cublino {
             else {
                 increment = 1;
             }
+            // this sets the
         }
          if (Character.toLowerCase(pieces[0]) == 'p') {
              if (p1onOtherSide == 7 && p2OnOtherSide == 7) {
@@ -128,8 +133,12 @@ public class Cublino {
 
         }
         else {
-            return (noOfDiceP2 <= 7 & noOfDiceP2 <= 7 &&
-                    (p1onOtherSide >= 1 ||  p2OnOtherSide >= 1 &! (p1onOtherSide >= 1 &&  p2OnOtherSide >= 1)));
+             if (p1onOtherSide>=1 && p2OnOtherSide>=1) {
+                 return false;
+             } else {
+                 return noOfDiceP2 <= 7 & noOfDiceP2 <= 7;
+             }
+
         }
         // return true;
 
