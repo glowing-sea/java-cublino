@@ -163,7 +163,74 @@ public class Cublino {
      * @return 1 if player one has won, 2 if player two has won, 3 if the result is a draw, otherwise 0.
      */
     public static int isGameOverPur(String state) {
-        return -1; // FIXME Task 6 (D)
+        char[] pieces = state.toCharArray();
+        int increment = 0;
+        int p1OnOtherSide = 0;
+        int p2OnOtherSide = 0;
+        int p1score = 0;
+        int p2score = 0;
+        for (int i = 0; i < pieces.length; i++) {
+            if (increment == 1) {
+                StringBuilder s = new StringBuilder();
+                s.append(pieces[i+1]).append(pieces[i+2]);
+                Location loc = new Location(s.toString());
+                if (Character.isUpperCase(pieces[i])) {
+                    if (loc.getY() == 7) {
+                        p1OnOtherSide++;
+                        p1score+= getScorePur(pieces[i]);
+                    }
+                } else {
+                    if (loc.getY() == 1) {
+                        p2OnOtherSide++;
+                        p2score+= getScorePur(pieces[i]);
+                    }
+                }
+            }
+            if (increment !=3) {
+                increment++;
+            }
+            else {
+                increment = 1;
+            }
+
+        }
+        if (p1OnOtherSide == 7 || p2OnOtherSide == 7) {
+            if (p1score > p2score) {
+                return 1;
+            }
+            else if (p1score < p2score) {
+                return 2;
+            }
+            else {
+                return 3;
+            }
+        } else {
+            return 0;
+        }
+        // return -1; // FIXME Task 6 (D)
+    }
+
+    public static int getScorePur(char s) {
+        // method to take a score and get the top face on the dice depending
+        if (Character.toLowerCase(s) >= 'a' && Character.toLowerCase(s) <= 'd') {
+            return 1;
+        }
+        else if (Character.toLowerCase(s) >= 'e' && Character.toLowerCase(s) <= 'h') {
+            return 2;
+        }
+        else if (Character.toLowerCase(s) >= 'i' && Character.toLowerCase(s) <= 'l') {
+            return 3;
+        }
+        else if (Character.toLowerCase(s) >= 'm' && Character.toLowerCase(s) <= 'p') {
+            return 4;
+        }
+        else if (Character.toLowerCase(s) >= 'q' && Character.toLowerCase(s) <= 't') {
+            return 5;
+        }
+        else {
+            return 6;
+        }
+        // note: this method assumes the string has valid orientation characters
     }
 
     /**
