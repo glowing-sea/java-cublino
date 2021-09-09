@@ -76,11 +76,66 @@ public class Cublino {
 
         if (!isStateWellFormed(state)) {
             return false;
-        } // checking if the string is well formed
+        }
+        // checking if the string is well formed
         ArrayList<Location> tempLoc = new ArrayList<>();
         char[] pieces = state.toCharArray();
+        int p1onOtherSide = 0;
+        int p2OnOtherSide = 0;
+        int noOfDiceP1 = 0;
+        int noOfDiceP2 = 0;
+        int increment = 0; // easy way to know which part of string I'm dealing with
+        for (int i=0; i<pieces.length;i++) {
+            if (increment == 1) {
+                StringBuilder s = new StringBuilder();
+                s.append(pieces[i+1]).append(pieces[i+2]);
+                Location loc = new Location(s.toString());
+                for (Location j : tempLoc) {
+                    if (j.checkEquals(loc)) {
+                        return false;
+                    }
+                }
+                // checked if the location is already on the board by storing the previous locations
+                tempLoc.add(loc);
+                if (Character.isUpperCase(pieces[i])) {
+                    noOfDiceP1++;
+                    if (loc.getY() == 7) {
+                        p1onOtherSide++;
 
-        return true;
+                    }
+                }
+                else {
+                    noOfDiceP2++;
+                    if (loc.getY() == 1) {
+                        p2OnOtherSide++;
+
+                    }
+                }
+            }
+            if (increment !=3) {
+                increment++;
+            }
+            else {
+                increment = 1;
+            }
+        }
+         if (Character.toLowerCase(pieces[0]) == 'p') {
+             if (p1onOtherSide == 7 && p2OnOtherSide == 7) {
+                 return false;
+             } else {
+                 return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
+             }
+
+        }
+        else {
+            return (noOfDiceP2 <= 7 & noOfDiceP2 <= 7 &&
+                    (p1onOtherSide >= 1 ||  p2OnOtherSide >= 1 &! (p1onOtherSide >= 1 &&  p2OnOtherSide >= 1)));
+        }
+        // return true;
+
+
+
+
     }
     // FIXME Task 4 (P)
 

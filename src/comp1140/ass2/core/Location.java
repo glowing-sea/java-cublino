@@ -30,7 +30,7 @@ public class Location {
         this.y = y;
     }
 
-    public Boolean equals(Location loc) {
+    public Boolean checkEquals(Location loc) {
         if (this.x==loc.getX() && this.y==loc.getY()) {
             return true;
         }
@@ -58,5 +58,9 @@ public class Location {
         System.out.println(l2.equals(l3));
         Location l4 = new Location("c2");
         System.out.println("The x value for location l4 is : " + l4.getX() + " and y value is : "+ l4.getY());
+        Location l5 = new Location("b7");
+        System.out.println("The x value for location l5 is : " + l5.getX() + " and y value is : "+ l5.getY());
+
+        }
     }
-}
+
