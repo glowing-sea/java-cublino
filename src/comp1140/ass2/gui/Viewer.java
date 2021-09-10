@@ -11,7 +11,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.swing.text.LabelView;
@@ -38,6 +40,7 @@ public class Viewer extends Application {
     private final Group controls = new Group();
     private final Pane gamePane = new Pane();
     private TextField textField;
+    private Label gameStringStatus = new Label(); // a label to display the validity of the placement string
 
     /**
      * Draw a placement in the window, removing any previously drawn one
@@ -47,8 +50,8 @@ public class Viewer extends Application {
     void makePlacement(String placement) {
 
         String placementEncoding = placement.trim();
-        if (Cublino.isStateValid(placementEncoding)) {
-            String diceEncodings = placementEncoding.substring(1,placementEncoding.length()); // all the dice encodings are assumed to be valid
+        if (Cublino.isStateWellFormed(placementEncoding)) {
+            String diceEncodings = placementEncoding.substring(1); // all the dice encodings are assumed to be valid
             ArrayList<Piece> dices = new ArrayList<>();
 
             // add all the dice pieces
@@ -70,18 +73,31 @@ public class Viewer extends Application {
                 System.out.println("added");
             }
 
-        } else if (!placement.equals("")) { // displays a warning dialog if placement string is invalid
-            Alert a1 = new Alert(Alert.AlertType.WARNING,
-                    "Please Enter A Valid Placement String.", ButtonType.OK);
+        } else if (!placement.equals("")) { // displays a warning dialog if placement string is not well formed
+            Alert a1 = new Alert(Alert.AlertType.NONE,
+                    "Please Enter A Well Formed String.", ButtonType.OK);
             a1.setResizable(false);
+            a1.setTitle("ERROR: Well Formed String Missing");
             a1.show();
+        }
+
+        // Let user know whether the placement string is valid
+        if (Cublino.isStateValid(placementEncoding)) {
+            gameStringStatus.setText("Placement String Validity: VALID");
+            gameStringStatus.setTextFill(Color.GREEN);
+        } else if (placement.equals("")) {
+            gameStringStatus.setText("Placement String Validity: NONE");
+            gameStringStatus.setTextFill(Color.BLACK);
+        } else {
+            gameStringStatus.setText("Placement String Validity: INVALID");
+            gameStringStatus.setTextFill(Color.RED);
         }
     }
 
     /* Renders the base game board */
     private void renderBoard() {
         gamePane.setMinSize(450,450);
-        gamePane.setLayoutX(240);
+        gamePane.setLayoutX(245);
         gamePane.setLayoutY(100);
         gamePane.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"board.png"),
                 BackgroundRepeat.NO_REPEAT,
@@ -97,8 +113,8 @@ public class Viewer extends Application {
         Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
-        Button refresh = new Button("Refresh");
-        refresh.setOnAction(actionEvent -> {
+        Button display = new Button("Display");
+        display.setOnAction(actionEvent -> {
                 // erase all the current dices on the board before rendering the dices
                 if (gamePane.getChildren().size() > 0) {
                     gamePane.getChildren().clear();
@@ -107,11 +123,24 @@ public class Viewer extends Application {
 
                 // render the dice placements on the board
                 makePlacement(textField.getText());
-                textField.clear();
         });
+        Button clear = new Button("Clear");
+        // a clear button to clear the placement string
+        clear.setOnAction(actionEvent -> {
+            if (gamePane.getChildren().size() > 0) {
+                gamePane.getChildren().clear();
+                System.out.println("removed dices");
+            }
+
+            gameStringStatus.setTextFill(Color.BLACK);
+            gameStringStatus.setText("Placement String Validity: NONE");
+
+            textField.clear();
+        });
+
         HBox hb = new HBox();
 
-        hb.getChildren().addAll(label1, textField, refresh);
+        hb.getChildren().addAll(label1, textField, display, clear);
         hb.setSpacing(10);
         hb.setLayoutX(230);
         hb.setLayoutY(VIEWER_HEIGHT - 50);
@@ -125,10 +154,14 @@ public class Viewer extends Application {
         primaryStage.setResizable(false);
         Scene scene = new Scene(root, VIEWER_WIDTH, VIEWER_HEIGHT);
 
+        gameStringStatus.setText("Placement String Validity: NONE");
+        gameStringStatus.setLayoutX(10);
+        gameStringStatus.setLayoutY(10);
+
         makeControls();
         renderBoard();
 
-        root.getChildren().addAll(gamePane, controls);
+        root.getChildren().addAll(gameStringStatus, gamePane, controls);
 
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -144,7 +177,6 @@ public class Viewer extends Application {
 
                 // render the dice placements on the board
                 makePlacement(textField.getText());
-                textField.clear();
             }
         });
     }
