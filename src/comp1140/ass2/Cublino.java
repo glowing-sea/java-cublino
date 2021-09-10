@@ -251,8 +251,46 @@ public class Cublino {
      * @return true if the step is valid for the given state, otherwise false
      */
     public static Boolean isValidStepPur(String state, String step) {
-        return null; // FIXME Task 7 (D)
+        // Check if the ending position is not occupied
+        if (state.contains(step.substring(2,4)))
+            return false;
+
+        byte x1 = (byte) step.charAt(0);
+        byte y1 = (byte) step.charAt(1);
+        byte x2 = (byte) step.charAt(2);
+        byte y2 = (byte) step.charAt(3);
+        byte forward;
+        String over; // the location where the dice jump over
+
+        if (state.charAt(0) == 'P')
+            forward = 1; // For the white dice, moving one step forward means column number plus 1.
+        else
+            forward = -1; // For the black dice, moving one step forward means column number minus 1.
+
+        // Check if it is a valid forward move
+        if (x1 == x2){
+            if (y1 + forward == y2) // Tilt forward
+                return true;
+            if (y1 + forward * 2 == y2){ // Jump forward
+                over = "" + step.charAt(0) + ((char) (y1 + forward));
+                return state.contains(over);}}
+
+        // Check if it is a valid horizontal move
+        if (y1 == y2){
+            if (x1 + 1 == x2) // Tilt to the right
+                return true;
+            if (x1 - 1 == x2) // Tilt to the left
+                return true;
+            if (x1 + 2 == x2){ // Jump to the right
+                over = "" + ((char) (x1 + 1)) + step.charAt(1);
+                return (state.contains(over));}
+            if (x1 - 2 == x2){ // Jump to the left
+                over = "" + ((char) (x1 - 1)) + step.charAt(1);
+                return state.contains(over);}}
+
+        return false;
     }
+
 
     /**
      * Task 8:
