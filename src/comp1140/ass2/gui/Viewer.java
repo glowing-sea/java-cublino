@@ -3,6 +3,7 @@ package comp1140.ass2.gui;
 import comp1140.ass2.Cublino;
 import comp1140.ass2.core.Piece;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,7 +16,9 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
+import javax.swing.*;
 import javax.swing.text.LabelView;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,17 +45,19 @@ public class Viewer extends Application {
     private TextField textField;
     private Label gameStringStatus = new Label(); // a label to display the validity of the placement string
 
+    ArrayList<Piece> dices = new ArrayList<>(); // list of dices in the current pane
+    Piece selectedDice;
+
     /**
      * Draw a placement in the window, removing any previously drawn one
      *
      * @param placement A valid placement string
      */
     void makePlacement(String placement) {
-
         String placementEncoding = placement.trim();
         if (Cublino.isStateWellFormed(placementEncoding)) {
             String diceEncodings = placementEncoding.substring(1); // all the dice encodings are assumed to be valid
-            ArrayList<Piece> dices = new ArrayList<>();
+            dices.clear(); // clear the dices
 
             // add all the dice pieces
             for (int i = 0; i < diceEncodings.length()-2; i+=3) {
@@ -69,8 +74,45 @@ public class Viewer extends Application {
                 diceImage.setImage(new Image(diceAssetURI));
                 diceImage.relocate(19+60*(dice.getPosition().getY()-1),19+60*(dice.getPosition().getX()-1)); // pixel translation
 
+                Pane orientationPane = new Pane(); // orientation display pane
+                int[] sides = dice.getSides(); // sides of the currently selected dice
+
+                Label orientationPaneTitle = new Label("Dice Orientation For: "+dice.getEncoding());
+                orientationPaneTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
+                orientationPaneTitle.relocate(20 + orientationPane.getWidth()/2, 0);
+
+                Label forward_Text = new Label(String.valueOf(sides[0]));
+                forward_Text.setFont(new Font(13));
+                forward_Text.relocate(80,40);
+
+                Label top_Text = new Label( String.valueOf(dice.getTopNumber()));
+                top_Text.setFont(new Font(13));
+                top_Text.relocate(80,60);
+
+                Label right_Text = new Label(String.valueOf(sides[1]));
+                right_Text.setFont(new Font(13));
+                right_Text.relocate(100,60);
+
+                Label left_Text = new Label(String.valueOf(sides[2]));
+                left_Text.setFont(new Font(13));
+                left_Text.relocate(60,60);
+
+                Label backward_Text = new Label(String.valueOf(sides[3]));
+                backward_Text.setFont(new Font(13));
+                backward_Text.relocate(80,80);
+
+                orientationPane.setPadding(new Insets(10,10,10,10));
+
+                orientationPane.getChildren().addAll(orientationPaneTitle, top_Text, forward_Text, backward_Text, left_Text, right_Text);
+
+                // adding a tooltip to each imageview in order to view the orientation panel
+                Tooltip orientationDisplay = new Tooltip();
+                orientationDisplay.setGraphic(orientationPane);
+                orientationDisplay.setShowDelay(new Duration(100));
+                orientationDisplay.setHideDelay(new Duration(100));
+                Tooltip.install(diceImage, orientationDisplay);
+
                 gamePane.getChildren().add(diceImage); // add the leaf nodes to the parent node
-                System.out.println("added");
             }
 
         } else if (!placement.equals("")) { // displays a warning dialog if placement string is not well formed
@@ -118,7 +160,6 @@ public class Viewer extends Application {
                 // erase all the current dices on the board before rendering the dices
                 if (gamePane.getChildren().size() > 0) {
                     gamePane.getChildren().clear();
-                    System.out.println("removed dices");
                 }
 
                 // render the dice placements on the board
@@ -129,7 +170,6 @@ public class Viewer extends Application {
         clear.setOnAction(actionEvent -> {
             if (gamePane.getChildren().size() > 0) {
                 gamePane.getChildren().clear();
-                System.out.println("removed dices");
             }
 
             gameStringStatus.setTextFill(Color.BLACK);
@@ -172,7 +212,6 @@ public class Viewer extends Application {
                 // erase all the current dices on the board before rendering the dices
                 if (gamePane.getChildren().size() > 0) {
                     gamePane.getChildren().clear();
-                    System.out.println("removed dices");
                 }
 
                 // render the dice placements on the board
