@@ -93,11 +93,11 @@ public class Viewer extends Application {
                 right_Text.setFont(new Font(13));
                 right_Text.relocate(100,60);
 
-                Label left_Text = new Label(String.valueOf(sides[2]));
+                Label left_Text = new Label(String.valueOf(sides[3]));
                 left_Text.setFont(new Font(13));
                 left_Text.relocate(60,60);
 
-                Label backward_Text = new Label(String.valueOf(sides[3]));
+                Label backward_Text = new Label(String.valueOf(sides[2]));
                 backward_Text.setFont(new Font(13));
                 backward_Text.relocate(80,80);
 
