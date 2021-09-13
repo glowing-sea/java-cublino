@@ -36,7 +36,7 @@ public class Cublino {
         // Either p, c, P, or C.
         if (Character.toLowerCase(state.charAt(0)) != 'p' && Character.toLowerCase(state.charAt(0)) != 'c')
             return false;
-        for (int i = 1; i < state.length(); i = i + 3){
+        for (int i = 1; i < state.length(); i = i + 3) {
             // In the range 'a' to 'x' or in the range 'A' to 'X'
             if (Character.toLowerCase(state.charAt(i)) < 'a' || Character.toLowerCase(state.charAt(i)) > 'x')
                 return false;
@@ -45,7 +45,8 @@ public class Cublino {
                 return false;
             // In the range '1' to '7'
             if (state.charAt(i + 2) < '1' || state.charAt(i + 2) > '7')
-                return false;}
+                return false;
+        }
         return true;
     }
 
@@ -77,11 +78,11 @@ public class Cublino {
         if (!isStateWellFormed(state)) {
             return false;
         }
-        if (state.length() == 1) { // I don't think this is meant to be a well formed string, So Henry maybe you need to fix. Otherwise this passes my tests too
+        if (state.length() == 1) {
             return false;
         }
 
-        // checking if the string is well formed
+        // checking if the game state string is valid
         ArrayList<Location> tempLoc = new ArrayList<>();
         char[] pieces = state.toCharArray();
         int p1onOtherSide = 0;
@@ -89,10 +90,11 @@ public class Cublino {
         int noOfDiceP1 = 0;
         int noOfDiceP2 = 0;
         int increment = 0; // easy way to know which part of string I'm dealing with
+
         for (int i=0; i<pieces.length;i++) {
             if (increment == 1) {
                 StringBuilder s = new StringBuilder();
-                s.append(pieces[i+1]).append(pieces[i+2]);
+                s.append(pieces[i + 1]).append(pieces[i + 2]);
                 Location loc = new Location(s.toString());
                 for (Location j : tempLoc) {
                     if (j.checkEquals(loc)) {
@@ -107,8 +109,7 @@ public class Cublino {
                         p1onOtherSide++;
 
                     }
-                }
-                else {
+                } else {
                     noOfDiceP2++;
                     if (loc.getY() == 1) {
                         p2OnOtherSide++;
@@ -116,23 +117,21 @@ public class Cublino {
                     }
                 }
             }
-            if (increment !=3) {
+            if (increment != 3) {
                 increment++;
-            }
-            else {
+            } else {
                 increment = 1;
             }
-            // this sets the
         }
-         if (Character.toLowerCase(pieces[0]) == 'p') {
-             if (p1onOtherSide == 7 && p2OnOtherSide == 7) {
-                 return false;
-             } else {
-                 return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
-             }
 
-        }
-        else {
+        // checking dice/piece counts for variants and dice/piece counts at each end of the board
+        if (Character.toLowerCase(pieces[0]) == 'p') {
+            if (p1onOtherSide == 7 && p2OnOtherSide == 7) {
+                return false;
+            } else {
+                return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
+            }
+        } else {
              if (p1onOtherSide>=1 && p2OnOtherSide>=1) {
                  return false;
              } else {
@@ -140,9 +139,7 @@ public class Cublino {
              }
 
         }
-        // return true;
     }
-    // FIXME Task 4 (P)
 
     /**
      * Task 6:
@@ -203,11 +200,13 @@ public class Cublino {
         } else {
             return 0;
         }
-        // return -1; // FIXME Task 6 (D)
     }
 
+    /* Method to take a score and get the top face on the dice
+    * NOTE: this method assumes the string has valid orientation characters
+    */
     public static int getScorePur(char s) {
-        // method to take a score and get the top face on the dice depending
+
         if (Character.toLowerCase(s) >= 'a' && Character.toLowerCase(s) <= 'd') {
             return 1;
         }
@@ -226,7 +225,6 @@ public class Cublino {
         else {
             return 6;
         }
-        // note: this method assumes the string has valid orientation characters
     }
 
     /**
@@ -260,7 +258,7 @@ public class Cublino {
         byte x2 = (byte) step.charAt(2);
         byte y2 = (byte) step.charAt(3);
         byte forward;
-        String over; // the location where the dice jump over
+        String over; // The location where the dice jump over
 
         if (state.charAt(0) == 'P')
             forward = 1; // For the white dice, moving one step forward means column number plus 1.
@@ -268,25 +266,30 @@ public class Cublino {
             forward = -1; // For the black dice, moving one step forward means column number minus 1.
 
         // Check if it is a valid forward move
-        if (x1 == x2){
+        if (x1 == x2) {
             if (y1 + forward == y2) // Tilt forward
                 return true;
-            if (y1 + forward * 2 == y2){ // Jump forward
+            if (y1 + forward * 2 == y2) { // Jump forward
                 over = "" + step.charAt(0) + ((char) (y1 + forward));
-                return state.contains(over);}}
+                return state.contains(over);
+            }
+        }
 
         // Check if it is a valid horizontal move
-        if (y1 == y2){
+        if (y1 == y2) {
             if (x1 + 1 == x2) // Tilt to the right
                 return true;
             if (x1 - 1 == x2) // Tilt to the left
                 return true;
-            if (x1 + 2 == x2){ // Jump to the right
+            if (x1 + 2 == x2) { // Jump to the right
                 over = "" + ((char) (x1 + 1)) + step.charAt(1);
-                return (state.contains(over));}
-            if (x1 - 2 == x2){ // Jump to the left
+                return (state.contains(over));
+            }
+            if (x1 - 2 == x2) { // Jump to the left
                 over = "" + ((char) (x1 - 1)) + step.charAt(1);
-                return state.contains(over);}}
+                return state.contains(over);
+            }
+        }
 
         return false;
     }
