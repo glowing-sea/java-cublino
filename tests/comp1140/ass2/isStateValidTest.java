@@ -76,8 +76,8 @@ class isStateValidTest {
         String[] cases = {
                 "Pta1tb1tc1td1te1tf1tg1Ra7Rb7Rc7Rd7Re7Rf7Rg7"
                 , "CWa1Wb1cd1Wf1Wg1va7vb7Gd7vf7vg7"
-                , "C"
-                , "c"
+                , "P"
+                , "p"
                 , "PWa1Wb1Wc1We1Wf1Wg1va7vb7vd7ve7vf7vg7"
         };
 
