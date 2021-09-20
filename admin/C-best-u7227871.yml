@@ -16,8 +16,8 @@ declaration: >-
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - <Cublino.java> isValidStepPur(String encoding) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L251-295
-   - <Cublino.java> isStateWellFormed(String encoding) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L32-50
+   - <Cublino.java> isValidStepPur(String state, String step) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L251-295
+   - <Cublino.java> isStateWellFormed(String state) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L32-50
 
 # sign *your* name and uid here
 name: Haoting Chen
