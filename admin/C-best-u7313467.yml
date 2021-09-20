@@ -16,16 +16,13 @@ declaration: >-
 # I wish to submit the following classes as entirely my own (remove this if
 # you want to just submit methods):
 class:
-   - Piece.java 
-   https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Piece.java#L1-130
+   - Piece.java https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Piece.java#L1-130
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - <Viewer.java> makePlacement(String placement) 
-   https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Viewer.java#L56-137
-   - <Piece.java> Piece(String encoding) 
-   https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Piece.java#L21-88
+   - <Viewer.java> makePlacement(String placement) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Viewer.java#L56-137
+   - <Piece.java> Piece(String encoding) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Piece.java#L21-88
 
 # sign *your* name and uid here
 name: Rajin Hossain
