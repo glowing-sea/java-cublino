@@ -17,6 +17,7 @@ declaration: >-
 # you want to just submit methods):
 class:
    - 
+   -
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
@@ -26,4 +27,4 @@ method:
 
 # sign *your* name and uid here
 name: 
-uid:
+uid: u7227566
