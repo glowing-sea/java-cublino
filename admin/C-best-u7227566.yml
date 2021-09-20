@@ -13,17 +13,11 @@ declaration: >-
   I submit the work below for assessment as my best work. I declare that this
   is entirely my own work, with the following documented exceptions:
 
-# I wish to submit the following classes as entirely my own (remove this if
-# you want to just submit methods):
-class:
-   - 
-   -
-
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - 
-   - 
+   - <Cublino.java> isGameOverPur(String state) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L158-203
+   - <Cublino.java> getScorePur(char s) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L208-228
 
 # sign *your* name and uid here
 name: Anubhav Saxena
