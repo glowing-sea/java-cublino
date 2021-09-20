@@ -30,7 +30,7 @@ public class Piece {
             this.isPlayer1 = true;
         }
 
-        // A translation map from the characters available to an array containing [TOP_FACE, FORWARD_FACE]
+        // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT]
         HashMap<Character, int[]> translationTable = new HashMap<>();
         translationTable.put('a', new int[] {1,2,4,6,3});
         translationTable.put('b', new int[] {1,3,2,4,6});
