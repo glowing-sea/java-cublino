@@ -106,11 +106,14 @@ public class Piece {
     public int getTopNumber() {
         return this.topNumber;
     }
+
+
+    // Dead Code
     public ArrayList<Move> getLegalMoves(Piece p1, Board b1) {
         ArrayList <Move> legalMoves = new ArrayList<>();
         return legalMoves;
+    } // Dead Code
 
-    } // returns the set of legal moves for a piece on a board
 
     public int[] getSides() {
         return sides;
