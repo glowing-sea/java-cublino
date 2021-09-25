@@ -318,6 +318,7 @@ public class Cublino {
      * @return true if the move is valid for the given state, otherwise false
      */
     public static Boolean isValidMovePur(String state, String move) {
+
         return null; // FIXME Task 8 (P)
     }
 
