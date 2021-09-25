@@ -108,11 +108,10 @@ public class Piece {
     }
 
 
-    // Dead Code
-    public ArrayList<Move> getLegalMoves(Piece p1, Board b1) {
-        ArrayList <Move> legalMoves = new ArrayList<>();
-        return legalMoves;
-    } // Dead Code
+    public ArrayList<Step> getLegalMoves(Piece p1, Board b1) {
+        return null;
+        // TODO: need to create a way to get all legal moves for a given piece with the current game state
+    }
 
 
     public int[] getSides() {
