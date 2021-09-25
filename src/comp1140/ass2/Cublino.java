@@ -1,6 +1,7 @@
 package comp1140.ass2;
 
 import comp1140.ass2.core.Location;
+import comp1140.ass2.core.Step;
 
 import java.util.ArrayList;
 
@@ -318,8 +319,41 @@ public class Cublino {
      * @return true if the move is valid for the given state, otherwise false
      */
     public static Boolean isValidMovePur(String state, String move) {
+        int length = move.length();
+        boolean isPlayer1 = state.charAt(0) == 'P';
+        boolean check1 = false;
+        String checkedStep;
 
-        return null; // FIXME Task 8 (P)
+        // Check 3
+        if (length < 2)
+            return false;
+
+        String startPosition = move.substring(0,2);
+        String endPosition = move.substring(length - 2,length);
+
+        // Check 5
+        if (startPosition.equals(endPosition))
+            return false;
+
+        // Check 1
+        for (int i = 1; i < 43; i = i + 3){
+            if (isPlayer1 == Character.isUpperCase(state.charAt(i)))
+                if (state.substring(i + 1, i + 3).equals(startPosition)){
+                    check1 = true;
+                    break; } }
+
+        if (!check1)
+            return false;
+
+       // Check 2 & 4
+        for (int i = 0; i < move.length() - 2; i = i + 2){
+            checkedStep = move.substring(i,i + 4);
+            if (!isValidStepPur(state, checkedStep))
+                return false;
+            if (i != 0 && Step.isTipPlus(checkedStep))
+                return false;
+        }
+        return true;
     }
 
     /**
