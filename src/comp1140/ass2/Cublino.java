@@ -381,8 +381,6 @@ public class Cublino {
          // FIXME Task 9 (P)
     }
 
-
-
     /**
      * Task 11:
      * Given a valid Pur game state, return a valid move.
