@@ -1,5 +1,7 @@
 package comp1140.ass2.core;
 
+import comp1140.ass2.Cublino;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

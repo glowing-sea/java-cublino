@@ -53,11 +53,22 @@ public class Location {
     public boolean isValid(Location loc) { // checks if a location is valid
         return false; // default
     } // checks if location is valid
+
     public int toPosition(int x, int y) {
         return 0; // default
     } // sets the coordinate to a number corresponding to the position in the array
     // Dead Code
 
+
+    // Method to calculate the manhattanDistance between two locations
+    public static int manhattanDistance(Location loc1, Location loc2) {
+        return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
+    }
+
+    public String getEncoding() {
+        StringBuilder encoding = new StringBuilder();
+        return ((encoding.append(getX())).append(getY())).toString();
+    }
 
     // Check Methods
     public static void main(String[] args) {
@@ -81,6 +92,10 @@ public class Location {
         if (l4.isAdjacent(l5))
             System.out.println("l4 is adjacent to l5.");
     }
+
+    public boolean isOffBoard () {
+        return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
     }
+}
 
 
