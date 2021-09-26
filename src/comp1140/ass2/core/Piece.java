@@ -67,7 +67,7 @@ public class Piece {
             x = 'f';
         }
         else if (sides[0] == 2 && sides[1] == 4) {
-            x = 'f';
+            x = 'g';
         }
         else if (sides[0] == 2 && sides[1] == 6) {
             x = 'h';
