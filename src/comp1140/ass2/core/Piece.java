@@ -86,7 +86,7 @@ public class Piece {
             columnNum = 7;
         }
 
-        this.position = new Location(rowNum,columnNum); // assignment of location based on encoding
+        this.position = new Location(columnNum,rowNum); // assignment of location based on encoding
     }
 
     public boolean isPlayer1() {

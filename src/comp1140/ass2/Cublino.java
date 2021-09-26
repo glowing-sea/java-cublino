@@ -455,14 +455,17 @@ public class Cublino {
         int totalDistanceFromEnd = 0; // sum all differences in distances for each piece of the player
         int totalTopFaceValue = 0; // sum all top face values of each of the player's piece
 
-        for (Piece dice:gameBoard.getPieces(isPlayer1)) {
+        ArrayList<Piece> playerPieces = new ArrayList<>(gameBoard.getPieces(isPlayer1));
+
+        for (Piece dice:playerPieces) {
             // adds the manhattan distance between the current dice and the end position it should achieve
-            totalDistanceFromEnd += Location.manhattanDistance(dice.getPosition(), new Location(dice.getPosition().getX(), isPlayer1 ? 7 : 1));
+            Location endPosition = new Location(dice.getPosition().getX(), isPlayer1 ? 1 : 7);
+            totalDistanceFromEnd += Location.manhattanDistance(dice.getPosition(), endPosition);
             // adds the top face value
             totalTopFaceValue += dice.getTopNumber();
         }
 
-       return  (100/(float)totalDistanceFromEnd+1) + ((float)totalTopFaceValue/100);
+       return  (100/((float)totalDistanceFromEnd+1)) + ((float)totalTopFaceValue/42);
     }
 
     // FIXME Task 13 (HD): Implement a "smart" generateMove()
