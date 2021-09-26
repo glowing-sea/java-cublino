@@ -46,7 +46,7 @@ public class Piece {
         }
     } */
 
-    public char getOrientation(int[] sides, boolean isPlayer1) {
+    public static char getOrientation(int[] sides, boolean isPlayer1) {
         char x = 0;
         if (sides[0] == 1 && sides[1] == 2) {
             x = 'a';
