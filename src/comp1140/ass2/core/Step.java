@@ -11,6 +11,15 @@ public class Step {
         this.encode = step;
     }
 
+    public Step(Location startPosition, Location endPosition) {
+        this.startPosition = startPosition;
+        this.endPosition = endPosition;
+        StringBuilder encoding = new StringBuilder();
+        encoding.append(startPosition.getEncoding());
+        encoding.append(endPosition.getEncoding());
+        this.encode = encoding.toString();
+    }
+
     public boolean isTip(){
         return startPosition.isAdjacent(endPosition);
     }

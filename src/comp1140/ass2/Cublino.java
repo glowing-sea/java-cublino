@@ -1,9 +1,12 @@
 package comp1140.ass2;
 
+import comp1140.ass2.core.Board;
 import comp1140.ass2.core.Location;
+import comp1140.ass2.core.Piece;
 import comp1140.ass2.core.Step;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Cublino {
 
@@ -395,9 +398,85 @@ public class Cublino {
      * @return a valid move for the current game state.
      */
     public static String generateMovePur(String state) {
-        return null; // FIXME Task 11 (D)
-        // FIXME Task 13 (HD): Implement a "smart" generateMove()
+       ArrayList<Step> move = new ArrayList<>();
+       Board gameBoard = new Board(state);
+       boolean isPlayer1 = Character.isUpperCase(state.charAt(0));
+
+        // GOAL: to be greedy at each step and generate a move based on that
+        for (Piece dice: gameBoard.getPieces(isPlayer1)) {
+            // get all the possible steps for the current piece
+
+            /* TODO: apply the steps and generate game states which can be inputted into the heuristic and the best step gets picked;
+                this process continues until no possible step can be generated
+            */
+        }
+
+       return null;
     }
+
+
+    // Generates all possible step from a given state for a piece
+    public static ArrayList<Step> generateStepPur(String state, Location pieceLocation) {
+        Board boardState = new Board(state);
+        int forwardIncrement = (boardState.getPlayerTurn() == 1) ? 1 : -1; // forward direction varies from player's type
+        ArrayList<Step> steps = new ArrayList<>();
+
+        ArrayList<Location> endPositions = new ArrayList<>();
+
+        endPositions.add(new Location(pieceLocation.getX() + 1, pieceLocation.getY()));
+        endPositions.add(new Location(pieceLocation.getX() - 1, pieceLocation.getY()));
+        endPositions.add(new Location(pieceLocation.getX(), pieceLocation.getY() + forwardIncrement));
+
+        for (Location tipLocation:endPositions) {
+            if (boardState.getPieceAt(tipLocation.getX(), tipLocation.getY()) != null) { // piece exists at the tip location
+                Location[] potentialJumps = {
+                        new Location(tipLocation.getX() + 1, tipLocation.getY()),
+                        new Location(tipLocation.getX() - 1, tipLocation.getY()),
+                        new Location(tipLocation.getX(), tipLocation.getY() + forwardIncrement)
+                };
+
+                for (Location potentialJump:potentialJumps) {
+                    if (!potentialJump.equals(pieceLocation)) {
+                        endPositions.add(potentialJump);
+                    }
+                }
+            }
+        }
+
+        // filter and get rid of invalid steps (off board and landing on a piece) & add to steps
+        for (Location endPosition:endPositions) {
+            if (endPosition.isOffBoard() || boardState.getPieceAt(endPosition.getX(), endPosition.getY()) != null || endPosition.equals(pieceLocation)) {
+                endPositions.remove(endPosition);
+            }
+            steps.add(new Step(pieceLocation, endPosition));
+        }
+
+        return steps;
+    }
+
+
+    // Cublino Pur Heuristic Function
+    public static float purGreedyHeuristic(String state) {
+        Board gameBoard = new Board(state);
+        boolean isPlayer1 = Character.isUpperCase(state.charAt(0));
+
+        int totalDistanceFromEnd = 0; // sum all differences in distances for each piece of the player
+        int totalTopFaceValue = 0; // sum all top face values of each of the player's piece
+
+        ArrayList<Piece> playerPieces = new ArrayList<>(gameBoard.getPieces(isPlayer1));
+
+        for (Piece dice:playerPieces) {
+            // adds the manhattan distance between the current dice and the end position it should achieve
+            Location endPosition = new Location(dice.getPosition().getX(), isPlayer1 ? 1 : 7);
+            totalDistanceFromEnd += Location.manhattanDistance(dice.getPosition(), endPosition);
+            // adds the top face value
+            totalTopFaceValue += dice.getTopNumber();
+        }
+
+       return  (100/((float)totalDistanceFromEnd+1)) + ((float)totalTopFaceValue/42);
+    }
+
+    // FIXME Task 13 (HD): Implement a "smart" generateMove()
 
     /**
      * Task 14a:

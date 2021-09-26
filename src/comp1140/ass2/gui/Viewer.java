@@ -46,7 +46,6 @@ public class Viewer extends Application {
     private Label gameStringStatus = new Label(); // a label to display the validity of the placement string
 
     ArrayList<Piece> dices = new ArrayList<>(); // list of dices in the current pane
-    Piece selectedDice;
 
     /**
      * Draw a placement in the window, removing any previously drawn one
@@ -72,7 +71,7 @@ public class Viewer extends Application {
 
                 ImageView diceImage = new ImageView();
                 diceImage.setImage(new Image(diceAssetURI));
-                diceImage.relocate(19+60*(dice.getPosition().getY()-1),19+60*(dice.getPosition().getX()-1)); // pixel translation
+                diceImage.relocate(19+60*(dice.getPosition().getX()-1),19+60*(dice.getPosition().getY()-1)); // pixel translation
 
                 Pane orientationPane = new Pane(); // orientation display pane
                 int[] sides = dice.getSides(); // sides of the currently selected dice
