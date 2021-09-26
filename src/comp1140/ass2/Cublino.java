@@ -370,7 +370,15 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     public static String applyMovePur(String state, String move) {
-        return null; // FIXME Task 9 (P)
+        if (move.equals("")) {
+            return state;
+        } else {
+            String startPointString = "" + move.toCharArray()[0] + move.toCharArray()[1];
+            String endPointString = "" + move.toCharArray()[move.length() -2] + move.toCharArray()[move.length() -1];
+            String returnString = "";
+        }
+        return null;
+         // FIXME Task 9 (P)
     }
 
     /**
