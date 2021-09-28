@@ -1,17 +1,17 @@
 package comp1140.ass2.core;
 
 public class Step {
-    private Location startPosition;
-    private Location endPosition;
+    private Position startPosition;
+    private Position endPosition;
     String encode;
 
     public Step(String step) {
-        this.startPosition = new Location(step.substring(0,2));
-        this.endPosition = new Location(step.substring(2,4));
+        this.startPosition = new Position(step.substring(0,2));
+        this.endPosition = new Position(step.substring(2,4));
         this.encode = step;
     }
 
-    public Step(Location startPosition, Location endPosition) {
+    public Step(Position startPosition, Position endPosition) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         StringBuilder encoding = new StringBuilder();
@@ -32,11 +32,11 @@ public class Step {
 
     // Setter and getter method
     public void setStep(String step) {
-        this.startPosition = new Location(step.substring(0,2));
-        this.endPosition = new Location(step.substring(2,4));
+        this.startPosition = new Position(step.substring(0,2));
+        this.endPosition = new Position(step.substring(2,4));
         this.encode = step;
     }
-    public Location getStartPosition() {return startPosition;}
-    public Location getEndPosition() {return endPosition;}
+    public Position getStartPosition() {return startPosition;}
+    public Position getEndPosition() {return endPosition;}
     public String getEncode() {return encode;}
 }

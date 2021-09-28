@@ -4,19 +4,19 @@ import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
 
-public class Board {
+public class State {
     private static final int BOARD_SIZE = 7;
     private int playerTurn = 1; // value of means the current player's turn is player 1 (White) or 2 means player 2 (Black)
 
-    private ArrayList<Piece> dices = new ArrayList<>();
+    private ArrayList<Dice> dices = new ArrayList<>();
 
-    public Board(String state) {
+    public State(String state) {
         if (Cublino.isStateWellFormed(state)) {
             String diceEncodings = state.substring(1); // all the dice encodings are assumed to be valid
 
             // add all the dice pieces
             for (int i = 0; i < diceEncodings.length()-2; i+=3) {
-                this.dices.add(new Piece(diceEncodings.substring(i,i+3)));
+                this.dices.add(new Dice(diceEncodings.substring(i,i+3)));
             }
 
             if (state.charAt(0) == 'P' || state.charAt(0) == 'C') {
@@ -29,8 +29,8 @@ public class Board {
     }
 
     // Gets the piece at an X and Y coordinate
-    public Piece getPieceAt(int x, int y) {
-        for (Piece dice:dices) {
+    public Dice getPieceAt(int x, int y) {
+        for (Dice dice:dices) {
             if (dice.getPosition().getX() == x && dice.getPosition().getY() == y) {
                 return dice;
             }
@@ -39,22 +39,22 @@ public class Board {
     }
 
     // Gets all pieces that are either white or black based on the input boolean
-    public ArrayList<Piece> getPieces(boolean isWhitePieces) {
-        ArrayList<Piece> pieces = new ArrayList<>();
+    public ArrayList<Dice> getPieces(boolean isWhitePieces) {
+        ArrayList<Dice> dices = new ArrayList<>();
 
-        for (Piece dice:dices) {
+        for (Dice dice: this.dices) {
             if (isWhitePieces) {
                 if (Character.isUpperCase(dice.getEncoding().charAt(0))) {
-                    pieces.add(dice);
+                    dices.add(dice);
                 }
             } else {
                 if (!Character.isUpperCase(dice.getEncoding().charAt(0))) {
-                    pieces.add(dice);
+                    dices.add(dice);
                 }
             }
         }
 
-        return pieces;
+        return dices;
     }
 
     public int getPlayerTurn() {

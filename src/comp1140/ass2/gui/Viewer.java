@@ -1,7 +1,7 @@
 package comp1140.ass2.gui;
 
 import comp1140.ass2.Cublino;
-import comp1140.ass2.core.Piece;
+import comp1140.ass2.core.Dice;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
@@ -12,16 +12,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import javax.swing.*;
-import javax.swing.text.LabelView;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
 /**
@@ -45,7 +40,7 @@ public class Viewer extends Application {
     private TextField textField;
     private Label gameStringStatus = new Label(); // a label to display the validity of the placement string
 
-    ArrayList<Piece> dices = new ArrayList<>(); // list of dices in the current pane
+    ArrayList<Dice> dices = new ArrayList<>(); // list of dices in the current pane
 
     /**
      * Draw a placement in the window, removing any previously drawn one
@@ -60,11 +55,11 @@ public class Viewer extends Application {
 
             // add all the dice pieces
             for (int i = 0; i < diceEncodings.length()-2; i+=3) {
-                dices.add(new Piece(diceEncodings.substring(i,i+3)));
+                dices.add(new Dice(diceEncodings.substring(i,i+3)));
             }
 
             // generate sprites at the right locations
-            for (Piece dice : dices) {
+            for (Dice dice : dices) {
                 String colour = dice.isPlayer1() ? "w" : "b";
                 String topFacing = String.valueOf(dice.getTopNumber());
                 String diceAssetURI = URI_BASE+colour+"_dice_"+topFacing+".png"; // dice image path based on the dice's properties

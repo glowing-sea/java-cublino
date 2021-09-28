@@ -1,21 +1,19 @@
 package comp1140.ass2.core;
 
-import comp1140.ass2.Cublino;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class Piece {
+public class Dice {
     private int topNumber; // number on the top of the dice
     private int[] sides = new int[4]; // format: forward, right, behind, left
     private String encoding = ""; // dice encoding
     private boolean isPlayer1; // the player's type
-    private Location position; // the piece's position
+    private Position position; // the piece's position
 
 
 
-    public Piece(int topNumber,int[] sides, boolean isPlayer1, Location position) {
+    public Dice(int topNumber, int[] sides, boolean isPlayer1, Position position) {
         this.topNumber = topNumber;
         this.sides = sides;
         this.isPlayer1 = isPlayer1;
@@ -23,7 +21,7 @@ public class Piece {
     }
 
     // Constructor for other fields
-    /* public Piece(char x) {
+    /* public Dice(char x) {
         switch (Character.toLowerCase(x)) {
             case 'a' :
                 this.topNumber = 1;
@@ -133,8 +131,8 @@ public class Piece {
 
     }
 
-    // An intuitive constructor for generating Piece objects from dice encodings
-    public Piece(String encoding) {
+    // An intuitive constructor for generating Dice objects from dice encodings
+    public Dice(String encoding) {
         this.encoding = encoding;
 
         char orientation = encoding.charAt(0);
@@ -202,19 +200,19 @@ public class Piece {
             columnNum = 7;
         }
 
-        this.position = new Location(columnNum,rowNum); // assignment of location based on encoding
+        this.position = new Position(columnNum,rowNum); // assignment of location based on encoding
     }
 
     public boolean isPlayer1() {
         return isPlayer1;
     }
 
-    public Location getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public Piece[] getAdjacentPieces(Board board) {
-        Piece[] def = new Piece[4];
+    public Dice[] getAdjacentPieces(State state) {
+        Dice[] def = new Dice[4];
         return def;
     } // returns the adjacent pieces as a list
     public void setTopNumber(int topNumber) {
@@ -226,10 +224,11 @@ public class Piece {
     }
 
 
-    public ArrayList<Step> getLegalMoves(Piece p1, Board b1) {
+    public ArrayList<Step> getLegalMoves(Dice p1, State b1) {
         return null;
         // TODO: need to create a way to get all legal moves for a given piece with the current game state
     }
+
 
 
     public int[] getSides() {

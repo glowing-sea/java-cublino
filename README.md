@@ -30,15 +30,15 @@ At each deadline you will be marked according to whatever is committed to your r
 You will be assessed on how effectively you use Git as a development tool.
 
 ## Problem Description
-Your task is to implement in Java, using JavaFX, a board game called Cublino,
+Your task is to implement in Java, using JavaFX, a state game called Cublino,
 made by games developer [Intellego](http://www.intellego-holzspiele.de/en/index.html).   Fortunately, the rules of the game are surprisingly simple.  Unfortunately there does not appear to be a good description in English.   There is a nice overview [here](https://www.brettspiele-report.de/cublino/) in German which includes illustrations of important scenarios.
 
 ## Game Rules
-Cublino is a two player game where each player controls seven dice. Players alternate turns moving their dice attempting to reach the opponent's end of the board. There are two variants of the rules: Cublino Contra and Cublino Pur. Each variant has slightly different rules and winning conditions. For the main task of the assignment you will be implementing the Cublino Pur variant, with an option to implement Cublino Contra as an additional task at the end of the assignment. All images used in this section are taken from [https://www.brettspiele-report.de/cublino/](https://www.brettspiele-report.de/cublino/).
+Cublino is a two player game where each player controls seven dice. Players alternate turns moving their dice attempting to reach the opponent's end of the state. There are two variants of the rules: Cublino Contra and Cublino Pur. Each variant has slightly different rules and winning conditions. For the main task of the assignment you will be implementing the Cublino Pur variant, with an option to implement Cublino Contra as an additional task at the end of the assignment. All images used in this section are taken from [https://www.brettspiele-report.de/cublino/](https://www.brettspiele-report.de/cublino/).
 
 ## Game setup
 
-The game is set up with each player placing their seven dice on their respective ends of the board with the six facing up and the three facing towards themselves (and the four facing the towards the opponent). Both variants are set up in the same way.
+The game is set up with each player placing their seven dice on their respective ends of the state with the six facing up and the three facing towards themselves (and the four facing the towards the opponent). Both variants are set up in the same way.
 
 ![Starting Configuration](images/starting_configuration.jpg "Starting configuration")
 
@@ -74,7 +74,7 @@ Once a player has completed the series of steps making up their move the turn is
 
 ##### Finishing the Game
 
-A game of Cublino Pur is over once a player has reached the opponent's end of the board with all seven of their dice. Each player then adds the upward facing numbers on their dice which have reached the opponent's end of the board (any dice which are not at the opponent's end of the board are excluded from the total). The player with the higher total wins.
+A game of Cublino Pur is over once a player has reached the opponent's end of the state with all seven of their dice. Each player then adds the upward facing numbers on their dice which have reached the opponent's end of the state (any dice which are not at the opponent's end of the state are excluded from the total). The player with the higher total wins.
 
 | ![Finished Game](images/finished_game.jpg "A finished game of Cublino Pur") |
 | :---: |
@@ -105,7 +105,7 @@ If a player has no legal moves their turn is skipped and the other player must m
 
 ##### Finishing the Game
 
-The first player who reaches the opponent's end of the board with one of their dice wins the game.
+The first player who reaches the opponent's end of the state with one of their dice wins the game.
 
 ![Finished Game](images/finished_game_contra.jpg "A finished gmae of Cublino Contra")
 
@@ -119,7 +119,7 @@ In order to test your implementation of the game we have designed a standardised
 
 The first character of the string is either the letter `p` or the letter `c` indicating which set of rules the game state is using. The case of the letter indicates which player's turn it is. An upper case letter indicates it's player one's turn, and a lower case letter indicates player two. If a move is played that ends the game, the case of this character is determined by the player who would have played next had the game not ended.
 
-The rest of the `state` string consists of groups of three characters indicating the positions and orientations of the various dice on the board.
+The rest of the `state` string consists of groups of three characters indicating the positions and orientations of the various dice on the state.
 
 #### Encoding a Die
 
@@ -134,7 +134,7 @@ The white dice start in row `1` and the black in row `7`.
 
 The orientation of the die is encoded as a character from `a`-`x`. The case of the character determines the player the die belongs to. An upper case character indicates the dice belongs to player one, a lower case character indicates that it belongs to player two.
 
-The dice orientations are numbered sequentially, first by the number facing upwards, then the number facing forwards (towards row `7` of the board). The following rules allow for all dice faces to be determined:
+The dice orientations are numbered sequentially, first by the number facing upwards, then the number facing forwards (towards row `7` of the state). The following rules allow for all dice faces to be determined:
 - The numbers on the opposite sides of a die sum to seven
 - The dice used in this game are known as 'right-handed'. This means if the number one is facing up and the number two is facing away from you, the number three will be on the left face of the die. All dice provided by the course have this orientation as do most western dice. If you are using your own dice to visualise the placement of the faces please check they have this arrangement.
 

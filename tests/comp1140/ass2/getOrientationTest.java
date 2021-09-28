@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Timeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static comp1140.ass2.core.Piece.*;
+import static comp1140.ass2.core.Dice.*;
 
 @Timeout(value = 1000, unit = MILLISECONDS)
 class getOrientationTest {

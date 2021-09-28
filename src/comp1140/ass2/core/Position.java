@@ -1,18 +1,18 @@
 package comp1140.ass2.core;
 
-public class Location {
+public class Position {
     private int x;
     private int y;
     String encode;
 
-    // Create a Location based on the x and y coordinates.
-    public Location(int x, int y) {
+    // Create a Position based on the x and y coordinates.
+    public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    // Create a Location based on the string encoding.
-    public Location(String s) {
+    // Create a Position based on the string encoding.
+    public Position(String s) {
         assert s.length() == 2;
         char[] list = s.toCharArray();
         this.y = Character.getNumericValue(list[1]);
@@ -28,12 +28,12 @@ public class Location {
 
 
     // Check if two locations are equal.
-    public Boolean checkEquals(Location loc) {
-        return this.x == loc.getX() && this.y == loc.getY();
+    public Boolean checkEquals(Position pos) {
+        return this.x == pos.getX() && this.y == pos.getY();
     }
 
     // Checks if two locations are adjacent.
-    public boolean isAdjacent(Location other) {
+    public boolean isAdjacent(Position other) {
         int x1 = this.x;
         int y1 = this.y;
         int x2 = other.getX();
@@ -50,7 +50,7 @@ public class Location {
 
     // Dead Code
     // is 2 locations adjacent
-    public boolean isValid(Location loc) { // checks if a location is valid
+    public boolean isValid(Position loc) { // checks if a location is valid
         return false; // default
     } // checks if location is valid
 
@@ -61,7 +61,7 @@ public class Location {
 
 
     // Method to calculate the manhattanDistance between two locations
-    public static int manhattanDistance(Location loc1, Location loc2) {
+    public static int manhattanDistance(Position loc1, Position loc2) {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
     }
 
@@ -72,13 +72,13 @@ public class Location {
 
     // Check Methods
     public static void main(String[] args) {
-        Location l1 = new Location(3, 3);
-        Location l2 = new Location(3, 3);
-        Location l3 = new Location(0, 0);
-        Location l4 = new Location("c2");
-        Location l5 = new Location("b7");
-        Location l6 = new Location("a1");
-        Location l7 = new Location("a2");
+        Position l1 = new Position(3, 3);
+        Position l2 = new Position(3, 3);
+        Position l3 = new Position(0, 0);
+        Position l4 = new Position("c2");
+        Position l5 = new Position("b7");
+        Position l6 = new Position("a1");
+        Position l7 = new Position("a2");
 
         System.out.println(l1.equals(l2));
         System.out.println(l2.equals(l3));
