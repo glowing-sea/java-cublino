@@ -3,7 +3,6 @@ package comp1140.ass2.core;
 public class Position {
     private int x;
     private int y;
-    String encode;
 
     // Create a Position based on the x and y coordinates.
     public Position(int x, int y) {
@@ -17,7 +16,6 @@ public class Position {
         char[] list = s.toCharArray();
         this.y = Character.getNumericValue(list[1]);
         this.x = list[0] - 'a' + 1;
-        this.encode = s;
     }
 
     // Setter and getter methods.

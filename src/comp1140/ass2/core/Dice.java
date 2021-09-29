@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 public class Dice {
     private int topNumber; // number on the top of the dice
-    private int[] sides = new int[4]; // format: forward, right, behind, left
-    private String encoding = ""; // dice encoding
+    private int[] sides; // format: TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM
     private boolean isPlayer1; // the player's type
     private Position position; // the piece's position
+    private char orientation;
 
 
 
@@ -133,7 +133,6 @@ public class Dice {
 
     // An intuitive constructor for generating Dice objects from dice encodings
     public Dice(String encoding) {
-        this.encoding = encoding;
 
         char orientation = encoding.charAt(0);
         char column = encoding.charAt(1);
@@ -143,43 +142,41 @@ public class Dice {
             this.isPlayer1 = true;
         }
 
-        // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT]
+        // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
         HashMap<Character, int[]> translationTable = new HashMap<>();
-        translationTable.put('a', new int[] {1,2,4,6,3});
-        translationTable.put('b', new int[] {1,3,2,4,6});
-        translationTable.put('c', new int[] {1,4,6,3,2});
-        translationTable.put('d', new int[] {1,6,3,2,4});
+        translationTable.put('a', new int[] {1,2,4,5,3,6});
+        translationTable.put('b', new int[] {1,3,2,4,5,6});
+        translationTable.put('c', new int[] {1,4,5,3,2,6});
+        translationTable.put('d', new int[] {1,5,3,2,4,6});
 
-        translationTable.put('e', new int[] {2,1,3,5,4});
-        translationTable.put('f', new int[] {2,3,5,4,1});
-        translationTable.put('g', new int[] {2,4,1,3,5});
-        translationTable.put('h', new int[] {2,5,4,1,3});
-        // 'h' should be 2,6,4,1,3 not 2,5,4,1,3
+        translationTable.put('e', new int[] {2,1,3,6,4,5});
+        translationTable.put('f', new int[] {2,3,6,4,1,5});
+        translationTable.put('g', new int[] {2,4,1,3,6,5});
+        translationTable.put('h', new int[] {2,6,4,1,3,5});
 
-        translationTable.put('i', new int[] {3,1,6,5,2});
-        translationTable.put('j', new int[] {3,2,1,6,5});
-        translationTable.put('k', new int[] {3,5,2,1,6});
-        translationTable.put('l', new int[] {3,6,5,2,1});
+        translationTable.put('i', new int[] {3,1,5,6,2,4});
+        translationTable.put('j', new int[] {3,2,1,5,6,4});
+        translationTable.put('k', new int[] {3,5,1,2,6,4});
+        translationTable.put('l', new int[] {3,6,2,1,5,4});
 
-        translationTable.put('m', new int[] {4,1,2,5,6});
-        translationTable.put('n', new int[] {4,2,5,6,1});
-        translationTable.put('o', new int[] {4,5,6,1,2});
-        translationTable.put('p', new int[] {4,6,1,2,5});
+        translationTable.put('m', new int[] {4,1,2,6,5,3});
+        translationTable.put('n', new int[] {4,2,6,5,1,3});
+        translationTable.put('o', new int[] {4,5,1,2,6,3});
+        translationTable.put('p', new int[] {4,6,5,1,2,3});
 
-        translationTable.put('q', new int[] {5,2,3,6,4});
-        // should be 5,1,3,6,4
-        translationTable.put('r', new int[] {5,3,6,4,2});
-        translationTable.put('s', new int[] {5,4,2,3,6});
-        translationTable.put('t', new int[] {5,6,4,2,3});
+        translationTable.put('q', new int[] {5,1,4,6,3,2});
+        translationTable.put('r', new int[] {5,3,1,4,6,2});
+        translationTable.put('s', new int[] {5,4,6,3,1,2});
+        translationTable.put('t', new int[] {5,6,3,1,4,2});
 
-        translationTable.put('u', new int[] {6,1,4,5,3});
-        // should be 6,2,4,5,3
-        translationTable.put('v', new int[] {6,3,1,4,5});
-        translationTable.put('w', new int[] {6,4,5,3,1});
-        translationTable.put('x', new int[] {6,5,3,1,4});
+        translationTable.put('u', new int[] {6,2,3,5,4,1});
+        translationTable.put('v', new int[] {6,3,5,4,2,1});
+        translationTable.put('w', new int[] {6,4,2,3,5,1});
+        translationTable.put('x', new int[] {6,5,4,2,3,1});
 
         this.topNumber = translationTable.get(Character.toLowerCase(orientation))[0]; // assign top facing number
         this.sides = Arrays.copyOfRange(translationTable.get(Character.toLowerCase(orientation)), 1, 5); // assign side values
+        this.orientation = orientation; // assign orientation value
 
         int columnNum = 0;
         int rowNum = Character.getNumericValue(row);
@@ -215,6 +212,7 @@ public class Dice {
         Dice[] def = new Dice[4];
         return def;
     } // returns the adjacent pieces as a list
+
     public void setTopNumber(int topNumber) {
         this.topNumber = topNumber;
     } // returns the number that is facing up on the dice
@@ -223,13 +221,10 @@ public class Dice {
         return this.topNumber;
     }
 
-
     public ArrayList<Step> getLegalMoves(Dice p1, State b1) {
         return null;
         // TODO: need to create a way to get all legal moves for a given piece with the current game state
     }
-
-
 
     public int[] getSides() {
         return sides;
@@ -240,10 +235,9 @@ public class Dice {
     }
 
     public String getEncoding() {
-        return encoding;
-    }
-
-    public void setEncoding(String encoding) {
-        this.encoding = encoding;
+        StringBuilder encoding = new StringBuilder();
+        encoding.append(this.orientation);
+        encoding.append(this.position.getEncoding());
+        return encoding.toString();
     }
 }
