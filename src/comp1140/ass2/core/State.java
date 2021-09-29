@@ -44,11 +44,11 @@ public class State {
 
         for (Dice dice: this.dices) {
             if (isWhitePieces) {
-                if (Character.isUpperCase(dice.getEncoding().charAt(0))) {
+                if (Character.isUpperCase(dice.toString().charAt(0))) {
                     dices.add(dice);
                 }
             } else {
-                if (!Character.isUpperCase(dice.getEncoding().charAt(0))) {
+                if (!Character.isUpperCase(dice.toString().charAt(0))) {
                     dices.add(dice);
                 }
             }

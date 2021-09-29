@@ -13,8 +13,8 @@ public class Dice {
 
 
 
-    public Dice(int topNumber, int[] sides, boolean isPlayer1, Position position) {
-        this.topNumber = topNumber;
+    public Dice(int[] sides, boolean isPlayer1, Position position) {
+        this.topNumber = sides[0];
         this.sides = sides;
         this.isPlayer1 = isPlayer1;
         this.position = position;
@@ -175,7 +175,7 @@ public class Dice {
         translationTable.put('x', new int[] {6,5,4,2,3,1});
 
         this.topNumber = translationTable.get(Character.toLowerCase(orientation))[0]; // assign top facing number
-        this.sides = Arrays.copyOfRange(translationTable.get(Character.toLowerCase(orientation)), 1, 5); // assign side values
+        this.sides = Arrays.copyOf(translationTable.get(Character.toLowerCase(orientation)),6); // assign side values
         this.orientation = orientation; // assign orientation value
 
         int columnNum = 0;
@@ -234,7 +234,8 @@ public class Dice {
         this.sides = sides;
     }
 
-    public String getEncoding() {
+    @Override
+    public String toString() {
         StringBuilder encoding = new StringBuilder();
         encoding.append(this.orientation);
         encoding.append(this.position.getEncoding());

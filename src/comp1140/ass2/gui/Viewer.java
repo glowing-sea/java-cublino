@@ -71,27 +71,27 @@ public class Viewer extends Application {
                 Pane orientationPane = new Pane(); // orientation display pane
                 int[] sides = dice.getSides(); // sides of the currently selected dice
 
-                Label orientationPaneTitle = new Label("Dice Orientation For: "+dice.getEncoding());
+                Label orientationPaneTitle = new Label("Dice Orientation For: "+dice.toString());
                 orientationPaneTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
                 orientationPaneTitle.relocate(20 + orientationPane.getWidth()/2, 0);
 
-                Label forward_Text = new Label(String.valueOf(sides[0]));
+                Label forward_Text = new Label(String.valueOf(sides[1]));
                 forward_Text.setFont(new Font(13));
                 forward_Text.relocate(80,40);
 
-                Label top_Text = new Label( String.valueOf(dice.getTopNumber()));
+                Label top_Text = new Label(String.valueOf(dice.getTopNumber()));
                 top_Text.setFont(new Font(13));
                 top_Text.relocate(80,60);
 
-                Label right_Text = new Label(String.valueOf(sides[1]));
+                Label right_Text = new Label(String.valueOf(sides[2]));
                 right_Text.setFont(new Font(13));
                 right_Text.relocate(100,60);
 
-                Label left_Text = new Label(String.valueOf(sides[3]));
+                Label left_Text = new Label(String.valueOf(sides[4]));
                 left_Text.setFont(new Font(13));
                 left_Text.relocate(60,60);
 
-                Label backward_Text = new Label(String.valueOf(sides[2]));
+                Label backward_Text = new Label(String.valueOf(sides[3]));
                 backward_Text.setFont(new Font(13));
                 backward_Text.relocate(80,80);
 
