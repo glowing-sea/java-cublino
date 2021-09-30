@@ -1,13 +1,31 @@
 ## Code Review
 
-Reviewed by: <your full name>, <your uid>
+**Reviewed by:** Rajin Hossain (u7313467)
 
-Reviewing code written by: <the other person's full name> <other uid>
+**Reviewing code written by:** Haoting Chen (u7227871)
 
-Component: <the component being reviewed>
+**Component:** [isValidStepPur(String state, String step)](https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L259-303)
 
 ### Comments 
 
-<write your comments here>
+**Best Features:**
+- Effective/efficient choice of primitive type byte over char or int. This means less data is allocated in memory since only 8 bits are allocated for a byte. Additionally, reduces further casting/conversion to int for arithmetic operations.
+- First if statement is cleaverly placed which prevents redundant operations and calculations from occuring.
+
+**Documentation:**
+- The code is written in such a way that the code documents itself (easy to follow along with the appropriate indentifiers chosen).
+- Necessary comments are placed to describe which criteria is being checked from the method specifications provided.
+
+**Java Code Conventions**
+- Java code conventions are met as the method name is camel-cased as well as the variable names being selected appropriately.
+- Some variable name/identifiers could be more description without commenting such as [String over;](https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L269) and [byte forward;](https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L268)
+- Code style is maintained throughout the method
+
+**Suspected Error in Code**
+- Traced the method manually on paper with a table. No errors were found in the logic.
+- Task 7 tests pass fully and the method's output meets the specifications listed on the Assignment.
+
+
+
 
 
