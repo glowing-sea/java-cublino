@@ -4,6 +4,8 @@ public class Position {
     private int x;
     private int y;
 
+    //================================================CONSTRUCTOR=====================================================//
+
     // Create a Position based on the x and y coordinates.
     public Position(int x, int y) {
         this.x = x;
@@ -12,10 +14,25 @@ public class Position {
 
     // Create a Position based on the string encoding.
     public Position(String s) {
+
+        /*
         assert s.length() == 2;
         char[] list = s.toCharArray();
         this.y = Character.getNumericValue(list[1]);
         this.x = list[0] - 'a' + 1;
+         */
+
+        // This may be simpler.
+        this.x = s.charAt(0) - 96;
+        this.y = s.charAt(1) - 48;
+    }
+
+    //=============================================NON-STATIC METHODS=================================================//
+
+    @Override
+    public String toString() {
+        char x = (char) (this.x + 96);
+        return "" + x + this.y;
     }
 
     // Setter and getter methods.
@@ -46,6 +63,10 @@ public class Position {
         return false;
     }
 
+    public boolean isOffBoard () {
+        return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
+    }
+
     // Dead Code
     // is 2 locations adjacent
     public boolean isValid(Position loc) { // checks if a location is valid
@@ -58,15 +79,16 @@ public class Position {
     // Dead Code
 
 
+    //=================================================STATIC METHODS=================================================//
+
+
     // Method to calculate the manhattanDistance between two locations
     public static int manhattanDistance(Position loc1, Position loc2) {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
     }
 
-    public String getEncoding() {
-        StringBuilder encoding = new StringBuilder();
-        return ((encoding.append(getX())).append(getY())).toString();
-    }
+
+    //======================================================TESTS=====================================================//
 
     // Check Methods
     public static void main(String[] args) {
@@ -89,10 +111,9 @@ public class Position {
             System.out.println("l7 is adjacent to l6.");
         if (l4.isAdjacent(l5))
             System.out.println("l4 is adjacent to l5.");
-    }
 
-    public boolean isOffBoard () {
-        return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
+        System.out.println(l4.getX() + "," + l4.getY());
+        System.out.println(l1 + "," + l2 + "," + l3 + "," + l4 + "," + l5 + "," + l6 +  "," + l7);
     }
 }
 

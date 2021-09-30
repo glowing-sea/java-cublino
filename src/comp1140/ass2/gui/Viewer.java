@@ -69,7 +69,7 @@ public class Viewer extends Application {
                 diceImage.relocate(19+60*(dice.getPosition().getX()-1),19+60*(dice.getPosition().getY()-1)); // pixel translation
 
                 Pane orientationPane = new Pane(); // orientation display pane
-                int[] sides = dice.getSides(); // sides of the currently selected dice
+                int[] sides = dice.getFaces(); // sides of the currently selected dice
 
                 Label orientationPaneTitle = new Label("Dice Orientation For: "+dice.toString());
                 orientationPaneTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");

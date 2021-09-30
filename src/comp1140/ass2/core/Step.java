@@ -15,8 +15,8 @@ public class Step {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         StringBuilder encoding = new StringBuilder();
-        encoding.append(startPosition.getEncoding());
-        encoding.append(endPosition.getEncoding());
+        encoding.append(startPosition.toString());
+        encoding.append(endPosition.toString());
         this.encode = encoding.toString();
     }
 
