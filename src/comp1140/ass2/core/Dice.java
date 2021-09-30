@@ -206,4 +206,16 @@ public class Dice {
             return x;
         }
     }
+
+    //======================================================TESTS=====================================================//
+
+    // Check Methods
+    public static void main(String[] args) {
+        Dice d1 = new Dice("ac2");
+        Dice d2 = new Dice("Xb7");
+        Dice d3 = new Dice("ca1");
+        Dice d4 = new Dice("Qg2");
+        System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
+    }
 }
+

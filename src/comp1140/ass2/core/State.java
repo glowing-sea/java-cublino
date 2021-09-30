@@ -6,9 +6,11 @@ import java.util.ArrayList;
 
 public class State {
     private static final int BOARD_SIZE = 7;
-    private int playerTurn = 1; // value of means the current player's turn is player 1 (White) or 2 means player 2 (Black)
-
+    private boolean player1Turn = true; // "true" means player1's (White) turn."false" mean player2 (Black) turn.
     private ArrayList<Dice> dices = new ArrayList<>();
+
+
+    //================================================CONSTRUCTOR=====================================================//
 
     public State(String state) {
         if (Cublino.isStateWellFormed(state)) {
@@ -19,14 +21,10 @@ public class State {
                 this.dices.add(new Dice(diceEncodings.substring(i,i+3)));
             }
 
-            if (state.charAt(0) == 'P' || state.charAt(0) == 'C') {
-                this.playerTurn = 1;
-            } else {
-                this.playerTurn = 2;
-            }
-
+            this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
         }
     }
+    //=============================================NON-STATIC METHODS=================================================//
 
     // Gets the piece at an X and Y coordinate
     public Dice getPieceAt(int x, int y) {
@@ -56,8 +54,10 @@ public class State {
 
         return dices;
     }
-
-    public int getPlayerTurn() {
-        return playerTurn;
+    public boolean getPlayerTurn() {
+        return this.player1Turn;
     }
+
+    //=================================================STATIC METHODS=================================================//
+    //======================================================TESTS=====================================================//
 }

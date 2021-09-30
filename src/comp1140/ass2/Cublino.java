@@ -417,7 +417,7 @@ public class Cublino {
     // Generates all possible step from a given state for a piece
     public static ArrayList<Step> generateStepPur(String state, Position pieceLocation) {
         State stateState = new State(state);
-        int forwardIncrement = (stateState.getPlayerTurn() == 1) ? 1 : -1; // forward direction varies from player's type
+        int forwardIncrement = stateState.getPlayerTurn() ? 1 : -1; // forward direction varies from player's type
         ArrayList<Step> steps = new ArrayList<>();
 
         ArrayList<Position> endPositions = new ArrayList<>();
