@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+// (By Group)
 public class Dice {
     private int topNumber; // number on the top of the dice
     private boolean isPlayer1; // the player's type
@@ -12,6 +13,7 @@ public class Dice {
 
     //================================================CONSTRUCTOR=====================================================//
 
+    // (By Haoting & Rajin)
     // A simple constructor of a Dice.
     public Dice(int topNumber, boolean isPlayer1, Position position, char orientation) {
         this.topNumber = topNumber;
@@ -20,6 +22,7 @@ public class Dice {
         this.orientation = orientation;
     }
 
+    // (By Haoting & Rajin)
     // A constructor of a dice based on its encoding.
     public Dice(String encoding){
 
@@ -57,6 +60,7 @@ public class Dice {
 
     //=============================================NON-STATIC METHODS=================================================//
 
+    // (By Rajin)
     @Override
     public String toString() {
         StringBuilder encoding = new StringBuilder();
@@ -65,11 +69,11 @@ public class Dice {
         return encoding.toString();
     }
 
+    // (By Group)
     // Getter Methods.
     public boolean isPlayer1() {return isPlayer1;}
     public Position getPosition() {return position;}
     public int getTopNumber() {return this.topNumber;}
-
 
     // Get a array of all adjacent dices.
     public Dice[] getAdjacentPieces(State state) {
@@ -83,6 +87,7 @@ public class Dice {
         // TODO: need to create a way to get all legal moves for a given piece with the current game state
     }
 
+    // (By Haoting & Rajin)
     // Get the number of all faces of a dice
     // Format: {TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM}
     public int[] getFaces (){
@@ -124,7 +129,7 @@ public class Dice {
 
     //=================================================STATIC METHODS=================================================//
 
-
+    // (By Anubhav)
     // method to change the faces of the dice
     public static int[] changeFaces(int[] initialFaces, Step step) {
         if (!step.isTip()) {
@@ -179,6 +184,7 @@ public class Dice {
 
     }
 
+    // (By Anubhav)
     public static char getOrientation(int[] sides, boolean isPlayer1) {
         char x = 0;
         if (sides[0] == 1 && sides[1] == 2) {
@@ -263,6 +269,7 @@ public class Dice {
 
     //======================================================TESTS=====================================================//
 
+    // (By Group)
     // Check Methods
     public static void main(String[] args) {
         Dice d1 = new Dice("ac2");

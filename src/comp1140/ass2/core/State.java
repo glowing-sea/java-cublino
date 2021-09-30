@@ -4,6 +4,7 @@ import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
 
+// (By Group)
 public class State {
     private static final int BOARD_SIZE = 7;
     private boolean player1Turn = true; // "true" means player1's (White) turn."false" mean player2 (Black) turn.
@@ -12,6 +13,7 @@ public class State {
 
     //================================================CONSTRUCTOR=====================================================//
 
+    // (By Rajin)
     public State(String state) {
         if (Cublino.isStateWellFormed(state)) {
             String diceEncodings = state.substring(1); // all the dice encodings are assumed to be valid
@@ -24,8 +26,10 @@ public class State {
             this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
         }
     }
+
     //=============================================NON-STATIC METHODS=================================================//
 
+    // (By Rajin)
     // Gets the piece at an X and Y coordinate
     public Dice getPieceAt(int x, int y) {
         for (Dice dice:dices) {
@@ -36,6 +40,7 @@ public class State {
         return null;
     }
 
+    // (By Rajin)
     // Gets all pieces that are either white or black based on the input boolean
     public ArrayList<Dice> getPieces(boolean isWhitePieces) {
         ArrayList<Dice> dices = new ArrayList<>();
@@ -54,6 +59,8 @@ public class State {
 
         return dices;
     }
+
+    // (By Group)
     public boolean getPlayerTurn() {
         return this.player1Turn;
     }

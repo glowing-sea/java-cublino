@@ -47,6 +47,7 @@ public class Viewer extends Application {
      *
      * @param placement A valid placement string
      */
+    // (By Rajin)
     void makePlacement(String placement) {
         String placementEncoding = placement.trim();
         if (Cublino.isStateWellFormed(placementEncoding)) {
@@ -130,6 +131,7 @@ public class Viewer extends Application {
         }
     }
 
+    // (By Rajin)
     /* Renders the base game board */
     private void renderBoard() {
         gamePane.setMinSize(450,450);
@@ -149,6 +151,8 @@ public class Viewer extends Application {
         Label label1 = new Label("Placement:");
         textField = new TextField();
         textField.setPrefWidth(300);
+
+        // (By Rajin)
         Button display = new Button("Display");
         display.setOnAction(actionEvent -> {
                 // erase all the current dices on the board before rendering the dices
@@ -159,6 +163,8 @@ public class Viewer extends Application {
                 // render the dice placements on the board
                 makePlacement(textField.getText());
         });
+
+        // (By Rajin)
         Button clear = new Button("Clear");
         // a clear button to clear the placement string
         clear.setOnAction(actionEvent -> {
@@ -200,6 +206,7 @@ public class Viewer extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
+        // (By Rajin)
         // Refresh Key's Alternative Option: Press Enter
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {

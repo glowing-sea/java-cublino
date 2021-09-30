@@ -1,4 +1,4 @@
-package comp1140.ass2;
+package extraTests;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;

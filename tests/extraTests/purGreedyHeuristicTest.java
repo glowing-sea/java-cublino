@@ -1,5 +1,6 @@
-package comp1140.ass2;
+package extraTests;
 
+import comp1140.ass2.Cublino;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 

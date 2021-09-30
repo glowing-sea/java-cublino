@@ -32,6 +32,7 @@ public class Cublino {
      * @param state a string representing a game state
      * @return true if the input state is well formed, otherwise false
      */
+    // (By Haoting)
     public static Boolean isStateWellFormed(String state) {
         // The length - 1 must be a multiple of 3.
         if ((state.length() - 1) % 3 != 0)
@@ -76,6 +77,7 @@ public class Cublino {
      * @param state a string representing a game state
      * @return true if the input state is valid, otherwise false
      */
+    // (By Anubhav)
     public static Boolean isStateValid(String state) {
 
         if (!isStateWellFormed(state)) {
@@ -158,6 +160,7 @@ public class Cublino {
      * @param state a Pur game state
      * @return 1 if player one has won, 2 if player two has won, 3 if the result is a draw, otherwise 0.
      */
+    // (By Anubhav)
     public static int isGameOverPur(String state) {
         char[] pieces = state.toCharArray();
         int increment = 0;
@@ -208,6 +211,7 @@ public class Cublino {
     /* Method to take a score and get the top face on the dice
     * NOTE: this method assumes the string has valid orientation characters
     */
+    // (By Anubhav)
     public static int getScorePur(char s) {
 
         if (Character.toLowerCase(s) >= 'a' && Character.toLowerCase(s) <= 'd') {
@@ -251,6 +255,7 @@ public class Cublino {
      * @param step a string representing a single step of a move
      * @return true if the step is valid for the given state, otherwise false
      */
+    // (By Haoting)
     public static Boolean isValidStepPur(String state, String step) {
         // Check if the ending position is not occupied
         if (state.contains(step.substring(2,4)))
@@ -320,6 +325,7 @@ public class Cublino {
      * @param move a string representing a move
      * @return true if the move is valid for the given state, otherwise false
      */
+    // (By Haoting)
     public static Boolean isValidMovePur(String state, String move) {
         int length = move.length();
         boolean isPlayer1 = state.charAt(0) == 'P';
@@ -371,6 +377,7 @@ public class Cublino {
      * @param move a move being played
      * @return the resulting state after the move has been applied
      */
+    // (By Anubhav)
     public static String applyMovePur(String state, String move) {
         if (move.equals("")) {
             return state;
@@ -396,6 +403,7 @@ public class Cublino {
      * @param state a Pur game state
      * @return a valid move for the current game state.
      */
+    // (By Rajin)
     public static String generateMovePur(String state) {
        ArrayList<Step> move = new ArrayList<>();
        State gameState = new State(state);
@@ -413,7 +421,7 @@ public class Cublino {
        return null;
     }
 
-
+    // (By Rajin)
     // Generates all possible step from a given state for a piece
     public static ArrayList<Step> generateStepPur(String state, Position pieceLocation) {
         State stateState = new State(state);
@@ -453,7 +461,7 @@ public class Cublino {
         return steps;
     }
 
-
+    // (By Rajin)
     // Cublino Pur Heuristic Function
     public static float purGreedyHeuristic(String state) {
         State gameState = new State(state);

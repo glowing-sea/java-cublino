@@ -1,17 +1,20 @@
 package comp1140.ass2.core;
 
+// (By Group)
 public class Position {
     private int x;
     private int y;
 
     //================================================CONSTRUCTOR=====================================================//
 
+    // (By Anubhav)
     // Create a Position based on the x and y coordinates.
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
+    // (By Anubhav & Haoting)
     // Create a Position based on the string encoding.
     public Position(String s) {
 
@@ -29,24 +32,27 @@ public class Position {
 
     //=============================================NON-STATIC METHODS=================================================//
 
+    // (By Haoting)
     @Override
     public String toString() {
         char x = (char) (this.x + 96);
         return "" + x + this.y;
     }
 
+    // (By Group)
     // Setter and getter methods.
     public int getX() {return x;}
     public int getY() {return y;}
     public void setX(int x) {this.x = x;}
     public void setY(int y) {this.y = y;}
 
-
+    // (By Anubhav)
     // Check if two locations are equal.
     public Boolean checkEquals(Position pos) {
         return this.x == pos.getX() && this.y == pos.getY();
     }
 
+    // (By Haoting)
     // Checks if two locations are adjacent.
     public boolean isAdjacent(Position other) {
         int x1 = this.x;
@@ -63,16 +69,19 @@ public class Position {
         return false;
     }
 
+    // (By Anubhav)
     public boolean isOffBoard () {
         return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
     }
 
+    // (By Group)
     // Dead Code
     // is 2 locations adjacent
     public boolean isValid(Position loc) { // checks if a location is valid
         return false; // default
     } // checks if location is valid
 
+    // (By Group)
     public int toPosition(int x, int y) {
         return 0; // default
     } // sets the coordinate to a number corresponding to the position in the array
@@ -81,15 +90,15 @@ public class Position {
 
     //=================================================STATIC METHODS=================================================//
 
-
+    // (By Rajin)
     // Method to calculate the manhattanDistance between two locations
     public static int manhattanDistance(Position loc1, Position loc2) {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
     }
 
-
     //======================================================TESTS=====================================================//
 
+    // (By Group)
     // Check Methods
     public static void main(String[] args) {
         Position l1 = new Position(3, 3);
