@@ -125,6 +125,60 @@ public class Dice {
     //=================================================STATIC METHODS=================================================//
 
 
+    // method to change the faces of the dice
+    public static int[] changeFaces(int[] initialFaces, Step step) {
+        if (!step.isTip()) {
+            return initialFaces;
+        }
+        else {
+            int[] newFaces = new int[6];
+            if (step.getEndPosition().getX() - step.getStartPosition().getX() == 1) {
+                newFaces[0] = initialFaces[2];
+                newFaces[1] = initialFaces[1];
+                newFaces[2] = initialFaces[0];
+                newFaces[3] = initialFaces[3];
+                newFaces[4] = initialFaces[5];
+                newFaces[5] = initialFaces[4];
+                return newFaces;
+
+            }
+            else if (step.getEndPosition().getX() - step.getStartPosition().getX() == -1) {
+                newFaces[0] = initialFaces[2];
+                newFaces[1] = initialFaces[1];
+                newFaces[2] = initialFaces[5];
+                newFaces[3] = initialFaces[3];
+                newFaces[4] = initialFaces[0];
+                newFaces[5] = initialFaces[4];
+                return newFaces;
+            }
+            else if (step.getEndPosition().getY() - step.getStartPosition().getY() == 1) {
+                newFaces[0] = initialFaces[3];
+                newFaces[1] = initialFaces[0];
+                newFaces[2] = initialFaces[2];
+                newFaces[3] = initialFaces[5];
+                newFaces[4] = initialFaces[4];
+                newFaces[5] = initialFaces[1];
+                return newFaces;
+            }
+            else if (step.getEndPosition().getY() - step.getStartPosition().getY() == -1) {
+                newFaces[0] = initialFaces[1];
+                newFaces[1] = initialFaces[5];
+                newFaces[2] = initialFaces[2];
+                newFaces[3] = initialFaces[0];
+                newFaces[4] = initialFaces[4];
+                newFaces[5] = initialFaces[3];
+                return newFaces;
+            }
+            else {
+                return null;
+            }
+
+
+        }
+        // [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM] is the encoding
+
+    }
+
     public static char getOrientation(int[] sides, boolean isPlayer1) {
         char x = 0;
         if (sides[0] == 1 && sides[1] == 2) {
