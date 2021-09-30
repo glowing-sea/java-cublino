@@ -1,5 +1,8 @@
-package comp1140.ass2;
+package extraTests;
 
+import comp1140.ass2.Cublino;
+import comp1140.ass2.ExampleGames;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -16,7 +19,7 @@ class isValidMovePurTestD2D {
         for (int i = 0; i < ExampleGames.FULL_PUR_GAME.length - 1; i += 2) {
             String state = ExampleGames.FULL_PUR_GAME[i][0];
             String move = ExampleGames.FULL_PUR_GAME[i][1];
-            assertTrue(Cublino.isValidMovePur(state, move), "Move \"" + move + "\" for state \"" + state + "\" is valid");
+            Assertions.assertTrue(Cublino.isValidMovePur(state, move), "Move \"" + move + "\" for state \"" + state + "\" is valid");
         }
     }
 

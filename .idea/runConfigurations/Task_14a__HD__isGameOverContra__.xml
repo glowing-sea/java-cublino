@@ -3,7 +3,7 @@
     <module name="comp1140-ass2" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="comp1140.ass2.*" />
+        <option name="PATTERN" value="extraTests.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
