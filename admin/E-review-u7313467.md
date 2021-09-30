@@ -20,6 +20,7 @@
 - The method structure is appropriate in the context of the whole Cublino class as isValidStepPur would be crucial for use later on in development, especially for the AI.
 - The method appropriately decomposes the input state and step into its components which allows for this method to be very readable and hence easier to debug or change later on.
 - As mentioned, all the return false situations that can be covered immediately are placed at the top of the function to reduce unnecessary calculations and operations.
+- Could have implemented much of the logic through object creation which would have improved overall readability (minor suggestion). 
 
 **Java Code Conventions**
 - Java code conventions are met as the method name is camel-cased as well as the variable names being selected appropriately.
