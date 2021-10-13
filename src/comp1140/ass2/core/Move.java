@@ -121,7 +121,7 @@ public class Move {
         ArrayList<Integer> labels = new ArrayList<>(labelledDices.keySet());
         Collections.sort(labels);
 
-        // Create a new list of dices according to the order their labels.
+        // Create a new list of dices according to the order of their labels.
         for (Integer label : labels){
             sortedDices.add(labelledDices.get(label));
         }
