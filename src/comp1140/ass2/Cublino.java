@@ -411,6 +411,7 @@ public class Cublino {
                 }
             }
         }
+        // have to sort the string later
         return state;
          // FIXME Task 9 (P)
     }
