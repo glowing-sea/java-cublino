@@ -199,6 +199,7 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     // (By Anubhav and Haoting)
+    // For marking only. Please use the method applyMovePur in Move Class.
     public static String applyMovePur(String state, String move) {
         Move m = new Move(move);
         State st = new State(state);

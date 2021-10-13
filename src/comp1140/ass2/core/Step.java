@@ -47,8 +47,7 @@ public class Step {
 
     /**
      * Task 7 (Object Version) (By Haoting Chen):
-     *
-     * The function takes a step and a valid state, check if the step is valid.
+     * Determine whether a single step of a move is valid for a given Pur game.
      *
      * A step is valid if it satisfies the following conditions:
      * 1. It represents either a tilt or a jump of a dice.

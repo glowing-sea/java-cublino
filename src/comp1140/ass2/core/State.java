@@ -121,6 +121,7 @@ public class State {
 
     /**
      * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
+     * Determine whether the input state is valid.
      *
      * [Both Variants]
      * 1. The game state is well formed.
@@ -185,6 +186,10 @@ public class State {
     /**
      * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
      * Determine whether a state represents a finished Pur game, and if so who the winner is.
+     *
+     * A game of Cublino Pur is finished once one player has reached the opponent's end of the board with all seven of
+     * their dice. Each player then adds the numbers facing upwards on their dice which have reached the opponent's end
+     * of the board. The player with the highest total wins.
      *
      * ASSUMPTIONS: the state is of the Pur variant and valid.
      */

@@ -37,6 +37,7 @@ public class Move {
 
     /**
      * Task 8: (By Haoring)
+     * Determine whether a move (sequence of steps) is valid for a given game.
      *
      * A move is valid if it satisfies the following conditions:
      * 1. The starting position of the move contains a dice belonging to the player who's turn it is.
