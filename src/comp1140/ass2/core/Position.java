@@ -1,5 +1,7 @@
 package comp1140.ass2.core;
 
+import comp1140.ass2.Cublino;
+
 // (By Group)
 public class Position {
     private int x;
@@ -18,12 +20,8 @@ public class Position {
     // Create a Position based on the string encoding.
     public Position(String s) {
 
-        /*
-        assert s.length() == 2;
-        char[] list = s.toCharArray();
-        this.y = Character.getNumericValue(list[1]);
-        this.x = list[0] - 'a' + 1;
-         */
+        assert Cublino.isPositionWellFormed(s) && s.length() == 2 :
+                "The input position string is not well-formed.";
 
         // This may be simpler.
         this.x = s.charAt(0) - 96;

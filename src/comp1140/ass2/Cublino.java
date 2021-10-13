@@ -40,18 +40,23 @@ public class Cublino {
         // Either p, c, P, or C.
         if (Character.toLowerCase(state.charAt(0)) != 'p' && Character.toLowerCase(state.charAt(0)) != 'c')
             return false;
+
         for (int i = 1; i < state.length(); i = i + 3) {
-            // In the range 'a' to 'x' or in the range 'A' to 'X'
-            if (Character.toLowerCase(state.charAt(i)) < 'a' || Character.toLowerCase(state.charAt(i)) > 'x')
-                return false;
-            // In the range 'a' to 'g'
-            if (state.charAt(i + 1) < 'a' || state.charAt(i + 1) > 'g')
-                return false;
-            // In the range '1' to '7'
-            if (state.charAt(i + 2) < '1' || state.charAt(i + 2) > '7')
+            if (!isDiceWellFormed(state.substring(i, i + 3)))
                 return false;
         }
         return true;
+    }
+
+    // Assume the input length of the string is 2;
+    public static Boolean isPositionWellFormed(String s) {
+        return (s.charAt(0) >= 'a' && s.charAt(0) <= 'g') &&
+                (s.charAt(1) >= '1' && s.charAt(1) <= '7');
+    }
+    // Assume the input length of the string is 3;
+    public static Boolean isDiceWellFormed(String dice) {
+        return isPositionWellFormed(dice.substring(1)) &&
+                ((Character.toLowerCase(dice.charAt(0)) >= 'a' && Character.toLowerCase(dice.charAt(0)) <= 'x'));
     }
 
     /**

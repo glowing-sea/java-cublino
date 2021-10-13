@@ -1,5 +1,7 @@
 package comp1140.ass2.core;
 
+import comp1140.ass2.Cublino;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -25,6 +27,9 @@ public class Dice {
     // (By Haoting & Rajin)
     // A constructor of a dice based on its encoding.
     public Dice(String encoding){
+
+        assert Cublino.isDiceWellFormed(encoding) && encoding.length() == 3 :
+                "The input dice string is not well-formed.";
 
         char colNumChar = encoding.charAt(1);
         char rowNumChar = encoding.charAt(2);

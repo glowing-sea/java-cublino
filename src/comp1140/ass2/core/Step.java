@@ -1,4 +1,5 @@
 package comp1140.ass2.core;
+import comp1140.ass2.Cublino;
 
 // (By Group)
 public class Step {
@@ -10,6 +11,7 @@ public class Step {
     // (By Haoting)
     // A simple constructor of a step.
     public Step(String step) {
+        assert step.length() == 4;
         this.start = new Position(step.substring(0,2));
         this.end = new Position(step.substring(2,4));
     }
@@ -29,14 +31,8 @@ public class Step {
         return "" + start + end;
     }
 
+
     // Setter and getter method
-
-    // (By Haoting)
-    public void setStep(String step) {
-        this.start = new Position(step.substring(0,2));
-        this.end = new Position(step.substring(2,4));
-    }
-
     // (By Haoting)
     public void setStep(Position start, Position end) {
         this.start = start;
