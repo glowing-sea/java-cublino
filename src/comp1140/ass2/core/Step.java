@@ -56,6 +56,7 @@ public class Step {
      * 3. The step moves towards the opponent's end of the board or horizontally (along its current row).
      * 3. If it is a jump step, there is a dice in the position which is jumped over.
      *
+     * ASSUMPTIONS: the state is of the Pur variant and valid. The step is well-formed.
      */
 
     public boolean isValidStepPur(State state) {

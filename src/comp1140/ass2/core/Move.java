@@ -1,6 +1,10 @@
 package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+
 public class Move {
     private Position[] positions;
 
@@ -41,6 +45,7 @@ public class Move {
      * 4. Only the first step may be a tipping step.
      * 5. The starting and ending positions of the moved dice are different.
      *
+     * ASSUMPTIONS: the state is of the Pur variant and valid. The move is well-formed.
      */
 
     public Boolean isValidMovePur(State state) {
@@ -73,6 +78,55 @@ public class Move {
     }
 
     //=================================================STATIC METHODS=================================================//
+
+    /**
+     * Task 9: (By Anubhav and Haoting)
+     * Given a Pur game state and a move to play, determine the state that results from that move being played.
+     * If the move ends the game, the turn should be the player who would have played next had the game not ended. If
+     * the move is invalid the game state should remain unchanged.
+     *
+     * ASSUMPTION: the state is of Pur and valid. The move is well-formed.
+     */
+    public static State applyMovePur(State st, Move m) {
+        if(!m.isValidMovePur(st))
+            return st;
+
+        Position[] pos = m.getPositions();
+        Position start = pos[0]; // Starting position of a move.
+        Position end = pos[pos.length - 1]; // Ending position of a move.
+        Step firstStep = new Step(start, (pos[1])); // The first step of a move.
+
+        for (Dice dice : st.getDices()) {
+            if (dice.getPosition().equals(start)) { // Find out the dice that need to be moved!
+                dice.tip(firstStep); // Tip the dice if needed.
+                dice.jump(end); // Update the location of the dice
+            }
+        }
+        st.changeTurn();
+        st.setDices(sortDices(st.getDices()));
+        return st;
+    }
+
+    public static ArrayList<Dice> sortDices(ArrayList<Dice> unsortedDices){
+        ArrayList<Dice> sortedDices = new ArrayList<>();
+        HashMap<Integer, Dice> labelledDices = new HashMap<>();
+
+        // Label all the dices.
+        for (Dice dice : unsortedDices){
+            labelledDices.put(dice.getPosition().getPositionOrder(), dice);
+        }
+
+        // Sort the labels.
+        ArrayList<Integer> labels = new ArrayList<>(labelledDices.keySet());
+        Collections.sort(labels);
+
+        // Create a new list of dices according to the order their labels.
+        for (Integer label : labels){
+            sortedDices.add(labelledDices.get(label));
+        }
+        return sortedDices;
+    }
+
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {
         Move m1 = new Move("g6f6d6");
