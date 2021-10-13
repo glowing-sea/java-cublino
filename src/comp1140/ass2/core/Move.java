@@ -103,29 +103,9 @@ public class Move {
                 dice.jump(end); // Update the location of the dice
             }
         }
-        st.changeTurn();
-        st.setDices(sortDices(st.getDices()));
+        st.changeTurn(); // Update the turn.
+        Collections.sort(st.getDices()); // Sort the list of dices.
         return st;
-    }
-
-    public static ArrayList<Dice> sortDices(ArrayList<Dice> unsortedDices){
-        ArrayList<Dice> sortedDices = new ArrayList<>();
-        HashMap<Integer, Dice> labelledDices = new HashMap<>();
-
-        // Label all the dices.
-        for (Dice dice : unsortedDices){
-            labelledDices.put(dice.getPosition().getPositionOrder(), dice);
-        }
-
-        // Sort the labels.
-        ArrayList<Integer> labels = new ArrayList<>(labelledDices.keySet());
-        Collections.sort(labels);
-
-        // Create a new list of dices according to the order of their labels.
-        for (Integer label : labels){
-            sortedDices.add(labelledDices.get(label));
-        }
-        return sortedDices;
     }
 
     //======================================================TESTS=====================================================//

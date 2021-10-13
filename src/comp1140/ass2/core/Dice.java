@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 // (By Group)
-public class Dice {
+public class Dice implements Comparable<Dice> {
     private boolean isPlayer1; // the player's type
     private Position position; // the piece's position
     private char orientation;
@@ -59,6 +59,11 @@ public class Dice {
     public String toString() {
         return (isPlayer1 ? Character.toUpperCase(orientation) : Character.toLowerCase(orientation)) +
                 position.toString();
+    }
+    // (By Haoting)
+    @Override
+    public int compareTo(Dice other) {
+        return this.getPosition().getPositionOrder() - other.getPosition().getPositionOrder();
     }
 
     // (By Group)
