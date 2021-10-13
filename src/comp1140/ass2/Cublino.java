@@ -102,7 +102,7 @@ public class Cublino {
                 s.append(pieces[i + 1]).append(pieces[i + 2]);
                 Position loc = new Position(s.toString());
                 for (Position j : tempLoc) {
-                    if (j.checkEquals(loc)) {
+                    if (j.equals(loc)) {
                         return false;
                     }
                 }
@@ -255,53 +255,12 @@ public class Cublino {
      * @param step a string representing a single step of a move
      * @return true if the step is valid for the given state, otherwise false
      */
-    // (By Haoting)
+    // (By Haoting) (Only for assessment) (Recommend to use the inner method in Step Class)
     public static Boolean isValidStepPur(String state, String step) {
-        // Check if the ending position is not occupied
-        if (state.contains(step.substring(2,4)))
-            return false;
-
-        byte x1 = (byte) step.charAt(0);
-        byte y1 = (byte) step.charAt(1);
-        byte x2 = (byte) step.charAt(2);
-        byte y2 = (byte) step.charAt(3);
-        byte forward;
-        String over; // The location where the dice jump over
-
-        if (state.charAt(0) == 'P')
-            forward = 1; // For the white dice, moving one step forward means column number plus 1.
-        else
-            forward = -1; // For the black dice, moving one step forward means column number minus 1.
-
-        // Check if it is a valid forward move
-        if (x1 == x2) {
-            if (y1 + forward == y2) // Tilt forward
-                return true;
-            if (y1 + forward * 2 == y2) { // Jump forward
-                over = "" + step.charAt(0) + ((char) (y1 + forward));
-                return state.contains(over);
-            }
-        }
-
-        // Check if it is a valid horizontal move
-        if (y1 == y2) {
-            if (x1 + 1 == x2) // Tilt to the right
-                return true;
-            if (x1 - 1 == x2) // Tilt to the left
-                return true;
-            if (x1 + 2 == x2) { // Jump to the right
-                over = "" + ((char) (x1 + 1)) + step.charAt(1);
-                return (state.contains(over));
-            }
-            if (x1 - 2 == x2) { // Jump to the left
-                over = "" + ((char) (x1 - 1)) + step.charAt(1);
-                return state.contains(over);
-            }
-        }
-
-        return false;
+        Step step1 = new Step(step);
+        State state1 = new State(state);
+        return step1.isValidStepPur(state1);
     }
-
 
     /**
      * Task 8:
@@ -327,42 +286,41 @@ public class Cublino {
      */
     // (By Haoting)
     public static Boolean isValidMovePur(String state, String move) {
-        int length = move.length();
-        boolean isPlayer1 = state.charAt(0) == 'P';
-        boolean check1 = false;
-        String checkedStep;
 
-        // Check 3
-        if (length < 2)
+        // Condition 3
+        int length = move.length() / 2; // length of the move1 array
+        if (length < 1) return false;
+
+        // Convert the move string into an array of positions.
+        Position[] move1 = new Position[length];
+        State state1 = new State(state);
+        for(int i = 0; i < length; i++)
+            move1[i] = new Position(move.substring(i * 2, i * 2 + 2));
+
+        // Condition 5
+        Position start = move1[0];
+        Position end = move1[length - 1];
+        if (start.equals(end))
             return false;
 
-        String startPosition = move.substring(0,2);
-        String endPosition = move.substring(length - 2,length);
-
-        // Check 5
-        if (startPosition.equals(endPosition))
+        // Condition 1
+        boolean result = false;
+        result = state1.containPlayerDice(start,state1.getPlayerTurn());
+        if (!result)
             return false;
 
-        // Check 1
-        for (int i = 1; i < 43; i = i + 3){
-            if (isPlayer1 == Character.isUpperCase(state.charAt(i)))
-                if (state.substring(i + 1, i + 3).equals(startPosition)){
-                    check1 = true;
-                    break; } }
-
-        if (!check1)
-            return false;
-
-       // Check 2 & 4
-        for (int i = 0; i < move.length() - 2; i = i + 2){
-            checkedStep = move.substring(i,i + 4);
-            if (!isValidStepPur(state, checkedStep))
+        // Condition 2 & 4
+        Step checkedStep = new Step("a1a1");
+        for (int i = 0; i < length - 1; i++){
+            checkedStep.setStep(move1[i], move1[i + 1]);
+            if (!checkedStep.isValidStepPur(state1))
                 return false;
-            if (i != 0 && Step.isTipPlus(checkedStep))
+            if (i != 0 && checkedStep.isTip())
                 return false;
         }
         return true;
     }
+
 
     /**
      * Task 9:
