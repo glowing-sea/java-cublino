@@ -1,5 +1,7 @@
 package comp1140.ass2.core;
 
+import comp1140.ass2.Cublino;
+
 // (By Group)
 public class Position {
     private int x;
@@ -18,12 +20,8 @@ public class Position {
     // Create a Position based on the string encoding.
     public Position(String s) {
 
-        /*
-        assert s.length() == 2;
-        char[] list = s.toCharArray();
-        this.y = Character.getNumericValue(list[1]);
-        this.x = list[0] - 'a' + 1;
-         */
+        assert Cublino.isPositionWellFormed(s) && s.length() == 2 :
+                "The input position string is not well-formed.";
 
         // This may be simpler.
         this.x = s.charAt(0) - 96;
@@ -48,7 +46,7 @@ public class Position {
 
     // (By Anubhav)
     // Check if two locations are equal.
-    public Boolean checkEquals(Position pos) {
+    public Boolean equals(Position pos) {
         return this.x == pos.getX() && this.y == pos.getY();
     }
 
@@ -104,10 +102,16 @@ public class Position {
         Position l1 = new Position(3, 3);
         Position l2 = new Position(3, 3);
         Position l3 = new Position(0, 0);
-        Position l4 = new Position("c2");
+        Position l4 = new Position("a9");
         Position l5 = new Position("b7");
         Position l6 = new Position("a1");
-        Position l7 = new Position("a2");
+
+        Position l7 = new Position("b6");
+        Position l8 = new Position("b6");
+
+        System.out.println(l7.equals(l8));
+        System.out.println(l7.equals(l8));
+
 
         System.out.println(l1.equals(l2));
         System.out.println(l2.equals(l3));

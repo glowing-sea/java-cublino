@@ -3,31 +3,60 @@ package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 // (By Group)
 public class State {
     private static final int BOARD_SIZE = 7;
-    private boolean player1Turn = true; // "true" means player1's (White) turn."false" mean player2 (Black) turn.
+    private boolean player1Turn; // "true" means player1's (White) turn."false" means player2 (Black) turn.
+    private boolean pur; // "true" means Pur."false" mean Contra.
     private ArrayList<Dice> dices = new ArrayList<>();
-
 
     //================================================CONSTRUCTOR=====================================================//
 
-    // (By Rajin)
+    // (Created by Rajin, edited by Haoting)
     public State(String state) {
-        if (Cublino.isStateWellFormed(state)) {
-            String diceEncodings = state.substring(1); // all the dice encodings are assumed to be valid
+        assert Cublino.isStateWellFormed(state) : "The input state string is not well-formed.";
 
-            // add all the dice pieces
-            for (int i = 0; i < diceEncodings.length()-2; i+=3) {
-                this.dices.add(new Dice(diceEncodings.substring(i,i+3)));
-            }
+        this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
+        this.pur = state.charAt(0) == 'P' || state.charAt(0) == 'p';
 
-            this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
+        // add all the dice pieces
+        for (int i = 1; i < state.length(); i += 3) {
+            this.dices.add(new Dice(state.substring(i, i + 3)));
         }
     }
 
+//    public State(String state) {
+//        if (Cublino.isStateWellFormed(state)) {
+//            String diceEncodings = state.substring(1); // all the dice encodings are assumed to be valid
+//
+//            // add all the dice pieces
+//            for (int i = 0; i < diceEncodings.length()-2; i+=3) {
+//                this.dices.add(new Dice(diceEncodings.substring(i,i+3)));
+//            }
+//
+//            this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
+//        }
+//    }
+//
+
     //=============================================NON-STATIC METHODS=================================================//
+
+    // (By Haoting)
+    @Override
+    public String toString(){
+        StringBuilder output = new StringBuilder();
+        if(this.pur)
+            output.append( player1Turn ? 'P' : 'p');
+        else
+            output.append( player1Turn ? 'C' : 'c');
+
+        for (Dice dice : dices)
+            output.append(dice);
+
+        return output.toString();
+    }
 
     // (By Rajin)
     // Gets the piece at an X and Y coordinate
@@ -60,11 +89,140 @@ public class State {
         return dices;
     }
 
-    // (By Group)
-    public boolean getPlayerTurn() {
-        return this.player1Turn;
+    // (By Haoting Chen)
+    // Given a position, check if there is a dice at that position.
+    public boolean containDice (Position position){
+        for(Dice dice : this.getDices())
+            if (position.equals(dice.getPosition()))
+                return true;
+        return false;
+    }
+
+    // (By Haoting Chen)
+    // Given a position and a player name, check if there is a player's dice at that position.
+    public boolean containPlayerDice (Position position, Boolean isPlayer1){
+        for(Dice dice : this.getDices())
+            if (position.equals(dice.getPosition()) && dice.isPlayer1() == isPlayer1)
+                return true;
+        return false;
+    }
+
+
+    // Getter and setter methods (By Group)
+    public ArrayList<Dice> getDices() {return dices;}
+    public void setPlayer1Turn(boolean player1Turn) {this.player1Turn = player1Turn;}
+    public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
+    public void setPur(boolean pur) {this.pur = pur;}
+    public boolean getPlayerTurn() {return this.player1Turn;}
+    public boolean isPur() {return this.pur;}
+
+
+    /**
+     * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
+     *
+     * [Both Variants]
+     * 1. The game state is well formed.
+     * 2. No two dice occupy the same position on the board.
+     *
+     * [Pur]
+     * 1. Each player has exactly seven dice.
+     * 2. Both players do not have all seven of their dice on the opponent's end of the board (as the game would have
+     * already finished before this)
+     *
+     * [Contra]
+     * 1. Each player has no more than seven dice.
+     * 2. No more than one player has a dice on the opponent's end of the board.
+     */
+
+    public Boolean isStateValid(){
+
+        LinkedList<Position> tempPos = new LinkedList<>();
+        int p1onOtherSide = 0; // The number of player1's dices that reaches player2's end.
+        int p2OnOtherSide = 0; // The number of player2's dices that reaches player1's end.
+        int noOfDiceP1 = 0; // The number of player1's dices.
+        int noOfDiceP2 = 0; // The number of player2's dices.
+
+        for (Dice dice : this.getDices()){
+            Position pos = dice.getPosition();
+
+            // Checked if the location is already on the board by storing the previous locations
+            for (Position j : tempPos){
+                if (j.equals(pos))
+                    return false;}
+            tempPos.add(pos);
+
+            if (dice.isPlayer1()) {
+                noOfDiceP1++; // Count the number of player1's dices.
+                if (pos.getY() == 7)
+                    p1onOtherSide++; // Count the number of player1's dices that have reached the end
+            }
+            else {
+                noOfDiceP2++; // Count the number of player2's dices.
+                if (pos.getY() == 1)
+                    p2OnOtherSide++; // Count the number of player1's dices that have reached the end.
+            }
+        }
+
+        // checking dice/piece counts for variants and dice/piece counts at each end of the board
+        if (this.isPur()) {
+            if (p1onOtherSide == 7 && p2OnOtherSide == 7)
+                return false;
+            else
+                return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
+        }
+        else {
+            if (p1onOtherSide>=1 && p2OnOtherSide>=1)
+                return false;
+            else
+                return noOfDiceP2 <= 7 & noOfDiceP2 <= 7;
+        }
+    }
+
+    /**
+     * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
+     * Determine whether a state represents a finished Pur game, and if so who the winner is.
+     */
+
+    public int isGameOverPur() {
+        int p1OnOtherSide = 0; // The number of player1's dice at the opponent's end.
+        int p2OnOtherSide = 0; // The number of player2's dice at the opponent's end.
+        int p1score = 0; // Player1's score.
+        int p2score = 0; // Player2's score.
+
+        // Count the score of each player and the number of dices that reach the end.
+        for (Dice dice : this.getDices()){
+            if (dice.isPlayer1()) {
+                if (dice.getPosition().getY() == 7) {
+                    p1OnOtherSide++;
+                    p1score+= dice.getTopNumber();
+                }
+            } else {
+                if (dice.getPosition().getY() == 1) {
+                    p2OnOtherSide++;
+                    p2score+= dice.getTopNumber();
+                }
+            }
+        }
+        // Generate the result
+        if (p1OnOtherSide == 7 || p2OnOtherSide == 7) {
+            if (p1score > p2score)
+                return 1;
+            if (p1score < p2score)
+                return 2;
+            else
+                return 3;}
+        else
+            return 0;
     }
 
     //=================================================STATIC METHODS=================================================//
     //======================================================TESTS=====================================================//
+
+    public static void main(String[] args) {
+        State state1 = new State("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7");
+        State state2 = new State("PMb6");
+        Position pos = new Position("b6");
+        System.out.println(state2.containDice(pos));
+        System.out.println(state1.toString().equals("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7"));
+    }
 }
