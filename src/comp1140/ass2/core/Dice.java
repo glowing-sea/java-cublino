@@ -86,9 +86,7 @@ public class Dice {
         return Arrays.copyOf(TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)),6);
     }
     // Get the top number of a dice
-    public int getTopNumber() {
-        return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0];
-    }
+    public int getTopNumber() { return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0]; }
 
     //=================================================STATIC METHODS=================================================//
 

@@ -1,9 +1,6 @@
 package comp1140.ass2;
 
-import comp1140.ass2.core.Dice;
-import comp1140.ass2.core.Position;
-import comp1140.ass2.core.State;
-import comp1140.ass2.core.Step;
+import comp1140.ass2.core.*;
 
 import java.util.ArrayList;
 
@@ -58,9 +55,22 @@ public class Cublino {
         return isPositionWellFormed(dice.substring(1)) &&
                 ((Character.toLowerCase(dice.charAt(0)) >= 'a' && Character.toLowerCase(dice.charAt(0)) <= 'x'));
     }
+    public static Boolean isMoveWellFormed(String move) {
+        if(move.length() % 2 != 0)
+            return false;
+
+        for(int i = 0; i < move.length(); i += 2){
+            if (!isPositionWellFormed(move.substring(i, i + 2)))
+                return false;}
+        return true;
+    }
+    public static Boolean isStepWellFormed(String move) {
+        return move.length() == 4 && isPositionWellFormed(move.substring(0,2)) &&
+                isPositionWellFormed(move.substring(2,4));
+    }
 
     /**
-     * Task 4 (Object Version) (Written by Haoting Chen):
+     * Task 4:
      * Determine whether the input state is valid.
      * A game state is valid if it satisfies the conditions below. Note that there are some shared conditions and
      * some conditions which are specific to each variant of the game. For this task you are expected to check states
@@ -83,6 +93,7 @@ public class Cublino {
      * @return true if the input state is valid, otherwise false
      */
     // (By Anubhav)
+    // For marking only, please use the inner method isStateValid in State class.
     public static Boolean isStateValid(String state){
         if (!isStateWellFormed(state))
             return false;
@@ -105,6 +116,7 @@ public class Cublino {
      * @return 1 if player one has won, 2 if player two has won, 3 if the result is a draw, otherwise 0.
      */
     // (By Anubhav)
+    // For marking only, please use the inner method isGameOverPur in State class.
     public static int isGameOverPur(String state) {
         State st = new State(state);
         return st.isGameOverPur();
@@ -131,7 +143,8 @@ public class Cublino {
      * @param step a string representing a single step of a move
      * @return true if the step is valid for the given state, otherwise false
      */
-    // (By Haoting) (Only for assessment) (Recommend to use the inner method in Step Class)
+    // (By Haoting)
+    // For marking only. Please use the inner method isValidStepPur in Step Class.
     public static Boolean isValidStepPur(String state, String step) {
         Step step1 = new Step(step);
         State state1 = new State(state);
@@ -161,40 +174,11 @@ public class Cublino {
      * @return true if the move is valid for the given state, otherwise false
      */
     // (By Haoting)
+    // For marking only. Please use the inner method isValidMovePur in Move Class.
     public static Boolean isValidMovePur(String state, String move) {
-
-        // Condition 3
-        int length = move.length() / 2; // length of the move1 array
-        if (length < 1) return false;
-
-        // Convert the move string into an array of positions.
-        Position[] move1 = new Position[length];
-        State state1 = new State(state);
-        for(int i = 0; i < length; i++)
-            move1[i] = new Position(move.substring(i * 2, i * 2 + 2));
-
-        // Condition 5
-        Position start = move1[0];
-        Position end = move1[length - 1];
-        if (start.equals(end))
-            return false;
-
-        // Condition 1
-        boolean result = false;
-        result = state1.containPlayerDice(start,state1.getPlayerTurn());
-        if (!result)
-            return false;
-
-        // Condition 2 & 4
-        Step checkedStep = new Step("a1a1");
-        for (int i = 0; i < length - 1; i++){
-            checkedStep.setStep(move1[i], move1[i + 1]);
-            if (!checkedStep.isValidStepPur(state1))
-                return false;
-            if (i != 0 && checkedStep.isTip())
-                return false;
-        }
-        return true;
+        Move m = new Move(move);
+        State st = new State(state);
+        return m.isValidMovePur(st);
     }
 
 

@@ -11,7 +11,7 @@ public class Step {
     // (By Haoting)
     // A simple constructor of a step.
     public Step(String step) {
-        assert step.length() == 4;
+        assert Cublino.isStepWellFormed(step);
         this.start = new Position(step.substring(0,2));
         this.end = new Position(step.substring(2,4));
     }
