@@ -1,9 +1,11 @@
 package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 // (By Group)
 public class State {
@@ -215,7 +217,60 @@ public class State {
             return 0;
     }
 
+    // (By Rajin)
+    // Given a dice, find available tip spots
+    public ArrayList<Position> getTipPositions(Position dicePos) {
+        ArrayList<Position> positions = new ArrayList<>();
+        int forwardIncrement = getPlayerTurn() ? -1 : 1;
+        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
+        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
+        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
+
+        if (leftPos.isOnBoard() && !containDice(leftPos)) {
+            positions.add(leftPos);
+        }
+
+        if (rightPos.isOnBoard() && !containDice(rightPos)) {
+            positions.add(rightPos);
+        }
+
+        if (forwardPos.isOnBoard() && !containDice(forwardPos)) {
+            positions.add(forwardPos);
+        }
+
+        return positions;
+    }
+
+    // (By Rajin)
+    // Given a dice, find available jump spots
+    public ArrayList<Position> getJumpPositions(Position dicePos) {
+
+        int forwardIncrement = getPlayerTurn() ? -1 : 1;
+        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
+        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
+        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
+
+        ArrayList<Position> jumpEndPositions = new ArrayList<>();
+        // jump only occurs when a dice exists in the adjacent spots
+        // jump positions cannot end with the start position
+
+        if (containDice(leftPos)) {
+            jumpEndPositions.addAll(getTipPositions(leftPos).stream().filter(p -> !p.equals(dicePos)).collect(Collectors.toList()));
+        }
+
+        if (containDice(rightPos)) {
+            jumpEndPositions.addAll(getTipPositions(rightPos).stream().filter(p -> !p.equals(dicePos)).collect(Collectors.toList()));
+        }
+
+        if (containDice(forwardPos)) {
+            jumpEndPositions.addAll(getTipPositions(forwardPos).stream().filter(p -> !p.equals(dicePos)).collect(Collectors.toList()));
+        }
+
+        return jumpEndPositions;
+    }
+
     //=================================================STATIC METHODS=================================================//
+
     //======================================================TESTS=====================================================//
 
     public static void main(String[] args) {

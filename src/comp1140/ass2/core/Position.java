@@ -68,7 +68,7 @@ public class Position {
     }
 
     // (By Anubhav)
-    public boolean isOffBoard () {
+    public boolean isOnBoard () {
         return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
     }
 
