@@ -48,19 +48,19 @@ public class Cublino {
         return true;
     }
 
-    // Assume the input length of the string is 2;
+    // Assume the input length of the string is 2 (By Haoting)
     public static Boolean isPositionWellFormed(String s) {
         return (s.charAt(0) >= 'a' && s.charAt(0) <= 'g') &&
                 (s.charAt(1) >= '1' && s.charAt(1) <= '7');
     }
-    // Assume the input length of the string is 3;
+    // Assume the input length of the string is 3 (By Haoting)
     public static Boolean isDiceWellFormed(String dice) {
         return isPositionWellFormed(dice.substring(1)) &&
                 ((Character.toLowerCase(dice.charAt(0)) >= 'a' && Character.toLowerCase(dice.charAt(0)) <= 'x'));
     }
 
     /**
-     * Task 4:
+     * Task 4 (Object Version) (Written by Haoting Chen):
      * Determine whether the input state is valid.
      * A game state is valid if it satisfies the conditions below. Note that there are some shared conditions and
      * some conditions which are specific to each variant of the game. For this task you are expected to check states
@@ -83,72 +83,11 @@ public class Cublino {
      * @return true if the input state is valid, otherwise false
      */
     // (By Anubhav)
-    public static Boolean isStateValid(String state) {
-
-        if (!isStateWellFormed(state)) {
+    public static Boolean isStateValid(String state){
+        if (!isStateWellFormed(state))
             return false;
-        }
-        if (state.length() == 1) {
-            return false;
-        }
-
-        // checking if the game state string is valid
-        ArrayList<Position> tempLoc = new ArrayList<>();
-        char[] pieces = state.toCharArray();
-        int p1onOtherSide = 0;
-        int p2OnOtherSide = 0;
-        int noOfDiceP1 = 0;
-        int noOfDiceP2 = 0;
-        int increment = 0; // easy way to know which part of string I'm dealing with
-
-        for (int i=0; i<pieces.length;i++) {
-            if (increment == 1) {
-                StringBuilder s = new StringBuilder();
-                s.append(pieces[i + 1]).append(pieces[i + 2]);
-                Position loc = new Position(s.toString());
-                for (Position j : tempLoc) {
-                    if (j.equals(loc)) {
-                        return false;
-                    }
-                }
-                // checked if the location is already on the board by storing the previous locations
-                tempLoc.add(loc);
-                if (Character.isUpperCase(pieces[i])) {
-                    noOfDiceP1++;
-                    if (loc.getY() == 7) {
-                        p1onOtherSide++;
-
-                    }
-                } else {
-                    noOfDiceP2++;
-                    if (loc.getY() == 1) {
-                        p2OnOtherSide++;
-
-                    }
-                }
-            }
-            if (increment != 3) {
-                increment++;
-            } else {
-                increment = 1;
-            }
-        }
-
-        // checking dice/piece counts for variants and dice/piece counts at each end of the board
-        if (Character.toLowerCase(pieces[0]) == 'p') {
-            if (p1onOtherSide == 7 && p2OnOtherSide == 7) {
-                return false;
-            } else {
-                return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
-            }
-        } else {
-             if (p1onOtherSide>=1 && p2OnOtherSide>=1) {
-                 return false;
-             } else {
-                 return noOfDiceP2 <= 7 & noOfDiceP2 <= 7;
-             }
-
-        }
+        State st = new State(state);
+        return st.isStateValid();
     }
 
     /**
@@ -167,76 +106,8 @@ public class Cublino {
      */
     // (By Anubhav)
     public static int isGameOverPur(String state) {
-        char[] pieces = state.toCharArray();
-        int increment = 0;
-        int p1OnOtherSide = 0;
-        int p2OnOtherSide = 0;
-        int p1score = 0;
-        int p2score = 0;
-        for (int i = 0; i < pieces.length; i++) {
-            if (increment == 1) {
-                StringBuilder s = new StringBuilder();
-                s.append(pieces[i+1]).append(pieces[i+2]);
-                Position loc = new Position(s.toString());
-                if (Character.isUpperCase(pieces[i])) {
-                    if (loc.getY() == 7) {
-                        p1OnOtherSide++;
-                        p1score+= getScorePur(pieces[i]);
-                    }
-                } else {
-                    if (loc.getY() == 1) {
-                        p2OnOtherSide++;
-                        p2score+= getScorePur(pieces[i]);
-                    }
-                }
-            }
-            if (increment !=3) {
-                increment++;
-            }
-            else {
-                increment = 1;
-            }
-
-        }
-        if (p1OnOtherSide == 7 || p2OnOtherSide == 7) {
-            if (p1score > p2score) {
-                return 1;
-            }
-            else if (p1score < p2score) {
-                return 2;
-            }
-            else {
-                return 3;
-            }
-        } else {
-            return 0;
-        }
-    }
-
-    /* Method to take a score and get the top face on the dice
-    * NOTE: this method assumes the string has valid orientation characters
-    */
-    // (By Anubhav)
-    public static int getScorePur(char s) {
-
-        if (Character.toLowerCase(s) >= 'a' && Character.toLowerCase(s) <= 'd') {
-            return 1;
-        }
-        else if (Character.toLowerCase(s) >= 'e' && Character.toLowerCase(s) <= 'h') {
-            return 2;
-        }
-        else if (Character.toLowerCase(s) >= 'i' && Character.toLowerCase(s) <= 'l') {
-            return 3;
-        }
-        else if (Character.toLowerCase(s) >= 'm' && Character.toLowerCase(s) <= 'p') {
-            return 4;
-        }
-        else if (Character.toLowerCase(s) >= 'q' && Character.toLowerCase(s) <= 't') {
-            return 5;
-        }
-        else {
-            return 6;
-        }
+        State st = new State(state);
+        return st.isGameOverPur();
     }
 
     /**

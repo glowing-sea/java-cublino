@@ -8,7 +8,6 @@ import java.util.HashMap;
 
 // (By Group)
 public class Dice {
-    private int topNumber; // number on the top of the dice
     private boolean isPlayer1; // the player's type
     private Position position; // the piece's position
     private char orientation;
@@ -17,8 +16,7 @@ public class Dice {
 
     // (By Haoting & Rajin)
     // A simple constructor of a Dice.
-    public Dice(int topNumber, boolean isPlayer1, Position position, char orientation) {
-        this.topNumber = topNumber;
+    public Dice(boolean isPlayer1, Position position, char orientation) {
         this.isPlayer1 = isPlayer1;
         this.position = position;
         this.orientation = orientation;
@@ -47,16 +45,6 @@ public class Dice {
             default -> colNum = 7;
         }
 
-        switch (orientation) {
-            case 'a', 'b', 'c', 'd' -> topNum = 1;
-            case 'e', 'f', 'g', 'h' -> topNum = 2;
-            case 'i', 'j', 'k', 'l' -> topNum = 3;
-            case 'm', 'n', 'o', 'p' -> topNum = 4;
-            case 'q', 'r', 's', 't' -> topNum = 5;
-            default -> topNum = 6;
-        }
-
-        this.topNumber = topNum;
         this.orientation = encoding.charAt(0); // assign orientation value
         this.position = new Position(colNum,rowNum); // assignment of location based on encoding
         this.isPlayer1 = Character.isUpperCase(orientation); // assign the player's type
@@ -78,7 +66,6 @@ public class Dice {
     // Getter Methods.
     public boolean isPlayer1() {return isPlayer1;}
     public Position getPosition() {return position;}
-    public int getTopNumber() {return this.topNumber;}
 
     // Get a array of all adjacent dices.
     public Dice[] getAdjacentPieces(State state) {
@@ -96,43 +83,49 @@ public class Dice {
     // Get the number of all faces of a dice
     // Format: {TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM}
     public int[] getFaces (){
-
-        // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
-        HashMap<Character, int[]> translationTable = new HashMap<>();
-        translationTable.put('a', new int[] {1,2,4,5,3,6});
-        translationTable.put('b', new int[] {1,3,2,4,5,6});
-        translationTable.put('c', new int[] {1,4,5,3,2,6});
-        translationTable.put('d', new int[] {1,5,3,2,4,6});
-
-        translationTable.put('e', new int[] {2,1,3,6,4,5});
-        translationTable.put('f', new int[] {2,3,6,4,1,5});
-        translationTable.put('g', new int[] {2,4,1,3,6,5});
-        translationTable.put('h', new int[] {2,6,4,1,3,5});
-
-        translationTable.put('i', new int[] {3,1,5,6,2,4});
-        translationTable.put('j', new int[] {3,2,1,5,6,4});
-        translationTable.put('k', new int[] {3,5,1,2,6,4});
-        translationTable.put('l', new int[] {3,6,2,1,5,4});
-
-        translationTable.put('m', new int[] {4,1,2,6,5,3});
-        translationTable.put('n', new int[] {4,2,6,5,1,3});
-        translationTable.put('o', new int[] {4,5,1,2,6,3});
-        translationTable.put('p', new int[] {4,6,5,1,2,3});
-
-        translationTable.put('q', new int[] {5,1,4,6,3,2});
-        translationTable.put('r', new int[] {5,3,1,4,6,2});
-        translationTable.put('s', new int[] {5,4,6,3,1,2});
-        translationTable.put('t', new int[] {5,6,3,1,4,2});
-
-        translationTable.put('u', new int[] {6,2,3,5,4,1});
-        translationTable.put('v', new int[] {6,3,5,4,2,1});
-        translationTable.put('w', new int[] {6,4,2,3,5,1});
-        translationTable.put('x', new int[] {6,5,4,2,3,1});
-
-        return Arrays.copyOf(translationTable.get(Character.toLowerCase(this.orientation)),6);
+        return Arrays.copyOf(TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)),6);
+    }
+    // Get the top number of a dice
+    public int getTopNumber() {
+        return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0];
     }
 
     //=================================================STATIC METHODS=================================================//
+
+    // (By Rajin)
+    // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
+    private static final HashMap<Character, int[]> TRANSLATION_TABLE = new HashMap<>();
+    static {
+        TRANSLATION_TABLE.put('a', new int[]{1, 2, 4, 5, 3, 6});
+        TRANSLATION_TABLE.put('b', new int[]{1, 3, 2, 4, 5, 6});
+        TRANSLATION_TABLE.put('c', new int[]{1, 4, 5, 3, 2, 6});
+        TRANSLATION_TABLE.put('d', new int[]{1, 5, 3, 2, 4, 6});
+
+        TRANSLATION_TABLE.put('e', new int[]{2, 1, 3, 6, 4, 5});
+        TRANSLATION_TABLE.put('f', new int[]{2, 3, 6, 4, 1, 5});
+        TRANSLATION_TABLE.put('g', new int[]{2, 4, 1, 3, 6, 5});
+        TRANSLATION_TABLE.put('h', new int[]{2, 6, 4, 1, 3, 5});
+
+        TRANSLATION_TABLE.put('i', new int[]{3, 1, 5, 6, 2, 4});
+        TRANSLATION_TABLE.put('j', new int[]{3, 2, 1, 5, 6, 4});
+        TRANSLATION_TABLE.put('k', new int[]{3, 5, 1, 2, 6, 4});
+        TRANSLATION_TABLE.put('l', new int[]{3, 6, 2, 1, 5, 4});
+
+        TRANSLATION_TABLE.put('m', new int[]{4, 1, 2, 6, 5, 3});
+        TRANSLATION_TABLE.put('n', new int[]{4, 2, 6, 5, 1, 3});
+        TRANSLATION_TABLE.put('o', new int[]{4, 5, 1, 2, 6, 3});
+        TRANSLATION_TABLE.put('p', new int[]{4, 6, 5, 1, 2, 3});
+
+        TRANSLATION_TABLE.put('q', new int[]{5, 1, 4, 6, 3, 2});
+        TRANSLATION_TABLE.put('r', new int[]{5, 3, 1, 4, 6, 2});
+        TRANSLATION_TABLE.put('s', new int[]{5, 4, 6, 3, 1, 2});
+        TRANSLATION_TABLE.put('t', new int[]{5, 6, 3, 1, 4, 2});
+
+        TRANSLATION_TABLE.put('u', new int[]{6, 2, 3, 5, 4, 1});
+        TRANSLATION_TABLE.put('v', new int[]{6, 3, 5, 4, 2, 1});
+        TRANSLATION_TABLE.put('w', new int[]{6, 4, 2, 3, 5, 1});
+        TRANSLATION_TABLE.put('x', new int[]{6, 5, 4, 2, 3, 1});
+    }
 
     // (By Anubhav)
     // method to change the faces of the dice
@@ -282,6 +275,7 @@ public class Dice {
         Dice d3 = new Dice("ca1");
         Dice d4 = new Dice("Mb6");
         System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
+
     }
 }
 

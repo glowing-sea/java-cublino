@@ -3,6 +3,7 @@ package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 // (By Group)
 public class State {
@@ -113,7 +114,106 @@ public class State {
     public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
     public void setPur(boolean pur) {this.pur = pur;}
     public boolean getPlayerTurn() {return this.player1Turn;}
+    public boolean isPur() {return this.pur;}
 
+
+    /**
+     * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
+     *
+     * [Both Variants]
+     * 1. The game state is well formed.
+     * 2. No two dice occupy the same position on the board.
+     *
+     * [Pur]
+     * 1. Each player has exactly seven dice.
+     * 2. Both players do not have all seven of their dice on the opponent's end of the board (as the game would have
+     * already finished before this)
+     *
+     * [Contra]
+     * 1. Each player has no more than seven dice.
+     * 2. No more than one player has a dice on the opponent's end of the board.
+     */
+
+    public Boolean isStateValid(){
+
+        LinkedList<Position> tempPos = new LinkedList<>();
+        int p1onOtherSide = 0; // The number of player1's dices that reaches player2's end.
+        int p2OnOtherSide = 0; // The number of player2's dices that reaches player1's end.
+        int noOfDiceP1 = 0; // The number of player1's dices.
+        int noOfDiceP2 = 0; // The number of player2's dices.
+
+        for (Dice dice : this.getDices()){
+            Position pos = dice.getPosition();
+
+            // Checked if the location is already on the board by storing the previous locations
+            for (Position j : tempPos){
+                if (j.equals(pos))
+                    return false;}
+            tempPos.add(pos);
+
+            if (dice.isPlayer1()) {
+                noOfDiceP1++; // Count the number of player1's dices.
+                if (pos.getY() == 7)
+                    p1onOtherSide++; // Count the number of player1's dices that have reached the end
+            }
+            else {
+                noOfDiceP2++; // Count the number of player2's dices.
+                if (pos.getY() == 1)
+                    p2OnOtherSide++; // Count the number of player1's dices that have reached the end.
+            }
+        }
+
+        // checking dice/piece counts for variants and dice/piece counts at each end of the board
+        if (this.isPur()) {
+            if (p1onOtherSide == 7 && p2OnOtherSide == 7)
+                return false;
+            else
+                return (noOfDiceP1 ==7 && noOfDiceP2 == 7);
+        }
+        else {
+            if (p1onOtherSide>=1 && p2OnOtherSide>=1)
+                return false;
+            else
+                return noOfDiceP2 <= 7 & noOfDiceP2 <= 7;
+        }
+    }
+
+    /**
+     * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
+     * Determine whether a state represents a finished Pur game, and if so who the winner is.
+     */
+
+    public int isGameOverPur() {
+        int p1OnOtherSide = 0; // The number of player1's dice at the opponent's end.
+        int p2OnOtherSide = 0; // The number of player2's dice at the opponent's end.
+        int p1score = 0; // Player1's score.
+        int p2score = 0; // Player2's score.
+
+        // Count the score of each player and the number of dices that reach the end.
+        for (Dice dice : this.getDices()){
+            if (dice.isPlayer1()) {
+                if (dice.getPosition().getY() == 7) {
+                    p1OnOtherSide++;
+                    p1score+= dice.getTopNumber();
+                }
+            } else {
+                if (dice.getPosition().getY() == 1) {
+                    p2OnOtherSide++;
+                    p2score+= dice.getTopNumber();
+                }
+            }
+        }
+        // Generate the result
+        if (p1OnOtherSide == 7 || p2OnOtherSide == 7) {
+            if (p1score > p2score)
+                return 1;
+            if (p1score < p2score)
+                return 2;
+            else
+                return 3;}
+        else
+            return 0;
+    }
 
     //=================================================STATIC METHODS=================================================//
     //======================================================TESTS=====================================================//
