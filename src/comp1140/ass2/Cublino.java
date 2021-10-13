@@ -385,8 +385,33 @@ public class Cublino {
             String startPointString = "" + move.toCharArray()[0] + move.toCharArray()[1];
             String endPointString = "" + move.toCharArray()[move.length() -2] + move.toCharArray()[move.length() -1];
             String returnString = "";
+            int x = (int) (0.5*(state.length()));
+            String p1String = state.substring(1,(int)(0.5*state.length()) + 1);
+            String p2String = state.substring((int) ((0.5*state.length()) + 1));
+            char[] stateChars = state.toCharArray();
+            int increment = 0;
+            for (int i = 0; i<stateChars.length;i++) {
+                if (increment == 1) {
+                    String s = "" + stateChars[i+1] + stateChars[i+2];
+                    if (s.equals(startPointString)) {
+                        Dice d = new Dice("" + stateChars[i] + stateChars[i+1] + stateChars[i+2]);
+                        char newOrientation = d.getOrientation(d.changeFaces(d.getFaces(), new Step(startPointString + move.toCharArray()[2] + move.toCharArray()[3])), Character.isUpperCase(stateChars[i]));
+                        String newString = "" + newOrientation + endPointString;
+                        if (Character.isUpperCase(stateChars[i])) {
+                            return Character.toLowerCase(stateChars[0]) + p1String.replaceAll("" + stateChars[i] + stateChars[i+1] + stateChars[i+2], "") + newString + p2String;
+                        } else {
+                            return Character.toUpperCase(stateChars[0]) + p1String + newString + p2String.replaceAll("" + stateChars[i] + stateChars[i+1] + stateChars[i+2], "");
+                        }
+                    }
+                }
+                if (increment !=3) {
+                    increment++;
+                } else {
+                    increment = 1;
+                }
+            }
         }
-        return null;
+        return state;
          // FIXME Task 9 (P)
     }
 

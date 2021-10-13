@@ -138,12 +138,12 @@ public class Dice {
         else {
             int[] newFaces = new int[6];
             if (step.getEndPosition().getX() - step.getStartPosition().getX() == 1) {
-                newFaces[0] = initialFaces[2];
+                newFaces[0] = initialFaces[4];
                 newFaces[1] = initialFaces[1];
                 newFaces[2] = initialFaces[0];
                 newFaces[3] = initialFaces[3];
                 newFaces[4] = initialFaces[5];
-                newFaces[5] = initialFaces[4];
+                newFaces[5] = initialFaces[2];
                 return newFaces;
 
             }
