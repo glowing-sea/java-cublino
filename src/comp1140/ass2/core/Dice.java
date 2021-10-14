@@ -5,9 +5,10 @@ import comp1140.ass2.Cublino;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 // (By Group)
-public class Dice {
+public class Dice implements Comparable<Dice> {
     private boolean isPlayer1; // the player's type
     private Position position; // the piece's position
     private char orientation;
@@ -53,25 +54,22 @@ public class Dice {
 
     //=============================================NON-STATIC METHODS=================================================//
 
-    // (By Rajin)
+    // (Written by Rajin and edited by Haoting)
     @Override
     public String toString() {
-        StringBuilder encoding = new StringBuilder();
-        encoding.append(this.orientation);
-        encoding.append(this.position.toString());
-        return encoding.toString();
+        return (isPlayer1 ? Character.toUpperCase(orientation) : Character.toLowerCase(orientation)) +
+                position.toString();
+    }
+    // (By Haoting)
+    @Override
+    public int compareTo(Dice other) {
+        return this.getPosition().getPositionOrder() - other.getPosition().getPositionOrder();
     }
 
     // (By Group)
     // Getter Methods.
     public boolean isPlayer1() {return isPlayer1;}
     public Position getPosition() {return position;}
-
-    // Get a array of all adjacent dices.
-    public Dice[] getAdjacentPieces(State state) {
-        Dice[] def = new Dice[4];
-        return def;
-    } // TODO: get a array of all adjacent dices.
 
 
     public ArrayList<Step> getLegalMoves(Dice p1, State b1) {
@@ -83,16 +81,79 @@ public class Dice {
     // Get the number of all faces of a dice
     // Format: {TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM}
     public int[] getFaces (){
-        return Arrays.copyOf(TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)),6);
+        return TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation));
     }
     // Get the top number of a dice
-    public int getTopNumber() {
-        return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0];
+    public int getTopNumber() { return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0]; }
+
+
+
+    // (By Haoting)
+    public void jump(Position position) {this.position = position;}
+
+    // (Written by Anubhav and edited by Haoting)
+    // Tip dice according to a valid step.
+    // Do nothing if a step is not a tip.
+    public void tip(Step step){
+        int[] initialFaces = this.getFaces();
+        int[] newFaces = new int[6];
+
+        if (step.getEndPosition().getX() - step.getStartPosition().getX() == 1) { // Tip to the right
+            newFaces[0] = initialFaces[4];
+            newFaces[1] = initialFaces[1];
+            newFaces[2] = initialFaces[0];
+            newFaces[3] = initialFaces[3];
+            newFaces[4] = initialFaces[5];
+            newFaces[5] = initialFaces[2];
+        }
+        if (step.getEndPosition().getX() - step.getStartPosition().getX() == -1) { // Tip to the left
+            newFaces[0] = initialFaces[2];
+            newFaces[1] = initialFaces[1];
+            newFaces[2] = initialFaces[5];
+            newFaces[3] = initialFaces[3];
+            newFaces[4] = initialFaces[0];
+            newFaces[5] = initialFaces[4];
+        }
+        if (step.getEndPosition().getY() - step.getStartPosition().getY() == 1) { // Tip to the forward (Player1)
+            newFaces[0] = initialFaces[3];
+            newFaces[1] = initialFaces[0];
+            newFaces[2] = initialFaces[2];
+            newFaces[3] = initialFaces[5];
+            newFaces[4] = initialFaces[4];
+            newFaces[5] = initialFaces[1];
+        }
+        if (step.getEndPosition().getY() - step.getStartPosition().getY() == -1) { // Tip to the forward (Player2)
+            newFaces[0] = initialFaces[1];
+            newFaces[1] = initialFaces[5];
+            newFaces[2] = initialFaces[2];
+            newFaces[3] = initialFaces[0];
+            newFaces[4] = initialFaces[4];
+            newFaces[5] = initialFaces[3];
+        }
+        // Get the key
+        for (Map.Entry<Character, int[]> faces: TRANSLATION_TABLE.entrySet()) {
+            if (Arrays.equals(newFaces, faces.getValue())){
+                this.orientation =
+                        isPlayer1 ? Character.toUpperCase(faces.getKey()) : Character.toLowerCase(faces.getKey());
+                break;
+            }
+        }
     }
 
     //=================================================STATIC METHODS=================================================//
 
-    // (By Rajin)
+    // (By Haoting)
+    // Give a state(board) and a position, find all the adjacent dices.
+    public static ArrayList<Dice> adjacentDices (Position position, State state){
+        ArrayList<Dice> adjDices = new ArrayList<>();
+        for (Dice dice : state.getDices()){
+            if (dice.getPosition().isAdjacent(position))
+                adjDices.add(dice);
+        }
+        return adjDices;
+    }
+
+    // (Written by Rajin and reviewed by Hoating)
     // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
     private static final HashMap<Character, int[]> TRANSLATION_TABLE = new HashMap<>();
     static {
@@ -108,7 +169,7 @@ public class Dice {
 
         TRANSLATION_TABLE.put('i', new int[]{3, 1, 5, 6, 2, 4});
         TRANSLATION_TABLE.put('j', new int[]{3, 2, 1, 5, 6, 4});
-        TRANSLATION_TABLE.put('k', new int[]{3, 5, 1, 2, 6, 4});
+        TRANSLATION_TABLE.put('k', new int[]{3, 5, 6, 2, 1, 4}); // Corrected from {3, 5, 1, 2, 6, 4}
         TRANSLATION_TABLE.put('l', new int[]{3, 6, 2, 1, 5, 4});
 
         TRANSLATION_TABLE.put('m', new int[]{4, 1, 2, 6, 5, 3});
@@ -125,61 +186,6 @@ public class Dice {
         TRANSLATION_TABLE.put('v', new int[]{6, 3, 5, 4, 2, 1});
         TRANSLATION_TABLE.put('w', new int[]{6, 4, 2, 3, 5, 1});
         TRANSLATION_TABLE.put('x', new int[]{6, 5, 4, 2, 3, 1});
-    }
-
-    // (By Anubhav)
-    // method to change the faces of the dice
-    public static int[] changeFaces(int[] initialFaces, Step step) {
-        if (!step.isTip()) {
-            return initialFaces;
-        }
-        else {
-            int[] newFaces = new int[6];
-            if (step.getEndPosition().getX() - step.getStartPosition().getX() == 1) {
-                newFaces[0] = initialFaces[4];
-                newFaces[1] = initialFaces[1];
-                newFaces[2] = initialFaces[0];
-                newFaces[3] = initialFaces[3];
-                newFaces[4] = initialFaces[5];
-                newFaces[5] = initialFaces[2];
-                return newFaces;
-
-            }
-            else if (step.getEndPosition().getX() - step.getStartPosition().getX() == -1) {
-                newFaces[0] = initialFaces[2];
-                newFaces[1] = initialFaces[1];
-                newFaces[2] = initialFaces[5];
-                newFaces[3] = initialFaces[3];
-                newFaces[4] = initialFaces[0];
-                newFaces[5] = initialFaces[4];
-                return newFaces;
-            }
-            else if (step.getEndPosition().getY() - step.getStartPosition().getY() == 1) {
-                newFaces[0] = initialFaces[3];
-                newFaces[1] = initialFaces[0];
-                newFaces[2] = initialFaces[2];
-                newFaces[3] = initialFaces[5];
-                newFaces[4] = initialFaces[4];
-                newFaces[5] = initialFaces[1];
-                return newFaces;
-            }
-            else if (step.getEndPosition().getY() - step.getStartPosition().getY() == -1) {
-                newFaces[0] = initialFaces[1];
-                newFaces[1] = initialFaces[5];
-                newFaces[2] = initialFaces[2];
-                newFaces[3] = initialFaces[0];
-                newFaces[4] = initialFaces[4];
-                newFaces[5] = initialFaces[3];
-                return newFaces;
-            }
-            else {
-                return null;
-            }
-
-
-        }
-        // [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM] is the encoding
-
     }
 
     // (By Anubhav)
@@ -275,7 +281,13 @@ public class Dice {
         Dice d3 = new Dice("ca1");
         Dice d4 = new Dice("Mb6");
         System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
+        System.out.println(Arrays.toString(d1.getFaces()));
+        System.out.println(d1.getTopNumber());
 
+
+        State state1 = new State("pCe1Xb2pd2fd3Ge3Rg3ia4Lc4Td4qe4Gb5rf5cg5if6");
+        Dice d5 = new Dice("Td4");
+        System.out.println(adjacentDices(d5.getPosition(),state1));
     }
 }
 

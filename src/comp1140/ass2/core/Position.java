@@ -2,6 +2,9 @@ package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 // (By Group)
 public class Position {
     private int x;
@@ -43,6 +46,19 @@ public class Position {
     public int getY() {return y;}
     public void setX(int x) {this.x = x;}
     public void setY(int y) {this.y = y;}
+
+    // (By Haoting)
+    // Get the position of a dice in terms of order (From 1 to 49)
+    public int getPositionOrder() {
+        HashMap<String, Integer> POSITION_ORDER = new HashMap<>();
+        Integer order = 1;
+        for (char y = '1'; y <= '7'; y++){
+            for (char x = 'a'; x <= 'g'; x++){
+                POSITION_ORDER.put("" + x + y, order);
+                order++; } }
+        return POSITION_ORDER.get(this.toString());
+    }
+
 
     // (By Anubhav)
     // Check if two locations are equal.
@@ -99,7 +115,7 @@ public class Position {
     // (By Group)
     // Check Methods
     public static void main(String[] args) {
-        Position l1 = new Position(3, 3);
+        Position l1 = new Position(1, 2);
         Position l2 = new Position(3, 3);
         Position l3 = new Position(0, 0);
         Position l4 = new Position("a9");
@@ -127,6 +143,7 @@ public class Position {
 
         System.out.println(l4.getX() + "," + l4.getY());
         System.out.println(l1 + "," + l2 + "," + l3 + "," + l4 + "," + l5 + "," + l6 +  "," + l7);
+        System.out.println(l1.getPositionOrder());
     }
 }
 
