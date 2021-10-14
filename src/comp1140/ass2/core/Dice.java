@@ -71,12 +71,6 @@ public class Dice implements Comparable<Dice> {
     public boolean isPlayer1() {return isPlayer1;}
     public Position getPosition() {return position;}
 
-    // Get a array of all adjacent dices.
-    public Dice[] getAdjacentPieces(State state) {
-        Dice[] def = new Dice[4];
-        return def;
-    } // TODO: get a array of all adjacent dices.
-
 
     public ArrayList<Step> getLegalMoves(Dice p1, State b1) {
         return null;
@@ -147,6 +141,17 @@ public class Dice implements Comparable<Dice> {
     }
 
     //=================================================STATIC METHODS=================================================//
+
+    // (By Haoting)
+    // Give a state(board) and a position, find all the adjacent dices.
+    public static ArrayList<Dice> adjacentDices (Position position, State state){
+        ArrayList<Dice> adjDices = new ArrayList<>();
+        for (Dice dice : state.getDices()){
+            if (dice.getPosition().isAdjacent(position))
+                adjDices.add(dice);
+        }
+        return adjDices;
+    }
 
     // (Written by Rajin and reviewed by Hoating)
     // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
@@ -279,6 +284,10 @@ public class Dice implements Comparable<Dice> {
         System.out.println(Arrays.toString(d1.getFaces()));
         System.out.println(d1.getTopNumber());
 
+
+        State state1 = new State("pCe1Xb2pd2fd3Ge3Rg3ia4Lc4Td4qe4Gb5rf5cg5if6");
+        Dice d5 = new Dice("Td4");
+        System.out.println(adjacentDices(d5.getPosition(),state1));
     }
 }
 
