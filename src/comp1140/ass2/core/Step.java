@@ -11,7 +11,7 @@ public class Step {
     // (By Haoting)
     // A simple constructor of a step.
     public Step(String step) {
-        assert step.length() == 4;
+        assert Cublino.isStepWellFormed(step);
         this.start = new Position(step.substring(0,2));
         this.end = new Position(step.substring(2,4));
     }
@@ -47,8 +47,7 @@ public class Step {
 
     /**
      * Task 7 (Object Version) (By Haoting Chen):
-     *
-     * The function takes a step and a valid state, check if the step is valid.
+     * Determine whether a single step of a move is valid for a given Pur game.
      *
      * A step is valid if it satisfies the following conditions:
      * 1. It represents either a tilt or a jump of a dice.
@@ -56,6 +55,7 @@ public class Step {
      * 3. The step moves towards the opponent's end of the board or horizontally (along its current row).
      * 3. If it is a jump step, there is a dice in the position which is jumped over.
      *
+     * ASSUMPTIONS: the state is of the Pur variant and valid. The step is well-formed.
      */
 
     public boolean isValidStepPur(State state) {

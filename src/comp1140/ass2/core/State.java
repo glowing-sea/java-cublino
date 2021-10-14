@@ -112,15 +112,18 @@ public class State {
 
     // Getter and setter methods (By Group)
     public ArrayList<Dice> getDices() {return dices;}
-    public void setPlayer1Turn(boolean player1Turn) {this.player1Turn = player1Turn;}
     public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
     public void setPur(boolean pur) {this.pur = pur;}
     public boolean getPlayerTurn() {return this.player1Turn;}
     public boolean isPur() {return this.pur;}
 
+    // (By Haoting)
+    public void changeTurn(){player1Turn = !this.player1Turn;}
+
 
     /**
      * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
+     * Determine whether the input state is valid.
      *
      * [Both Variants]
      * 1. The game state is well formed.
@@ -134,6 +137,8 @@ public class State {
      * [Contra]
      * 1. Each player has no more than seven dice.
      * 2. No more than one player has a dice on the opponent's end of the board.
+     *
+     * ASSUMPTIONS: the state is well-formed.
      */
 
     public Boolean isStateValid(){
@@ -183,6 +188,12 @@ public class State {
     /**
      * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
      * Determine whether a state represents a finished Pur game, and if so who the winner is.
+     *
+     * A game of Cublino Pur is finished once one player has reached the opponent's end of the board with all seven of
+     * their dice. Each player then adds the numbers facing upwards on their dice which have reached the opponent's end
+     * of the board. The player with the highest total wins.
+     *
+     * ASSUMPTIONS: the state is of the Pur variant and valid.
      */
 
     public int isGameOverPur() {
@@ -275,9 +286,11 @@ public class State {
 
     public static void main(String[] args) {
         State state1 = new State("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7");
-        State state2 = new State("PMb6");
+        State state2 = new State("pMb6");
         Position pos = new Position("b6");
         System.out.println(state2.containDice(pos));
         System.out.println(state1.toString().equals("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7"));
+        System.out.println(state1.getPlayerTurn());
+        System.out.println(state2.getPlayerTurn());
     }
 }
