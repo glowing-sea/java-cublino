@@ -355,7 +355,10 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     public static String applyMoveContra(String state, String move) {
-        return null; // FIXME Task 14b (HD)
+        State st = (Move.applyMovePur(new State(state), new Move(move)));
+
+
+        return st.toString(); // FIXME Task 14b (HD)
     }
 
     /**
@@ -371,7 +374,6 @@ public class Cublino {
     public static String generateMoveContra(String state) {
         State st = new State(state);
         ArrayList<String> moves = new ArrayList<>();
-
         for (Dice d : st.getDices()) {
             Position pos = d.getPosition();
             if (d.isPlayer1() == st.getPlayerTurn()) {
@@ -380,10 +382,8 @@ public class Cublino {
                         moves.add(pos + p.toString());
 
                     }
-
                 }
             }
-
         }
         return moves.get(0); // FIXME Task 14c (HD)
     }
