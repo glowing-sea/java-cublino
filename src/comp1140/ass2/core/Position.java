@@ -1,7 +1,9 @@
 package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
+import javafx.geometry.Pos;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -84,8 +86,8 @@ public class Position {
     }
 
     // (By Anubhav)
-    public boolean isOnBoard () {
-        return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
+    public boolean isOffBoard () {
+        return !((this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1));
     }
 
     // (By Group)
@@ -101,6 +103,24 @@ public class Position {
     } // sets the coordinate to a number corresponding to the position in the array
     // Dead Code
 
+    public ArrayList<Position> getAdjacentPositions() {
+        int[] ref = {-1, 1};
+        ArrayList<Position> adjacentPieces = new ArrayList<>();
+        for (int i : ref) {
+            if (!new Position(this.x + i, this.y).isOffBoard()) {
+                adjacentPieces.add(new Position(this.x + i, this.y));
+            }
+            if (!new Position(this.x, this.y + i).isOffBoard()) {
+                adjacentPieces.add(new Position(this.x, this.y + i));
+            }
+
+
+        }
+        return adjacentPieces;
+    }
+
+
+
 
     //=================================================STATIC METHODS=================================================//
 
@@ -108,6 +128,14 @@ public class Position {
     // Method to calculate the manhattanDistance between two locations
     public static int manhattanDistance(Position loc1, Position loc2) {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
+    }
+
+    public static void printList(ArrayList<Position> pos) {
+
+        // used for printing all values in a list of positions, used to test my function
+        for (Position p : pos) {
+            System.out.println(p.toString());
+        }
     }
 
     //======================================================TESTS=====================================================//
@@ -144,6 +172,9 @@ public class Position {
         System.out.println(l4.getX() + "," + l4.getY());
         System.out.println(l1 + "," + l2 + "," + l3 + "," + l4 + "," + l5 + "," + l6 +  "," + l7);
         System.out.println(l1.getPositionOrder());
+        System.out.println("testing adjacent pieces");
+        printList(new Position("d3").getAdjacentPositions());
+        printList(new Position("a1").getAdjacentPositions());
     }
 }
 

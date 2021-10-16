@@ -323,7 +323,67 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     public static String applyMoveContra(String state, String move) {
-        return null; // FIXME Task 14b (HD)
+        State st = (Move.applyMovePur(new State(state), new Move(move)));
+        ArrayList<Dice> removedDice = new ArrayList<>();
+        for (Dice d : st.getDices()) {
+            for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {
+                if (d.isPlayer1() != q.isPlayer1()) {
+                    removedDice.add(battle(d, q, Dice.adjacentDices(d.getPosition(), st), Dice.adjacentDices(q.getPosition(), st)));
+                }
+            }
+        }
+        for (Dice d : removedDice) {
+            if (d!= null) {
+                st.getDices().remove(d);
+            }
+        }
+
+
+
+
+        return st.toString(); // FIXME Task 14b (HD)
+    }
+
+    public static Dice battle(Dice attacker, Dice defender, ArrayList<Dice> adjacentA, ArrayList<Dice> adjacentD) {
+
+        int attackerTopFaces = 0;
+        int defenderTopFaces = 0;
+        if (attacker.getTopNumber() > defender.getTopNumber()) {
+
+            return defender;
+        }
+        else if (attacker.getTopNumber() < defender.getTopNumber()) {
+
+            return attacker;
+        }
+        else {
+            if (adjacentA.size() == 0 && adjacentD.size()==0 || adjacentA == null && adjacentD == null) {
+                return null;
+            } else {
+                for (Dice i : adjacentA) {
+                    if (i.isPlayer1() != attacker.isPlayer1()) {
+                        defenderTopFaces++;
+                    }
+                }
+                for (Dice i : adjacentD) {
+                    if (i.isPlayer1() != defender.isPlayer1()) {
+                        attackerTopFaces++;
+                    }
+                }
+                if (defenderTopFaces > attackerTopFaces) {
+                    // attacker eliminated
+                    return attacker;
+                }
+                else if (defenderTopFaces < attackerTopFaces) {
+                    // defender eliminated
+                    return defender;
+                }
+                else {
+                    return null;
+                }
+            }
+        }
+
     }
 
     /**
@@ -337,7 +397,20 @@ public class Cublino {
      * @return a move for the current game state.
      */
     public static String generateMoveContra(String state) {
-        return null; // FIXME Task 14c (HD)
+        State st = new State(state);
+        ArrayList<String> moves = new ArrayList<>();
+        for (Dice d : st.getDices()) {
+            Position pos = d.getPosition();
+            if (d.isPlayer1() == st.getPlayerTurn()) {
+                for (Position p : pos.getAdjacentPositions()) {
+                    if (! st.containDice(p)) {
+                        moves.add(pos + p.toString());
+
+                    }
+                }
+            }
+        }
+        return moves.get(0); // FIXME Task 14c (HD)
     }
 
     public static void main(String[] args) {
