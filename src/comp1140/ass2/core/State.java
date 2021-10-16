@@ -319,6 +319,24 @@ public class State {
         return possibleJumps;
     }
 
+    // (By Rajin)
+    // Given a Dice, return its legal moves
+    public ArrayList<Step> getLegalMove(Dice dice) {
+        ArrayList<Step> legalSteps = new ArrayList<>();
+        ArrayList<Step> allSteps = new ArrayList<>();
+        allSteps.addAll(generateAllTipPur());
+        allSteps.addAll(generateAllJumpPur());
+
+        // get all the legal steps
+        for (Step step:allSteps) {
+            if (step.getStartPosition().equals(dice.getPosition())) {
+                legalSteps.add(step);
+            }
+        }
+
+        return legalSteps;
+    }
+
     //=================================================STATIC METHODS=================================================//
 
 
