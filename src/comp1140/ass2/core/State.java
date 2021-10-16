@@ -1,9 +1,11 @@
 package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.stream.Collectors;
 
 // (By Group)
 public class State {
@@ -27,19 +29,6 @@ public class State {
         }
     }
 
-//    public State(String state) {
-//        if (Cublino.isStateWellFormed(state)) {
-//            String diceEncodings = state.substring(1); // all the dice encodings are assumed to be valid
-//
-//            // add all the dice pieces
-//            for (int i = 0; i < diceEncodings.length()-2; i+=3) {
-//                this.dices.add(new Dice(diceEncodings.substring(i,i+3)));
-//            }
-//
-//            this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
-//        }
-//    }
-//
 
     //=============================================NON-STATIC METHODS=================================================//
 
@@ -112,6 +101,7 @@ public class State {
     public ArrayList<Dice> getDices() {return dices;}
     public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
     public void setPur(boolean pur) {this.pur = pur;}
+    public void setPlayer1Turn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;}
     public boolean getPlayerTurn() {return this.player1Turn;}
     public boolean isPur() {return this.pur;}
 
@@ -226,7 +216,94 @@ public class State {
             return 0;
     }
 
+    // (By Rajin)
+    // Given a dice, find available tip spots
+    public ArrayList<Position> getTipPositions(Position dicePos) {
+        ArrayList<Position> positions = new ArrayList<>();
+        int forwardIncrement = getPlayerTurn() ? 1 : -1;
+        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
+        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
+        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
+
+        if (!leftPos.isOffBoard() && !containDice(leftPos)) {
+            positions.add(leftPos);
+        }
+
+        if (!rightPos.isOffBoard() && !containDice(rightPos)) {
+            positions.add(rightPos);
+        }
+
+        if (!forwardPos.isOffBoard() && !containDice(forwardPos)) {
+            positions.add(forwardPos);
+        }
+
+        return positions;
+    }
+
+    // (By Rajin)
+    // Given a dice, find available jump spots
+    public ArrayList<Position> getJumpPositions(Position dicePos) {
+        ArrayList<Position> jumpEndPositions = new ArrayList<>();
+
+        int forwardIncrement = getPlayerTurn() ? 1 : -1;
+        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
+        Position leftEndPos = new Position(leftPos.getX() -1, dicePos.getY());
+        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
+        Position rightEndPos = new Position(rightPos.getX() + 1, dicePos.getY());
+        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
+        Position forwardEndPos = new Position(dicePos.getX(), forwardPos.getY() + forwardIncrement);
+
+        if (containDice(leftPos) && !leftEndPos.isOffBoard() && !containDice(leftEndPos)) {
+            jumpEndPositions.add(leftEndPos);
+        }
+
+        if (containDice(rightPos) && !rightEndPos.isOffBoard() && !containDice(rightEndPos)) {
+            jumpEndPositions.add(rightEndPos);
+        }
+
+        if (containDice(forwardPos) && !forwardEndPos.isOffBoard() && !containDice(forwardEndPos)) {
+            jumpEndPositions.add(forwardEndPos);
+        }
+
+        return jumpEndPositions;
+    }
+
+    // (By Rajin)
+    // Given a state, return a list of available tip steps
+    public ArrayList<Step> generateAllTipPur() {
+        ArrayList<Step> possibleTips = new ArrayList<>();
+
+        ArrayList<Dice> dices = getPieces(getPlayerTurn());
+
+        // get each dice for this player
+        for (Dice dice:dices) {
+            // 1. generate possible tips
+            ArrayList<Position> tipPositions = getTipPositions(dice.getPosition());
+            for (Position tipPos:tipPositions) {
+                possibleTips.add(new Step(dice.getPosition(), tipPos));
+            }
+        }
+        return possibleTips;
+    }
+
+    // (By Rajin)
+    // Given a state, return a list of available jump steps
+    public ArrayList<Step> generateAllJumpPur() {
+        ArrayList<Step> possibleJumps = new ArrayList<>();
+
+        // get each dice for this player
+        for (Dice dice:getPieces(getPlayerTurn())) {
+            // 2. generate possible jumps
+            for (Position jumpPos:getJumpPositions(dice.getPosition())) {
+                possibleJumps.add(new Step(dice.getPosition(), jumpPos));
+            }
+        }
+        return possibleJumps;
+    }
+
     //=================================================STATIC METHODS=================================================//
+
+
     //======================================================TESTS=====================================================//
 
     public static void main(String[] args) {
