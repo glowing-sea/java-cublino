@@ -67,12 +67,12 @@ public class Viewer extends Application {
 
                 ImageView diceImage = new ImageView();
                 diceImage.setImage(new Image(diceAssetURI));
-                diceImage.relocate(19+60*(dice.getPosition().getX()-1),19+60*(dice.getPosition().getY()-1)); // pixel translation
+                diceImage.relocate(gamePane.getWidth() - (11+60*(dice.getPosition().getX())) , gamePane.getHeight()-(11+60*(dice.getPosition().getY()))); // pixel translation
 
                 Pane orientationPane = new Pane(); // orientation display pane
                 int[] sides = dice.getFaces(); // sides of the currently selected dice
 
-                Label orientationPaneTitle = new Label("Dice Orientation For: "+dice.toString());
+                Label orientationPaneTitle = new Label("Dice Orientation For: "+dice);
                 orientationPaneTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 12;");
                 orientationPaneTitle.relocate(20 + orientationPane.getWidth()/2, 0);
 
