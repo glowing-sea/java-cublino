@@ -371,5 +371,4 @@ public class Cublino {
     public static String generateMoveContra(String state) {
         return null; // FIXME Task 14c (HD)
     }
-
 }
