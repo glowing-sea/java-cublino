@@ -109,6 +109,24 @@ public class State {
     public void changeTurn(){player1Turn = !this.player1Turn;}
 
 
+    // Take a Pur or Contra state, return a list of legal moves of the state.
+    public LinkedList<Move> legalMoves () {
+        LinkedList<Move> legalMoves = new LinkedList<>();
+        legalMoves.add(new Move("a1a2"));
+        return legalMoves; // FIXME
+    }
+
+    // Take a Pur or Contra state, return the heuristic score of the state.
+    public int stateEvaluate () {
+        return 0; // FIXME
+    }
+
+    // Take a Pur or Contra state, check if it is over.
+    public boolean isOver () {
+        return false; // FIXME
+    }
+
+
     /**
      * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
      * Determine whether the input state is valid.

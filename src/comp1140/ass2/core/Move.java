@@ -35,6 +35,11 @@ public class Move {
         return output.toString();
     }
 
+    // Take a Pur or Contra move and a state, return the updated state after the move.
+    public State applyMove(State st) {
+        return st; // FIXME
+    }
+
     /**
      * Task 8: (By Haoring)
      * Determine whether a move (sequence of steps) is valid for a given game.

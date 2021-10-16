@@ -483,5 +483,4 @@ public class Cublino {
         System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
 
     }
-
 }
