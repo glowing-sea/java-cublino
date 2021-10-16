@@ -20,13 +20,7 @@ declaration: >-
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
   - name: Anubhav Saxena
-    comment: Anubhav Saxena and I worked on Task 9 together.
-    The functions in Task 4 and Task 6 was originally written by Anubhav Saxena, it operated using strings before.
-    After having well-structured class breakdown, I edit the functions so that it operates using objects now.
-
-    Task 9 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L91-109
-    Task 4 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L142-184
-    Task 6 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L197-227
+    comment: Anubhav Saxena and I worked on Task 9 together. The functions in Task 4 and Task 6 was originally written by Anubhav Saxena, it operated using strings before. After having well-structured class breakdown, I edit the functions so that it operates using objects now. Task 9 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L91-109. Task 4 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L142-184. Task 6 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L197-227.
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
