@@ -2,10 +2,7 @@ package comp1140.ass2;
 
 import comp1140.ass2.core.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 public class Cublino {
 
@@ -219,31 +216,104 @@ public class Cublino {
      * @param state a Pur game state
      * @return a valid move for the current game state.
      */
+
     // (By Rajin)
+    // This method implements a greedy algorithm to generate the best possible move
     public static String generateMovePur(String state) {
-        // 1. Generate valid steps (first may or may not be a tip, rest are jumps)
-        return null;
-    }
-
-
-    public static ArrayList<Step> generateStepPur(String state) {
         State gameState = new State(state);
-        ArrayList<Step> possibleSteps = new ArrayList<>();
+        StringBuilder bestMove = new StringBuilder("");
 
-        // get each dice for this player
-        for (Dice dice:gameState.getPieces(gameState.getPlayerTurn())) {
-            // 1. generate possible tips
-            for (Position tipPos:gameState.getTipPositions(dice.getPosition())) {
-                possibleSteps.add(new Step(dice.getPosition(), tipPos));
-            }
-            // 2. generate possible jumps
-            for (Position jumpPos: gameState.getJumpPositions(dice.getPosition())) {
-                possibleSteps.add(new Step(dice.getPosition(), jumpPos));
+        ArrayList<Step> initialTips = new ArrayList<>(gameState.generateAllTipPur());
+        ArrayList<Step> initialJumps = new ArrayList<>(gameState.generateAllJumpPur());
+
+        float bestFirstTipScore = Float.MIN_VALUE;
+        float bestFirstJumpScore = Float.MIN_VALUE;
+
+        int bestFirstTip = 0;
+        int bestFirstJump = 0;
+
+        // Pick initial tip
+        for (int i = 0; i < initialTips.size(); i++) {
+            if (purGreedyHeuristic(applyMovePur(state, initialTips.get(i).toString())) > bestFirstTipScore) {
+                bestFirstTip = i;
             }
         }
-        return possibleSteps;
+
+        // Pick best initial jump
+        for (int i = 0; i < initialJumps.size(); i++) {
+            if (purGreedyHeuristic(applyMovePur(state, initialJumps.get(i).toString())) > bestFirstJumpScore) {
+                bestFirstJump = i;
+            }
+        }
+
+        Step bestStep;
+
+        if (initialTips.size() == 0) {
+            if (initialJumps.size() == 0) {
+                return "";
+            } else {
+                bestMove.append(initialJumps.get(bestFirstJump).toString());
+                bestStep = initialJumps.get(bestFirstJump);
+            }
+        } else {
+            if (initialJumps.size() == 0) {
+                bestMove.append(initialTips.get(bestFirstTip).toString());
+                bestStep = initialTips.get(bestFirstTip);
+            } else {
+                // Decide to either jump or tip
+                if (purGreedyHeuristic(applyMovePur(state, initialTips.get(bestFirstTip).toString())) > purGreedyHeuristic(applyMovePur(state, initialJumps.get(bestFirstJump).toString()))) {
+                    bestMove.append(initialTips.get(bestFirstTip).toString());
+                    bestStep = initialTips.get(bestFirstTip);
+                } else {
+                    bestMove.append(initialJumps.get(bestFirstJump).toString());
+                    bestStep = initialJumps.get(bestFirstJump);
+                }
+            }
+        }
+
+        State appliedBestMoveState = new State(applyMovePur(state, bestMove.toString()));
+        appliedBestMoveState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
+
+        // after initial step is made, subsequent lists of available steps must be for that given dice
+        return propagateMove(5, bestMove, appliedBestMoveState.toString(), bestStep.getEndPosition());
     }
 
+    // (By Rajin)
+    // this method recursively applies the best steps until either a set depth is reached or when there are no possible steps
+    public static String propagateMove (int depth, StringBuilder move, String state, Position dicePos) {
+
+        State gameState = new State(state);
+        ArrayList<Step> allAvailableSteps = new ArrayList<>(gameState.generateAllJumpPur());
+        ArrayList<Step> possibleSteps = new ArrayList<>();
+
+        for (Step step:allAvailableSteps) {
+            if (step.getStartPosition().equals(dicePos) && !move.toString().contains(step.getEndPosition().toString())) {
+                possibleSteps.add(step);
+            }
+        }
+
+        if (possibleSteps.size() == 0 || depth == 0) {
+            return move.toString();
+        }
+
+
+        // if there are possible steps, evaluate the best and propagate through
+        float highestHeuristic = Float.MIN_VALUE;
+        int bestStepIndex = 0;
+
+        // Pick best step
+        for (int i = 0; i < possibleSteps.size(); i++) {
+            if (purGreedyHeuristic(applyMovePur(state, possibleSteps.get(i).toString())) > highestHeuristic) {
+                bestStepIndex = i;
+            }
+        }
+
+        State appliedGameState = new State(applyMovePur(state, possibleSteps.get(bestStepIndex).toString()));
+        appliedGameState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
+        move.append(possibleSteps.get(bestStepIndex).getEndPosition().toString());
+
+        return propagateMove(depth-1, move, appliedGameState.toString(), possibleSteps.get(bestStepIndex).getEndPosition());
+    }
 
     // (By Rajin)
     // Cublino Pur Heuristic Function
@@ -323,67 +393,7 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     public static String applyMoveContra(String state, String move) {
-        State st = (Move.applyMovePur(new State(state), new Move(move)));
-        ArrayList<Dice> removedDice = new ArrayList<>();
-        for (Dice d : st.getDices()) {
-            for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {
-                if (d.isPlayer1() != q.isPlayer1()) {
-                    removedDice.add(battle(d, q, Dice.adjacentDices(d.getPosition(), st), Dice.adjacentDices(q.getPosition(), st)));
-                }
-            }
-        }
-        for (Dice d : removedDice) {
-            if (d!= null) {
-                st.getDices().remove(d);
-            }
-        }
-
-
-
-
-        return st.toString(); // FIXME Task 14b (HD)
-    }
-
-    public static Dice battle(Dice attacker, Dice defender, ArrayList<Dice> adjacentA, ArrayList<Dice> adjacentD) {
-
-        int attackerTopFaces = 0;
-        int defenderTopFaces = 0;
-        if (attacker.getTopNumber() > defender.getTopNumber()) {
-
-            return defender;
-        }
-        else if (attacker.getTopNumber() < defender.getTopNumber()) {
-
-            return attacker;
-        }
-        else {
-            if (adjacentA.size() == 0 && adjacentD.size()==0 || adjacentA == null && adjacentD == null) {
-                return null;
-            } else {
-                for (Dice i : adjacentA) {
-                    if (i.isPlayer1() != attacker.isPlayer1()) {
-                        defenderTopFaces++;
-                    }
-                }
-                for (Dice i : adjacentD) {
-                    if (i.isPlayer1() != defender.isPlayer1()) {
-                        attackerTopFaces++;
-                    }
-                }
-                if (defenderTopFaces > attackerTopFaces) {
-                    // attacker eliminated
-                    return attacker;
-                }
-                else if (defenderTopFaces < attackerTopFaces) {
-                    // defender eliminated
-                    return defender;
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-
+        return null; // FIXME Task 14b (HD)
     }
 
     /**
@@ -397,24 +407,12 @@ public class Cublino {
      * @return a move for the current game state.
      */
     public static String generateMoveContra(String state) {
-        State st = new State(state);
-        ArrayList<String> moves = new ArrayList<>();
-        for (Dice d : st.getDices()) {
-            Position pos = d.getPosition();
-            if (d.isPlayer1() == st.getPlayerTurn()) {
-                for (Position p : pos.getAdjacentPositions()) {
-                    if (! st.containDice(p)) {
-                        moves.add(pos + p.toString());
-
-                    }
-                }
-            }
-        }
-        return moves.get(0); // FIXME Task 14c (HD)
+        return null; // FIXME Task 14c (HD)
     }
 
     public static void main(String[] args) {
-        System.out.println(generateStepPur("Pca1gc1fd1ae1af1vg1hg2Ga3Cd5Pe6Tf6Je7Ef7Qg7"));
+        System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
+
     }
 
 }
