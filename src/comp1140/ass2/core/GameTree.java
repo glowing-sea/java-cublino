@@ -67,8 +67,8 @@ public class GameTree {
      * Given a game tree, return the score of the tree. (By Haoting)
      *
      * @param isMax whether the node of the tree (or subtree) is Max's.
-     * @param alpha initialised to be 9999.
-     * @param beta initialised to be -9999.
+     * @param alpha initialised to be -9999.
+     * @param beta initialised to be 9999.
      * @return the score of the input state
      */
 
