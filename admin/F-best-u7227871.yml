@@ -1,0 +1,41 @@
+# IMPORTANT: It is very important that you correctly complete this originality
+# statement.
+#
+# This is your statement of your submitted work being your own.
+# Incorrectly filling out this statement could lead to charges
+# of academic misconduct.
+# 
+# For information on how to fill this out correctly, see
+# https://cs.anu.edu.au/courses/comp1110/help/faq/09-originality/
+#
+
+declaration: >-
+  I submit the work below for assessment as my best work. I declare that this
+  is entirely my own work, with the following documented exceptions:
+
+# Use this to list names of people who you collaborated with, and a
+# comment about what you collaborated on.
+#
+# Add as many "name+comment" entries as necessary
+# (or remove it altogether if you haven't collaborated with anyone)
+collaboration:
+  - name: Anubhav Saxena
+    comment: Anubhav Saxena and me worked on Task 9 together.
+    The functions in Task 4 and Task 6 was originally written by Anubhav Saxena, it operated using strings before.
+    After having well-structured class breakdown, I edit the functions so that it operates using objects now.
+
+    Task 9 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L91-109
+    Task 4 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L142-184
+    Task 6 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L197-227
+
+# I wish to submit the following methods as entirely my own (remove this if
+# you want to just submit classes):
+method:
+   - <State.java> isValidStepPur(State state, Step step) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Step.java#L61-101
+   - <Move.java> isValidMovePur(State state) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L38-79
+   - <State.java> toString() https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Step.java#L46-59
+   - <Move.java> toString() https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L30-36
+
+# sign *your* name and uid here
+name: Haoting Chen
+uid: u7227871
