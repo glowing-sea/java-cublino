@@ -463,7 +463,20 @@ public class Cublino {
      * @return a move for the current game state.
      */
     public static String generateMoveContra(String state) {
-        return null; // FIXME Task 14c (HD)
+        State st = new State(state);
+        ArrayList<String> moves = new ArrayList<>();
+        for (Dice d : st.getDices()) {
+            Position pos = d.getPosition();
+            if (d.isPlayer1() == st.getPlayerTurn()) {
+                for (Position p : pos.getAdjacentPositions()) {
+                    if (! st.containDice(p)) {
+                        moves.add(pos + p.toString());
+
+                    }
+                }
+            }
+        }
+        return moves.get(0); // FIXME Task 14c (HD)
     }
 
     public static void main(String[] args) {
