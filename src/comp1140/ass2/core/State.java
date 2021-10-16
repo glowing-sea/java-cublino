@@ -324,6 +324,7 @@ public class State {
     public ArrayList<Step> getLegalMove(Dice dice) {
         ArrayList<Step> legalSteps = new ArrayList<>();
         ArrayList<Step> allSteps = new ArrayList<>();
+
         allSteps.addAll(generateAllTipPur());
         allSteps.addAll(generateAllJumpPur());
 
