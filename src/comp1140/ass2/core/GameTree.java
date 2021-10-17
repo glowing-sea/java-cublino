@@ -22,8 +22,9 @@ public class GameTree {
             // If there there is no legal move, the turn is skipped.
             // The only child state will be same as the parent state except for the turn.
             if (state.legalMoves().isEmpty()) {
-                state.changeTurn();
-                this.children.add(new GameTree(state, depth - 1));
+                State child = new State(state.toString()); // Clone the state.
+                child.changeTurn();
+                this.children.add(new GameTree(child, depth - 1));
             }
             // If there are any legal moves, the child states are generated after every legal move of the parent state
             else {

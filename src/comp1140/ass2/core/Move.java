@@ -80,12 +80,6 @@ public class Move {
         return true;
     }
 
-    // Add a position to the move. (Create a new Move object)
-    public Move newMoveFurther (Position destination){
-        ArrayList<Position> newMove = new ArrayList<>(this.positions);
-        newMove.add(destination);
-        return new Move(newMove);
-    }
 
     // Add a position to the move. (Change the current Move object)
     public void moveFurther (Position destination){

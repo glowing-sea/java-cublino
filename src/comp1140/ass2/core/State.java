@@ -237,7 +237,8 @@ public class State {
 
         visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
         Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
-        Move candidate = soFar.newMoveFurther(destination); // A new potential move.
+        Move candidate = new Move(soFar.toString()); // Clone the move so far.
+        candidate.moveFurther(destination); // A new potential move.
 
         // Since we assume that the move so far is valid, we only need to check if the step from the last position of
         // the move so far to the destination is valid. If so, the candidate move must be valid too.
