@@ -24,8 +24,10 @@ public class legalMovesPurTest {
             ArrayList<Move> generatedMoves = testState.legalMoves();
             Set<String> expectedMoves = new HashSet<>(Arrays.asList(moves[i]));
 
+            // The number of legal moves generated must be the same as the example.
             assertEquals(generatedMoves.size(), expectedMoves.size());
             for (Move move : generatedMoves){
+                // All the legal moves in the example must be contained in the list of legal moves generated.
                 assertTrue(expectedMoves.contains(move.toString()));
             }
         }

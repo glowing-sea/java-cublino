@@ -36,10 +36,6 @@ public class Move {
         return output.toString();
     }
 
-    // Take a Pur or Contra move and a state, return the updated state after the move.
-    public State applyMove(State st) {
-        return st; // FIXME
-    }
 
     /**
      * Task 8: (By Haoting)
@@ -103,6 +99,15 @@ public class Move {
 
     //=================================================STATIC METHODS=================================================//
 
+    // Take a Pur or Contra move and a state, return the updated state after the move.
+    public static State applyMove(State st, Move m) {
+        return st.isPur() ? applyMovePur(st, m) : applyMoveContra(st, m); // FIXME apply move for contra
+    }
+
+    public static State applyMoveContra(State st, Move m) {
+        return st;
+    }
+
     /**
      * Task 9: (By Anubhav and Haoting)
      * Given a Pur game state and a move to play, determine the state that results from that move being played.
@@ -111,7 +116,10 @@ public class Move {
      *
      * ASSUMPTION: the state is of Pur and valid. The move is well-formed.
      */
-    public static State applyMovePur(State st, Move m) {
+    public static State applyMovePur(State state, Move m) {
+
+       State st = new State(state.toString()); // Clone the state.
+
         if(!m.isValidMovePur(st))
             return st;
 

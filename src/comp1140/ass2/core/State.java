@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.lang.Cloneable;
 
 // (By Group)
 public class State {
@@ -29,6 +29,12 @@ public class State {
         for (int i = 1; i < state.length(); i += 3) {
             this.dices.add(new Dice(state.substring(i, i + 3)));
         }
+    }
+
+    public State(boolean pur, boolean player1Turn, ArrayList<Dice> dices){
+        this.pur = pur;
+        this.player1Turn = player1Turn;
+        this.dices = dices;
     }
 
     // (By Haoting)
@@ -255,11 +261,44 @@ public class State {
 
     // Take a Pur or Contra state, return the heuristic score of the state.
     public int stateEvaluate () {
-        return 0; // FIXME
+        return this.pur ? stateEvaluatePur () : stateEvaluateContra(); // FIXME: heuristic function for Contra needed.
     }
 
 
+    // (Written by Rajin & edited by Haoting)
+    // Cublino Pur Heuristic Function, the output score is the score of Player 1 - the score of Player 2
+    // Therefore, Player1 will try maximising the score and Player2 will try minimising the score.
+    public int stateEvaluatePur () {
 
+        // A player score is calculated by the sum of the vertical distance from the starting point of all dices of the
+        // player plus, the 100 * sum of the top values of all dices of the player that reaches the end.
+
+        int p1Score = 0;
+        int p2Score = 0;
+
+        for (Dice dice: this.dices) {
+
+            if(dice.isPlayer1()){
+                Position startPosition = new Position(dice.getPosition().getX(), 1);
+                p1Score += Position.manhattanDistance(dice.getPosition(), startPosition);
+                if (dice.getPosition().getY() == 7) // The dice has reached the end.
+                    p1Score += 100 * dice.getTopNumber();
+            }
+            else{
+                Position startPosition = new Position(dice.getPosition().getX(), 7);
+                p2Score += Position.manhattanDistance(dice.getPosition(), startPosition);
+                if (dice.getPosition().getY() == 1) // The dice has reached the end.
+                    p2Score += 100 * dice.getTopNumber();
+            }
+        }
+        return p1Score - p2Score;
+    }
+
+
+    // Cublino Contra Heuristic Function
+    public int stateEvaluateContra () {
+        return 0; // FIXME
+    }
 
     //===============================================DEAD CODE========================================================//
 
@@ -365,11 +404,13 @@ public class State {
     public static void main(String[] args) {
         State state1 = new State("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7");
         State state2 = new State("pMb6");
+        State state3 = new State("pWb1Wc1Wd1We1Wf1Wg1La2va7vb7vc7vd7ve7vf7vg7");
         Position pos = new Position("b6");
         System.out.println(state2.containDice(pos));
         System.out.println(state1.toString().equals("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7"));
         System.out.println(state1.getPlayerTurn());
         System.out.println(state2.getPlayerTurn());
+        System.out.println(state3.stateEvaluate());
     }
 }
 

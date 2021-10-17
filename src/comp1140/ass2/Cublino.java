@@ -220,43 +220,47 @@ public class Cublino {
     // For marking only. Please use the method bestMovePur in Cublino Class.
     public static String generateMovePur(String state) {
         State gameState = new State(state);
-        return bestMovePur(gameState, 1).toString();
+        return bestMovePur(gameState, 2).toString();
     }
 
-    // Find the best move from a list of legal moves
-    // 1: use greedy 2: use Minimax
+    // Find the best move from a list of legal moves (By Rajin & Haoting)
+    // 1: greedy 2: Minimax
     public static Move bestMovePur(State state, int difficulty){
         assert(difficulty == 1 || difficulty == 2) : "Invalid difficulty";
-        return state.legalMoves().get(0);
-    }
+        boolean useMinimax = difficulty == 2;
 
+        ArrayList<StatePlus> newStates = new ArrayList<>(); // A list of new states after applying each legal move.
 
-    // (By Rajin)
-    // Cublino Pur Heuristic Function
-    public static float purGreedyHeuristic(String state) {
-        State gameState = new State(state);
-        boolean isPlayer1 = Character.isUpperCase(state.charAt(0));
-
-        int totalDistanceFromEnd = 0; // sum all differences in distances for each piece of the player
-        int totalTopFaceValue = 0; // sum all top face values of each of the player's piece
-
-        ArrayList<Dice> playerDices = new ArrayList<>(gameState.getCurrentPlayerDices());
-
-        for (Dice dice: playerDices) {
-            // adds the manhattan distance between the current dice and the end position it should achieve
-            Position endPosition = new Position(dice.getPosition().getX(), isPlayer1 ? 1 : 7);
-            totalDistanceFromEnd += Position.manhattanDistance(dice.getPosition(), endPosition);
-            // adds the top face value
-            totalTopFaceValue += dice.getTopNumber();
+        for (Move move : state.legalMoves()){
+            StatePlus st = new StatePlus(move, Move.applyMove(state, move), useMinimax);
+            // System.out.println("" + st.getSTATE() + " " + st.SCORE);
+            newStates.add(st);
         }
-
-       return  (100/((float)totalDistanceFromEnd+1)) + ((float)totalTopFaceValue/42);
+        return Collections.max(newStates).getMOVE(); // Find the move leading to the state with the highest score.
     }
 
+    // (By Haoting)
+    public static class StatePlus implements Comparable<StatePlus>{
+        final Move MOVE;
+        final State STATE;
+        final int SCORE;
 
+        public StatePlus(Move move, State state, boolean useMinimax) {
+            this.MOVE = move;
+            this.STATE = state;
+            if (useMinimax){
+                GameTree tree = new GameTree(state, 3);
+                this.SCORE = tree.miniMaxAB(-9999, 9999); }
+            else
+                this.SCORE = state.stateEvaluate();
+        }
+        @Override
+        public int compareTo(StatePlus other) {
+            return this.SCORE - other.SCORE;
+        }
+        public Move getMOVE() { return MOVE; }
+    }
 
-
-    // FIXME Task 13 (HD): Implement a "smart" generateMove()
 
     /**
      * Task 14a:
@@ -403,5 +407,11 @@ public class Cublino {
 
 
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        State s2 = new State("Psc1ma2if2ca3gc3we3Qc4td4Qa5Cb5Oc5Hf6Wb7We7");
+        Move m = new Move("f6e6");
+
+        System.out.println(s2.legalMoves());
+        System.out.println(bestMovePur(s2,1));
+        System.out.println(bestMovePur(s2,2));
     }
 }
