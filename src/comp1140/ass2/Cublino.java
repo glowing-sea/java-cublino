@@ -148,7 +148,7 @@ public class Cublino {
     public static Boolean isValidStepPur(String state, String step) {
         Step step1 = new Step(step);
         State state1 = new State(state);
-        return step1.isValidStepPur(state1);
+        return step1.isValidStepPur(state1, new Position(-1,-1));
     }
 
     /**
@@ -223,183 +223,12 @@ public class Cublino {
         return bestMovePur(gameState, 1).toString();
     }
 
+    // Find the best move from a list of legal moves
+    // 1: use greedy 2: use Minimax
     public static Move bestMovePur(State state, int difficulty){
-        return new Move("");
+        assert(difficulty == 1 || difficulty == 2) : "Invalid difficulty";
+        return state.legalMoves().get(0);
     }
-
-
-
-    // (By Rajin)
-    // This method implements a greedy algorithm to generate the best possible move
-
-
-
-    // (By Rajin & Haoting)
-    // Give a valid Pur state, generate a list of legal moves.
-    public static ArrayList<Move> legalMovesPur (State state){
-        Set<Move> legalMoves = new HashSet<>(); // A list of all the legal moves.
-        ArrayList<Dice> playerDices = state.getCurrentPlayerDices(); // All the dice belonging to the current player.
-        boolean[] visited = new boolean[49];
-
-        // Starting from each dice, search the board for legal moves.
-        for (Dice dice : playerDices){
-            Position dicePosition = dice.getPosition();
-            Move soFar = new Move("");
-            soFar.moveFurther(dicePosition); // Reset the starting move;
-
-            for (Position destination : dicePosition.getAdjacentPositions()) {
-                propagateMovePur(state, legalMoves, visited, destination, soFar); }
-
-            for (Position destination : dice.getPosition().getJumpPositions()) {
-                propagateMovePur(state, legalMoves, visited, destination, soFar); }
-        }
-        return new ArrayList<>(legalMoves);
-    }
-
-    /**
-     * Recursive function for finding all the legal moves from a starting position. (By Rajin & Haoting)
-     *
-     * Reference: lecture code J14.Boggle.java
-     *
-     * What does the function work intuitively ?
-     * Assume that you already have a legal move (a1a2) and some potential positions (a3, a5) to move further, you want
-     * to know if the new moves (a1a2a3, a1a2a5) are still valid. If so, add them to the legal moves list.
-     *
-     * @param state The state of the game (invariance)
-     * @param legalMoves The set of words found so far (variance)
-     * @param visited An array indicating for each position whether the dice has visited it in this search (variance)
-     * @param destination  The potential position to move further (variance)
-     * @param soFar  The valid move so far in this particular search (variance)
-     */
-    // Give a valid Pur state and a position, return all the legal moves from that position
-    public static void propagateMovePur
-    (State state, Set<Move> legalMoves, boolean[] visited, Position destination, Move soFar){
-
-        visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
-        Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
-        Move candidate = soFar.newMoveFurther(destination); // A new potential move.
-
-        // Since we assume that the move so far is valid, we only need to check if the step from the last position of
-        // the move so far to the destination is valid. If so, the candidate move must be valid too.
-        if (further.isValidStepPur(state)) {
-            legalMoves.add(candidate); // found a legal move!
-
-            for (Position newDestination : destination.getJumpPositions()){
-                if (!visited[newDestination.getPositionOrder()])
-                    propagateMovePur(state, legalMoves, visited, newDestination, candidate);
-            }
-        } // If candidate is not valid, no point to look further.
-        visited[destination.getPositionOrder()] = false; // Reset in order for the function to be used again.
-    }
-
-
-
-
-
-
-
-
-
-
-
-    public static String generateMovePur1(String state) {
-        State gameState = new State(state);
-        StringBuilder bestMove = new StringBuilder(""); // 变物体
-
-        ArrayList<Step> initialTips = new ArrayList<>(gameState.generateAllTipPur());
-        ArrayList<Step> initialJumps = new ArrayList<>(gameState.generateAllJumpPur());
-
-        float bestFirstTipScore = Float.MIN_VALUE;
-        float bestFirstJumpScore = Float.MIN_VALUE;
-
-        int bestFirstTip = 0;
-        int bestFirstJump = 0;
-
-        // Pick initial tip
-        for (int i = 0; i < initialTips.size(); i++) {
-            if (purGreedyHeuristic(applyMovePur(state, initialTips.get(i).toString())) > bestFirstTipScore) {
-                bestFirstTip = i;
-            }
-        }
-
-        // Pick best initial jump
-        for (int i = 0; i < initialJumps.size(); i++) {
-            if (purGreedyHeuristic(applyMovePur(state, initialJumps.get(i).toString())) > bestFirstJumpScore) {
-                bestFirstJump = i;
-            }
-        }
-
-        Step bestStep;
-
-        if (initialTips.size() == 0) {
-            if (initialJumps.size() == 0) {
-                return "";
-            } else {
-                bestMove.append(initialJumps.get(bestFirstJump).toString());
-                bestStep = initialJumps.get(bestFirstJump);
-            }
-        } else {
-            if (initialJumps.size() == 0) {
-                bestMove.append(initialTips.get(bestFirstTip).toString());
-                bestStep = initialTips.get(bestFirstTip);
-            } else {
-                // Decide to either jump or tip
-                if (purGreedyHeuristic(applyMovePur(state, initialTips.get(bestFirstTip).toString())) > purGreedyHeuristic(applyMovePur(state, initialJumps.get(bestFirstJump).toString()))) {
-                    bestMove.append(initialTips.get(bestFirstTip).toString());
-                    bestStep = initialTips.get(bestFirstTip);
-                } else {
-                    bestMove.append(initialJumps.get(bestFirstJump).toString());
-                    bestStep = initialJumps.get(bestFirstJump);
-                }
-            }
-        }
-
-        State appliedBestMoveState = new State(applyMovePur(state, bestMove.toString()));
-        appliedBestMoveState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
-
-        // after initial step is made, subsequent lists of available steps must be for that given dice
-        return propagateMove1(5, bestMove, appliedBestMoveState.toString(), bestStep.getEndPosition());
-    }
-
-    // (By Rajin)
-    // this method recursively applies the best steps until either a set depth is reached or when there are no possible steps
-    public static String propagateMove1 (int depth, StringBuilder move, String state, Position dicePos) {
-
-        State gameState = new State(state);
-        ArrayList<Step> allAvailableSteps = new ArrayList<>(gameState.generateAllJumpPur());
-        ArrayList<Step> possibleSteps = new ArrayList<>();
-
-        for (Step step:allAvailableSteps) {
-            if (step.getStartPosition().equals(dicePos) && !move.toString().contains(step.getEndPosition().toString())) {
-                possibleSteps.add(step);
-            }
-        }
-
-        if (possibleSteps.size() == 0 || depth == 0) {
-            return move.toString();
-        }
-
-
-        // if there are possible steps, evaluate the best and propagate through
-        float highestHeuristic = Float.MIN_VALUE;
-        int bestStepIndex = 0;
-
-        // Pick best step
-        for (int i = 0; i < possibleSteps.size(); i++) {
-            if (purGreedyHeuristic(applyMovePur(state, possibleSteps.get(i).toString())) > highestHeuristic) {
-                bestStepIndex = i;
-            }
-        }
-
-        State appliedGameState = new State(applyMovePur(state, possibleSteps.get(bestStepIndex).toString()));
-        appliedGameState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
-        move.append(possibleSteps.get(bestStepIndex).getEndPosition().toString());
-
-        return propagateMove1(depth-1, move, appliedGameState.toString(), possibleSteps.get(bestStepIndex).getEndPosition());
-    }
-
-
-
 
 
     // (By Rajin)
@@ -423,6 +252,9 @@ public class Cublino {
 
        return  (100/((float)totalDistanceFromEnd+1)) + ((float)totalTopFaceValue/42);
     }
+
+
+
 
     // FIXME Task 13 (HD): Implement a "smart" generateMove()
 
@@ -571,6 +403,5 @@ public class Cublino {
 
 
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-        System.out.println("the legal moves of s1 are" + "\n" + legalMovesPur(s1));
     }
 }

@@ -50,10 +50,10 @@ public class Position {
     public void setY(int y) {this.y = y;}
 
     // (By Haoting)
-    // Get the position of a dice in terms of order (From 1 to 49)
+    // Get the position of a dice in terms of order (From 0 to 48)
     public int getPositionOrder() {
         HashMap<String, Integer> POSITION_ORDER = new HashMap<>();
-        Integer order = 1;
+        Integer order = 0;
         for (char y = '1'; y <= '7'; y++){
             for (char x = 'a'; x <= 'g'; x++){
                 POSITION_ORDER.put("" + x + y, order);

@@ -62,7 +62,7 @@ public class Move {
 
         // Condition 5
         Position start = positions.get(0);
-        Position end = positions.get(positions.size() - 1);
+        Position end = this.getLastPosition();
         if (start.equals(end))
             return false;
 
@@ -76,7 +76,7 @@ public class Move {
         Step checkedStep = new Step("a1a1");
         for (int i = 0; i < positions.size() - 1; i++){
             checkedStep.setStep(positions.get(i), positions.get(i + 1));
-            if (!checkedStep.isValidStepPur(state))
+            if (!checkedStep.isValidStepPur(state, start))
                 return false;
             if (i != 0 && checkedStep.isTip())
                 return false;

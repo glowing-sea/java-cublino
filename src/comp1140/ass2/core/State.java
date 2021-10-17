@@ -106,7 +106,6 @@ public class State {
         return false;
     }
 
-
     // (By Haoting Chen)
     // Given a position and a player name, check if there is a player's dice at that position.
     public boolean containPlayerDice (Position position, Boolean isPlayer1){
@@ -197,15 +196,15 @@ public class State {
 
         // Starting from each dice, search the board for legal moves.
         for (Dice dice : playerDices){
-            Position dicePosition = dice.getPosition();
+            Position start = dice.getPosition();
             Move soFar = new Move("");
-            soFar.moveFurther(dicePosition); // Reset the starting move;
+            soFar.moveFurther(start); // Reset the starting move;
 
-            for (Position destination : dicePosition.getAdjacentPositions()) {
-                propagateMovePur(this, legalMoves, visited, destination, soFar); }
+            for (Position destination : start.getAdjacentPositions()) {
+                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
 
             for (Position destination : dice.getPosition().getJumpPositions()) {
-                propagateMovePur(this, legalMoves, visited, destination, soFar); }
+                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
         }
         return new ArrayList<>(legalMoves);
     }
@@ -223,11 +222,12 @@ public class State {
      * @param legalMoves The set of words found so far (variance)
      * @param visited An array indicating for each position whether the dice has visited it in this search (variance)
      * @param destination  The potential position to move further (variance)
+     * @param start  The start position of the dice of the move (invariance)
      * @param soFar  The valid move so far in this particular search (variance)
      */
     // Give a valid Pur state and a position, return all the legal moves from that position
     public static void propagateMovePur
-    (State state, Set<Move> legalMoves, boolean[] visited, Position destination, Move soFar){
+    (State state, Set<Move> legalMoves, boolean[] visited, Position start, Position destination, Move soFar){
 
         visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
         Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
@@ -235,19 +235,19 @@ public class State {
 
         // Since we assume that the move so far is valid, we only need to check if the step from the last position of
         // the move so far to the destination is valid. If so, the candidate move must be valid too.
-        if (further.isValidStepPur(state)) {
+        if (further.isValidStepPur(state, start)) {
             legalMoves.add(candidate); // found a legal move!
 
             for (Position newDestination : destination.getJumpPositions()){
                 if (!visited[newDestination.getPositionOrder()])
-                    propagateMovePur(state, legalMoves, visited, newDestination, candidate);
+                    propagateMovePur(state, legalMoves, visited, start, newDestination, candidate);
             }
         } // If candidate is not valid, no point to look further.
         visited[destination.getPositionOrder()] = false; // Reset in order for the function to be used again.
     }
 
     public ArrayList<Move> legalMovesContra (){
-        return new ArrayList<Move>();
+        return new ArrayList<>();
     }
 
 
@@ -257,6 +257,9 @@ public class State {
     public int stateEvaluate () {
         return 0; // FIXME
     }
+
+
+
 
     //===============================================DEAD CODE========================================================//
 
