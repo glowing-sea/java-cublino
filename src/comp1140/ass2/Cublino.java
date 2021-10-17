@@ -216,12 +216,95 @@ public class Cublino {
      * @param state a Pur game state
      * @return a valid move for the current game state.
      */
+    // (By Rajin)
+    // For marking only. Please use the method bestMovePur in Cublino Class.
+    public static String generateMovePur(String state) {
+        State gameState = new State(state);
+        return bestMovePur(gameState, 1).toString();
+    }
+
+    public static Move bestMovePur(State state, int difficulty){
+        return new Move("");
+    }
+
+
 
     // (By Rajin)
     // This method implements a greedy algorithm to generate the best possible move
-    public static String generateMovePur(String state) {
+
+
+
+    // (By Rajin & Haoting)
+    // Give a valid Pur state, generate a list of legal moves.
+    public static ArrayList<Move> legalMovesPur (State state){
+        Set<Move> legalMoves = new HashSet<>(); // A list of all the legal moves.
+        ArrayList<Dice> playerDices = state.getCurrentPlayerDices(); // All the dice belonging to the current player.
+        boolean[] visited = new boolean[49];
+
+        // Starting from each dice, search the board for legal moves.
+        for (Dice dice : playerDices){
+            Position dicePosition = dice.getPosition();
+            Move soFar = new Move("");
+            soFar.moveFurther(dicePosition); // Reset the starting move;
+
+            for (Position destination : dicePosition.getAdjacentPositions()) {
+                propagateMovePur(state, legalMoves, visited, destination, soFar); }
+
+            for (Position destination : dice.getPosition().getJumpPositions()) {
+                propagateMovePur(state, legalMoves, visited, destination, soFar); }
+        }
+        return new ArrayList<>(legalMoves);
+    }
+
+    /**
+     * Recursive function for finding all the legal moves from a starting position. (By Rajin & Haoting)
+     *
+     * Reference: lecture code J14.Boggle.java
+     *
+     * What does the function work intuitively ?
+     * Assume that you already have a legal move (a1a2) and some potential positions (a3, a5) to move further, you want
+     * to know if the new moves (a1a2a3, a1a2a5) are still valid. If so, add them to the legal moves list.
+     *
+     * @param state The state of the game (invariance)
+     * @param legalMoves The set of words found so far (variance)
+     * @param visited An array indicating for each position whether the dice has visited it in this search (variance)
+     * @param destination  The potential position to move further (variance)
+     * @param soFar  The valid move so far in this particular search (variance)
+     */
+    // Give a valid Pur state and a position, return all the legal moves from that position
+    public static void propagateMovePur
+    (State state, Set<Move> legalMoves, boolean[] visited, Position destination, Move soFar){
+
+        visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
+        Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
+        Move candidate = soFar.newMoveFurther(destination); // A new potential move.
+
+        // Since we assume that the move so far is valid, we only need to check if the step from the last position of
+        // the move so far to the destination is valid. If so, the candidate move must be valid too.
+        if (further.isValidStepPur(state)) {
+            legalMoves.add(candidate); // found a legal move!
+
+            for (Position newDestination : destination.getJumpPositions()){
+                if (!visited[newDestination.getPositionOrder()])
+                    propagateMovePur(state, legalMoves, visited, newDestination, candidate);
+            }
+        } // If candidate is not valid, no point to look further.
+        visited[destination.getPositionOrder()] = false; // Reset in order for the function to be used again.
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public static String generateMovePur1(String state) {
         State gameState = new State(state);
-        StringBuilder bestMove = new StringBuilder("");
+        StringBuilder bestMove = new StringBuilder(""); // 变物体
 
         ArrayList<Step> initialTips = new ArrayList<>(gameState.generateAllTipPur());
         ArrayList<Step> initialJumps = new ArrayList<>(gameState.generateAllJumpPur());
@@ -275,12 +358,12 @@ public class Cublino {
         appliedBestMoveState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
 
         // after initial step is made, subsequent lists of available steps must be for that given dice
-        return propagateMove(5, bestMove, appliedBestMoveState.toString(), bestStep.getEndPosition());
+        return propagateMove1(5, bestMove, appliedBestMoveState.toString(), bestStep.getEndPosition());
     }
 
     // (By Rajin)
     // this method recursively applies the best steps until either a set depth is reached or when there are no possible steps
-    public static String propagateMove (int depth, StringBuilder move, String state, Position dicePos) {
+    public static String propagateMove1 (int depth, StringBuilder move, String state, Position dicePos) {
 
         State gameState = new State(state);
         ArrayList<Step> allAvailableSteps = new ArrayList<>(gameState.generateAllJumpPur());
@@ -312,8 +395,12 @@ public class Cublino {
         appliedGameState.setPlayer1Turn(gameState.getPlayerTurn()); // keep the player's turn the same
         move.append(possibleSteps.get(bestStepIndex).getEndPosition().toString());
 
-        return propagateMove(depth-1, move, appliedGameState.toString(), possibleSteps.get(bestStepIndex).getEndPosition());
+        return propagateMove1(depth-1, move, appliedGameState.toString(), possibleSteps.get(bestStepIndex).getEndPosition());
     }
+
+
+
+
 
     // (By Rajin)
     // Cublino Pur Heuristic Function
@@ -324,7 +411,7 @@ public class Cublino {
         int totalDistanceFromEnd = 0; // sum all differences in distances for each piece of the player
         int totalTopFaceValue = 0; // sum all top face values of each of the player's piece
 
-        ArrayList<Dice> playerDices = new ArrayList<>(gameState.getPieces(isPlayer1));
+        ArrayList<Dice> playerDices = new ArrayList<>(gameState.getCurrentPlayerDices());
 
         for (Dice dice: playerDices) {
             // adds the manhattan distance between the current dice and the end position it should achieve
@@ -482,5 +569,8 @@ public class Cublino {
     public static void main(String[] args) {
         System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
 
+
+        State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        System.out.println("the legal moves of s1 are" + "\n" + legalMovesPur(s1));
     }
 }

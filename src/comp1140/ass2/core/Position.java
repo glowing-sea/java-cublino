@@ -103,21 +103,31 @@ public class Position {
     } // sets the coordinate to a number corresponding to the position in the array
     // Dead Code
 
-    public ArrayList<Position> getAdjacentPositions() {
-        int[] ref = {-1, 1};
+
+    // (By Anubhav)
+    // Get a list of positions that is n distance away from the current position.
+    public ArrayList<Position> getPositions(int distance) {
+        int[] ref = {- distance, distance};
         ArrayList<Position> adjacentPieces = new ArrayList<>();
         for (int i : ref) {
-            if (!new Position(this.x + i, this.y).isOffBoard()) {
-                adjacentPieces.add(new Position(this.x + i, this.y));
-            }
-            if (!new Position(this.x, this.y + i).isOffBoard()) {
-                adjacentPieces.add(new Position(this.x, this.y + i));
-            }
 
+            Position horizontal = new Position(this.x + i, this.y);
+            Position vertical = new Position(this.x, this.y + i);
 
+            if (!horizontal.isOffBoard())
+                adjacentPieces.add(horizontal);
+            if (!vertical.isOffBoard())
+                adjacentPieces.add(vertical);
         }
         return adjacentPieces;
     }
+
+    // (By Anubhav)
+    public ArrayList<Position> getAdjacentPositions() { return this.getPositions(1); }
+
+
+    // (By Rajin, Haoting)
+    public ArrayList<Position> getJumpPositions() { return this.getPositions(2);}
 
 
 
@@ -173,8 +183,10 @@ public class Position {
         System.out.println(l1 + "," + l2 + "," + l3 + "," + l4 + "," + l5 + "," + l6 +  "," + l7);
         System.out.println(l1.getPositionOrder());
         System.out.println("testing adjacent pieces");
-        printList(new Position("d3").getAdjacentPositions());
-        printList(new Position("a1").getAdjacentPositions());
+        System.out.println(new Position("d3").getAdjacentPositions());
+        System.out.println(new Position("a1").getAdjacentPositions());
+        System.out.println(new Position("d3").getJumpPositions());
+        System.out.println(new Position("a1").getJumpPositions());
     }
 }
 
