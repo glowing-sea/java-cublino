@@ -220,7 +220,7 @@ public class Cublino {
     // For marking only. Please use the method bestMovePur in Cublino Class.
     public static String generateMovePur(String state) {
         State gameState = new State(state);
-        return bestMovePur(gameState, 2).toString();
+        return bestMovePur(gameState, 1).toString();
     }
 
     // Find the best move from a list of legal moves (By Rajin & Haoting)
