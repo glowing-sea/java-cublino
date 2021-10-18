@@ -9,7 +9,7 @@ import java.util.Map;
 
 // (By Group)
 public class Dice implements Comparable<Dice> {
-    private boolean isPlayer1; // the player's type
+    private final boolean isPlayer1; // the player's type
     private Position position; // the piece's position
     private char orientation;
 
