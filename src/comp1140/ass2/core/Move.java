@@ -4,6 +4,8 @@ import comp1140.ass2.Cublino;
 import java.util.ArrayList;
 import java.util.Collections;
 
+
+
 public class Move {
     private ArrayList<Position> positions;
 
@@ -83,6 +85,23 @@ public class Move {
         return true;
     }
 
+    public Boolean isValidMoveContra(State state) {
+        if (positions.size() != 2) {
+            return false;
+        }
+        if (!(this.positions.get(0).isAdjacent(this.positions.get(1))) && (this.positions.get(0).getY() - this.positions.get(1).getY() !=1)) return false;
+        // note: accounted for the fact that you can't tip backwards, so starting y cannot be one bigger than ending y
+        boolean containsStartingDice = false;
+        for (Dice d : state.getDices()) {
+            if (d.getPosition().equals(this.positions.get(0))) {
+                containsStartingDice = true;
+            }
+            if (d.getPosition().equals(this.positions.get(1))) return false;
+            // none of the dice in the board should return the endpoint of the move location
+        }
+        return true && containsStartingDice; // move should contain starting dice
+    }
+
 
     // Add a position to the move. (Change the current Move object)
     public void moveFurther (Position destination){
@@ -94,6 +113,9 @@ public class Move {
     // Get the last position of the move
     public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
 
+
+
+
     //=================================================STATIC METHODS=================================================//
 
 
@@ -103,5 +125,22 @@ public class Move {
         Move m1 = new Move("g6f6d6");
         Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a8");
         System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a8"));
+        Move m = new Move("a1a2"); // empty spot, so should return true
+        Move m3 = new Move("a1a2a3"); // should return false
+        Move m4 = new Move("a2a1"); // false, behind move is invalid
+        State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        State s2 = new State("PWa1Db3Wc1Wd1We1Wf1Wg1va7vb4vc7vd7ve7vf7vg7");
+        State s3 = new State("PWa1Wb3Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
+        System.out.println("Move " + m.toString() + " is valid is " + m.isValidMoveContra(s1));
+        System.out.println("Move " + m3.toString() + " is valid is " + m3.isValidMoveContra(s1));
+        System.out.println("Move " + m4.toString() + " is valid is " + m4.isValidMoveContra(s1));
+        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s2));
+        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s1));
+        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s3));
     }
+
+
+
+
 }
