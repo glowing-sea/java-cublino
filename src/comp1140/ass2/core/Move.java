@@ -82,7 +82,7 @@ public class Move {
         Step checkedStep = new Step("a1a1");
         for (int i = 0; i < positions.size() - 1; i++){
             checkedStep.setStep(positions.get(i), positions.get(i + 1));
-            if (!checkedStep.isValidStepPur(state, start))
+            if (!checkedStep.isValidStepPur(state))
                 return false;
             if (i != 0 && checkedStep.isTip())
                 return false;

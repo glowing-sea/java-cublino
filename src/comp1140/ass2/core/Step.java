@@ -60,11 +60,10 @@ public class Step {
      * 3. The step moves towards the opponent's end of the board or horizontally (along its current row).
      * 3. If it is a jump step, there is a dice in the position which is jumped over.
      *
-     * @param start The position where the dice start a move.
      * ASSUMPTIONS: the state is of the Pur variant and valid. The step is well-formed.
      */
 
-    public boolean isValidStepPur(State state, Position movingDicePosition) {
+    public boolean isValidStepPur(State state) {
 
         // Check if the ending position is not occupied
         if (state.containDice(end, false))
@@ -96,11 +95,11 @@ public class Step {
                 return true;
             if (x1 + 2 == x2) { // Jump to the right
                 over.setX(x1 + 1);
-                return !over.equals(movingDicePosition) && state.containDice(over, false);
+                return state.containDice(over, false);
             }
             if (x1 - 2 == x2) { // Jump to the left
                 over.setX(x1 - 1);
-                return !over.equals(movingDicePosition) && state.containDice(over, false);
+                return state.containDice(over, false);
             }
         }
         return false;

@@ -64,7 +64,6 @@ public class Dice implements Comparable<Dice> {
     // Get the top number of a dice
     public int getTopNumber() { return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0]; }
 
-
     // Give a position, update the position of the dice. (By Haoting)
     public void jump(Position position) {this.position = position;}
 

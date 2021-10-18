@@ -231,13 +231,17 @@ public class State {
         for (Dice dice : playerDices){
             Position start = dice.getPosition();
             Move soFar = new Move("");
-            soFar.moveFurther(start); // Reset the starting move;
+            soFar.moveFurther(start); // Move start from the current position of the dice.
 
             for (Position destination : start.getAdjacentPositions()) {
-                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
+                propagateMovePur(this, legalMoves, visited, dice, destination, soFar);
+                dice.jump(start); // reset the position of the dice after a move propagation.
+            }
 
             for (Position destination : dice.getPosition().getJumpPositions()) {
-                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
+                propagateMovePur(this, legalMoves, visited, dice, destination, soFar);
+                dice.jump(start); // reset the position of the dice after a move propagation.
+            }
         }
         return new ArrayList<>(legalMoves);
     }
@@ -254,30 +258,33 @@ public class State {
      * @param state The state of the game (invariance)
      * @param legalMoves The set of words found so far (variance)
      * @param visited An array indicating for each position whether the dice has visited it in this search (variance)
+     * @param dice  The dice that is being move (variance)
      * @param destination  The potential position to move further (variance)
-     * @param start  The start position of the dice of the move (invariance)
      * @param soFar  The valid move so far in this particular search (variance)
      */
     // Give a valid Pur state and a position, return all the legal moves from that position
     public static void propagateMovePur
-    (State state, Set<Move> legalMoves, boolean[] visited, Position start, Position destination, Move soFar){
+    (State state, Set<Move> legalMoves, boolean[] visited, Dice dice, Position destination, Move soFar){
 
-        visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
+        Position start = soFar.getEnd(); // The position where the dice start from.
+        dice.jump(start); // Update the position of the dice.
+        visited[start.getPositionOrder()] = true; // Record that the position has been visited.
+
         Step further = new Step (soFar.getEnd(), destination); // A new potential step.
         Move candidate = soFar.copy(); // Copy the move so far.
         candidate.moveFurther(destination); // A new potential move.
 
         // Since we assume that the move so far is valid, we only need to check if the step from the last position of
         // the move so far to the destination is valid. If so, the candidate move must be valid too.
-        if (further.isValidStepPur(state, start)) {
+        if (further.isValidStepPur(state)) {
             legalMoves.add(candidate); // found a legal move!
 
             for (Position newDestination : destination.getJumpPositions()){
                 if (!visited[newDestination.getPositionOrder()])
-                    propagateMovePur(state, legalMoves, visited, start, newDestination, candidate);
+                    propagateMovePur(state, legalMoves, visited, dice, newDestination, candidate);
             }
         } // If candidate is not valid, no point to look further.
-        visited[destination.getPositionOrder()] = false; // Reset in order for the function to be used again.
+        visited[start.getPositionOrder()] = false; // Reset in order for the function to be used again.
     }
 
     public ArrayList<Move> legalMovesContra (){
@@ -342,7 +349,7 @@ public class State {
             for (Position end : start.getJumpPositions()) { // Get all the positions 2 units away from the dice.
                 Step jump = new Step(start, end);
                 // If the step from the position of the dice to the destination is valid, add it to the output list.
-                if (jump.isValidStepPur(this, start))
+                if (jump.isValidStepPur(this))
                     output.add(jump);
             }
         }
@@ -360,13 +367,13 @@ public class State {
 
         for(Position end : start.getJumpPositions()){ // Get all the positions 2 units away from the dice, named "end".
             Step possibleStep = new Step (start,end);
-            if(possibleStep.isValidStepPur(this,start)) // If the step from "start" to "end" is valid, add it.
+            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
                 output.add(possibleStep);
         }
 
         for(Position end : start.getAdjacentPositions()){ // Get all the positions 1 unit away from the dice, named "end".
             Step possibleStep = new Step (start,end);
-            if(possibleStep.isValidStepPur(this,start)) // If the step from "start" to "end" is valid, add it.
+            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
                 output.add(possibleStep);
         }
         return output;

@@ -283,7 +283,7 @@ public class ExampleGames {
             , "Pga1Tb2Ld2cg3Aa4Mg4Cb5rc5fg5qb6ic6ed6Ga7Cc7"
             , "pga1Tb2Bd3cg3Aa4Mg4Cb5rc5fg5qb6ic6ed6Ga7Cc7"
             , "Pwb1Tb2Bd3cg3Aa4Mg4Cb5rc5fg5qb6ic6ed6Ga7Cc7"
-            , "pwb1Tb2Bd3cg3Aa4Mg4Cb5rc5fg5qb6ic6ed6Ga7Gd7"
+            , "pwb1Tb2Bd3cg3Aa4Mg4Cb5rc5fg5qb6ic6ed6Ga7Gd7" //
             , "Pwb1Tb2Bd3cg3Aa4jc4Mg4Cb5fg5qb6ic6ed6Ga7Gd7"
             , "pwb1Tb2cg3Aa4Mb4jc4Mg4Cb5fg5qb6ic6ed6Ga7Gd7"
             , "Pwb1Tb2cg3Aa4Mb4jc4Mg4Cb5vf5qb6ic6ed6Ga7Gd7"

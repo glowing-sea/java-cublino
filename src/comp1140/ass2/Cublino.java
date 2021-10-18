@@ -148,7 +148,7 @@ public class Cublino {
     public static Boolean isValidStepPur(String state, String step) {
         Step step1 = new Step(step);
         State state1 = new State(state);
-        return step1.isValidStepPur(state1, new Position(-1,-1));
+        return step1.isValidStepPur(state1);
     }
 
     /**
@@ -456,10 +456,15 @@ public class Cublino {
 
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
         State s2 = new State("Psc1ma2if2ca3gc3we3Qc4td4Qa5Cb5Oc5Hf6Wb7We7");
+        State s3 = new State("PWa1Wb1Wc1Wd4We1Wf1Wg1va7vb7vc7vd7ve4vf7vg7");
         Move m = new Move("f6e6");
+
+        System.out.println(s3.legalMoves());
 
         System.out.println(s2.legalMoves());
         System.out.println(bestMovePur(s2,1));
         System.out.println(bestMovePur(s2,2));
+        System.out.println();
+        System.out.println(s3.legalMoves());
     }
 }
