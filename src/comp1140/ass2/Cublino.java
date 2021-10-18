@@ -352,12 +352,14 @@ public class Cublino {
             } else {
                 for (Dice i : adjacentA) {
                     if (i.isPlayer1() != attacker.isPlayer1()) {
-                        defenderTopFaces++;
+                        defenderTopFaces+= i.getTopNumber();
+                        // sum of top faces gets incremented for the defender
                     }
                 }
                 for (Dice i : adjacentD) {
                     if (i.isPlayer1() != defender.isPlayer1()) {
-                        attackerTopFaces++;
+                        attackerTopFaces+= i.getTopNumber();
+                        // sum of top faces gets incremented for the defender
                     }
                 }
                 if (defenderTopFaces > attackerTopFaces) {
