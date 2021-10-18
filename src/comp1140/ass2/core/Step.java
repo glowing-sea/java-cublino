@@ -58,7 +58,7 @@ public class Step {
      * ASSUMPTIONS: the state is of the Pur variant and valid. The step is well-formed.
      */
 
-    public boolean isValidStepPur(State state) {
+    public boolean isValidStepPur(State state, Position movingDicePosition) {
 
         // Check if the ending position is not occupied
         if (state.containDice(end))
@@ -90,11 +90,11 @@ public class Step {
                 return true;
             if (x1 + 2 == x2) { // Jump to the right
                 over.setX(x1 + 1);
-                return state.containDice(over);
+                return !over.equals(movingDicePosition) && state.containDice(over);
             }
             if (x1 - 2 == x2) { // Jump to the left
                 over.setX(x1 - 1);
-                return state.containDice(over);
+                return !over.equals(movingDicePosition) && state.containDice(over);
             }
         }
         return false;

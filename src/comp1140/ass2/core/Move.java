@@ -3,26 +3,27 @@ import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 
 public class Move {
-    private Position[] positions;
+    private ArrayList<Position> positions;
 
     //================================================CONSTRUCTOR=====================================================//
 
     // (By Haoting)
     public Move(String encoding) {
-        assert Cublino.isMoveWellFormed(encoding);
-        int length = encoding.length() / 2; // length of the move array
-        Position[] move = new Position[length];
-        for(int i = 0; i < length; i++)
-            move[i] = new Position(encoding.substring(i * 2, i * 2 + 2));
+        assert Cublino.isMoveWellFormed(encoding) :
+                "The input move string is not well-formed.";
+        ArrayList<Position> move = new ArrayList<>();
+        for(int i = 0; i < encoding.length(); i+=2)
+            move.add(new Position(encoding.substring(i, i + 2)));
         this.positions = move;
     }
 
+    public Move(ArrayList<Position> move){this.positions = move;}
+
     // (By Group)
-    public Position[] getPositions() {return positions;}
-    public void setPositions(Position[] positions) {this.positions = positions;}
+    public ArrayList<Position> getPositions() {return positions;}
+    public void setPositions(ArrayList<Position> positions) {this.positions = positions;}
 
 
     //=============================================NON-STATIC METHODS=================================================//
@@ -35,13 +36,9 @@ public class Move {
         return output.toString();
     }
 
-    // Take a Pur or Contra move and a state, return the updated state after the move.
-    public State applyMove(State st) {
-        return st; // FIXME
-    }
 
     /**
-     * Task 8: (By Haoring)
+     * Task 8: (By Haoting)
      * Determine whether a move (sequence of steps) is valid for a given game.
      *
      * A move is valid if it satisfies the following conditions:
@@ -57,11 +54,11 @@ public class Move {
     public Boolean isValidMovePur(State state) {
 
         // Condition 3
-        if (positions.length < 1) return false;
+        if (positions.size() < 1) return false;
 
         // Condition 5
-        Position start = positions[0];
-        Position end = positions[positions.length - 1];
+        Position start = positions.get(0);
+        Position end = this.getLastPosition();
         if (start.equals(end))
             return false;
 
@@ -73,9 +70,9 @@ public class Move {
 
         // Condition 2 & 4
         Step checkedStep = new Step("a1a1");
-        for (int i = 0; i < positions.length - 1; i++){
-            checkedStep.setStep(positions[i], positions[i + 1]);
-            if (!checkedStep.isValidStepPur(state))
+        for (int i = 0; i < positions.size() - 1; i++){
+            checkedStep.setStep(positions.get(i), positions.get(i + 1));
+            if (!checkedStep.isValidStepPur(state, start))
                 return false;
             if (i != 0 && checkedStep.isTip())
                 return false;
@@ -83,7 +80,27 @@ public class Move {
         return true;
     }
 
+
+    // Add a position to the move. (Change the current Move object)
+    public void moveFurther (Position destination){
+        this.positions.add(destination);
+    }
+
+
+    // By Haoting
+    // Get the last position of the move
+    public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
+
     //=================================================STATIC METHODS=================================================//
+
+    // Take a Pur or Contra move and a state, return the updated state after the move.
+    public static State applyMove(State st, Move m) {
+        return st.isPur() ? applyMovePur(st, m) : applyMoveContra(st, m); // FIXME apply move for contra
+    }
+
+    public static State applyMoveContra(State st, Move m) {
+        return st;
+    }
 
     /**
      * Task 9: (By Anubhav and Haoting)
@@ -93,14 +110,17 @@ public class Move {
      *
      * ASSUMPTION: the state is of Pur and valid. The move is well-formed.
      */
-    public static State applyMovePur(State st, Move m) {
+    public static State applyMovePur(State state, Move m) {
+
+       State st = new State(state.toString()); // Clone the state.
+
         if(!m.isValidMovePur(st))
             return st;
 
-        Position[] pos = m.getPositions();
-        Position start = pos[0]; // Starting position of a move.
-        Position end = pos[pos.length - 1]; // Ending position of a move.
-        Step firstStep = new Step(start, (pos[1])); // The first step of a move.
+        ArrayList<Position> pos = m.getPositions();
+        Position start = pos.get(0); // Starting position of a move.
+        Position end = pos.get(pos.size() - 1); // Ending position of a move.
+        Step firstStep = new Step(start, (pos.get(1))); // The first step of a move.
 
         for (Dice dice : st.getDices()) {
             if (dice.getPosition().equals(start)) { // Find out the dice that need to be moved!

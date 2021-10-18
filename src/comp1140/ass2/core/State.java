@@ -4,17 +4,19 @@ import comp1140.ass2.Cublino;
 import javafx.geometry.Pos;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.lang.Cloneable;
 
 // (By Group)
 public class State {
     private static final int BOARD_SIZE = 7;
+    private final boolean pur; // "true" means Pur."false" mean Contra.
     private boolean player1Turn; // "true" means player1's (White) turn."false" means player2 (Black) turn.
-    private boolean pur; // "true" means Pur."false" mean Contra.
     private ArrayList<Dice> dices = new ArrayList<>();
 
-    //================================================CONSTRUCTOR=====================================================//
+    //======================================= CONSTRUCTOR & PRINTER ==================================================//
 
     // (Created by Rajin, edited by Haoting)
     public State(String state) {
@@ -29,8 +31,11 @@ public class State {
         }
     }
 
-
-    //=============================================NON-STATIC METHODS=================================================//
+    public State(boolean pur, boolean player1Turn, ArrayList<Dice> dices){
+        this.pur = pur;
+        this.player1Turn = player1Turn;
+        this.dices = dices;
+    }
 
     // (By Haoting)
     @Override
@@ -40,113 +45,19 @@ public class State {
             output.append( player1Turn ? 'P' : 'p');
         else
             output.append( player1Turn ? 'C' : 'c');
-
         for (Dice dice : dices)
             output.append(dice);
-
         return output.toString();
     }
 
-    // (By Rajin)
-    // Gets the piece at an X and Y coordinate
-    public Dice getPieceAt(int x, int y) {
-        for (Dice dice:dices) {
-            if (dice.getPosition().getX() == x && dice.getPosition().getY() == y) {
-                return dice;
-            }
-        }
-        return null;
-    }
 
-    // (By Rajin)
-    // Gets all pieces that are either white or black based on the input boolean
-    public ArrayList<Dice> getPieces(boolean isWhitePieces) {
-        ArrayList<Dice> dices = new ArrayList<>();
-
-        for (Dice dice: this.dices) {
-            if (isWhitePieces) {
-                if (Character.isUpperCase(dice.toString().charAt(0))) {
-                    dices.add(dice);
-                }
-            } else {
-                if (!Character.isUpperCase(dice.toString().charAt(0))) {
-                    dices.add(dice);
-                }
-            }
-        }
-
-        return dices;
-    }
-
-    // (By Haoting Chen)
-    // Given a position, check if there is a dice at that position.
-    public boolean containDice (Position position){
-        for(Dice dice : this.getDices())
-            if (position.equals(dice.getPosition()))
-                return true;
-        return false;
-    }
-
-    // (By Haoting Chen)
-    // Given a position and a player name, check if there is a player's dice at that position.
-    public boolean containPlayerDice (Position position, Boolean isPlayer1){
-        for(Dice dice : this.getDices())
-            if (position.equals(dice.getPosition()) && dice.isPlayer1() == isPlayer1)
-                return true;
-        return false;
-    }
-
-
-    // Getter and setter methods (By Group)
-    public ArrayList<Dice> getDices() {return dices;}
-    public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
-    public void setPur(boolean pur) {this.pur = pur;}
-    public void setPlayer1Turn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;}
-    public boolean getPlayerTurn() {return this.player1Turn;}
-    public boolean isPur() {return this.pur;}
-
-    // (By Haoting)
-    public void changeTurn(){player1Turn = !this.player1Turn;}
-
-
-    // Take a Pur or Contra state, return a list of legal moves of the state.
-    public LinkedList<Move> legalMoves () {
-        LinkedList<Move> legalMoves = new LinkedList<>();
-        legalMoves.add(new Move("a1a2"));
-        return legalMoves; // FIXME
-    }
-
-    // Take a Pur or Contra state, return the heuristic score of the state.
-    public int stateEvaluate () {
-        return 0; // FIXME
-    }
-
-    // Take a Pur or Contra state, check if it is over.
-    public boolean isOver () {
-        return false; // FIXME
-    }
-
+    //============================================ CHECKER METHODS ===================================================//
 
     /**
      * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
      * Determine whether the input state is valid.
-     *
-     * [Both Variants]
-     * 1. The game state is well formed.
-     * 2. No two dice occupy the same position on the board.
-     *
-     * [Pur]
-     * 1. Each player has exactly seven dice.
-     * 2. Both players do not have all seven of their dice on the opponent's end of the board (as the game would have
-     * already finished before this)
-     *
-     * [Contra]
-     * 1. Each player has no more than seven dice.
-     * 2. No more than one player has a dice on the opponent's end of the board.
-     *
      * ASSUMPTIONS: the state is well-formed.
      */
-
     public Boolean isStateValid(){
 
         LinkedList<Position> tempPos = new LinkedList<>();
@@ -191,17 +102,35 @@ public class State {
         }
     }
 
+
+    // (By Haoting Chen)
+    // Given a position, check if there is a dice at that position.
+    public boolean containDice (Position position){
+        for(Dice dice : this.getDices())
+            if (position.equals(dice.getPosition()))
+                return true;
+        return false;
+    }
+
+    // (By Haoting Chen)
+    // Given a position and a player name, check if there is a player's dice at that position.
+    public boolean containPlayerDice (Position position, Boolean isPlayer1){
+        for(Dice dice : this.getDices())
+            if (position.equals(dice.getPosition()) && dice.isPlayer1() == isPlayer1)
+                return true;
+        return false;
+    }
+
+    // Take a Pur or Contra state, check if it is over.
+    public boolean isOver () {
+        return false; // FIXME
+    }
+
     /**
      * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
      * Determine whether a state represents a finished Pur game, and if so who the winner is.
-     *
-     * A game of Cublino Pur is finished once one player has reached the opponent's end of the board with all seven of
-     * their dice. Each player then adds the numbers facing upwards on their dice which have reached the opponent's end
-     * of the board. The player with the highest total wins.
-     *
      * ASSUMPTIONS: the state is of the Pur variant and valid.
      */
-
     public int isGameOverPur() {
         int p1OnOtherSide = 0; // The number of player1's dice at the opponent's end.
         int p2OnOtherSide = 0; // The number of player2's dice at the opponent's end.
@@ -232,6 +161,157 @@ public class State {
                 return 3;}
         else
             return 0;
+    }
+
+    //======================================= SETTER & GETTER METHODS ================================================//
+
+    // Gets all the dices in a state (By Group)
+    public ArrayList<Dice> getDices() {return dices;}
+
+    // (Written by Rajin, edited by Haoting)
+    // Gets all dices belonging to the current player. (Player1 = white = true, vice versa.)
+    public ArrayList<Dice> getCurrentPlayerDices() {
+        ArrayList<Dice> dices = new ArrayList<>();
+        for (Dice dice: this.dices) {
+            if (dice.isPlayer1() == this.getPlayerTurn())
+                dices.add(dice);}
+        return dices;
+    }
+
+    // (By Group)
+    public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
+    public void setPlayer1Turn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;}
+    public boolean getPlayerTurn() {return this.player1Turn;}
+    public boolean isPur() {return this.pur;}
+    public void changeTurn(){player1Turn = !this.player1Turn;}
+
+
+    //============================================== LEGAL MOVES =====================================================//
+
+    // Take a Pur or Contra state, return a list of legal moves of the state. (By Group)
+    public ArrayList<Move> legalMoves () {
+        return this.pur ? legalMovesPur() : legalMovesContra(); // FIXME: legal move for Contra needed.
+    }
+
+    // (By Rajin & Haoting)
+    // Give a valid Pur state, generate a list of legal moves.
+    public ArrayList<Move> legalMovesPur (){
+        Set<Move> legalMoves = new HashSet<>(); // A list of all the legal moves.
+        ArrayList<Dice> playerDices = this.getCurrentPlayerDices(); // All the dice belonging to the current player.
+        boolean[] visited = new boolean[49];
+
+        // Starting from each dice, search the board for legal moves.
+        for (Dice dice : playerDices){
+            Position start = dice.getPosition();
+            Move soFar = new Move("");
+            soFar.moveFurther(start); // Reset the starting move;
+
+            for (Position destination : start.getAdjacentPositions()) {
+                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
+
+            for (Position destination : dice.getPosition().getJumpPositions()) {
+                propagateMovePur(this, legalMoves, visited, start, destination, soFar); }
+        }
+        return new ArrayList<>(legalMoves);
+    }
+
+    /**
+     * Recursive function for finding all the legal moves from a starting position. (By Rajin & Haoting)
+     *
+     * Reference: lecture code J14.Boggle.java
+     *
+     * What does the function work intuitively ?
+     * Assume that you already have a legal move (a1a2) and some potential positions (a3, a5) to move further, you want
+     * to know if the new moves (a1a2a3, a1a2a5) are still valid. If so, add them to the legal moves list.
+     *
+     * @param state The state of the game (invariance)
+     * @param legalMoves The set of words found so far (variance)
+     * @param visited An array indicating for each position whether the dice has visited it in this search (variance)
+     * @param destination  The potential position to move further (variance)
+     * @param start  The start position of the dice of the move (invariance)
+     * @param soFar  The valid move so far in this particular search (variance)
+     */
+    // Give a valid Pur state and a position, return all the legal moves from that position
+    public static void propagateMovePur
+    (State state, Set<Move> legalMoves, boolean[] visited, Position start, Position destination, Move soFar){
+
+        visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
+        Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
+        Move candidate = new Move(soFar.toString()); // Clone the move so far.
+        candidate.moveFurther(destination); // A new potential move.
+
+        // Since we assume that the move so far is valid, we only need to check if the step from the last position of
+        // the move so far to the destination is valid. If so, the candidate move must be valid too.
+        if (further.isValidStepPur(state, start)) {
+            legalMoves.add(candidate); // found a legal move!
+
+            for (Position newDestination : destination.getJumpPositions()){
+                if (!visited[newDestination.getPositionOrder()])
+                    propagateMovePur(state, legalMoves, visited, start, newDestination, candidate);
+            }
+        } // If candidate is not valid, no point to look further.
+        visited[destination.getPositionOrder()] = false; // Reset in order for the function to be used again.
+    }
+
+    public ArrayList<Move> legalMovesContra (){
+        return new ArrayList<>();
+    }
+
+
+    //============================================ HEURISTIC METHODS==================================================//
+
+    // Take a Pur or Contra state, return the heuristic score of the state.
+    public int stateEvaluate () {
+        return this.pur ? stateEvaluatePur () : stateEvaluateContra(); // FIXME: heuristic function for Contra needed.
+    }
+
+
+    // (Written by Rajin & edited by Haoting)
+    // Cublino Pur Heuristic Function, the output score is the score of Player 1 - the score of Player 2
+    // Therefore, Player1 will try maximising the score and Player2 will try minimising the score.
+    public int stateEvaluatePur () {
+
+        // A player score is calculated by the sum of the vertical distance from the starting point of all dices of the
+        // player plus, the 100 * sum of the top values of all dices of the player that reaches the end.
+
+        int p1Score = 0;
+        int p2Score = 0;
+
+        for (Dice dice: this.dices) {
+
+            if(dice.isPlayer1()){
+                Position startPosition = new Position(dice.getPosition().getX(), 1);
+                p1Score += Position.manhattanDistance(dice.getPosition(), startPosition);
+                if (dice.getPosition().getY() == 7) // The dice has reached the end.
+                    p1Score += 100 * dice.getTopNumber();
+            }
+            else{
+                Position startPosition = new Position(dice.getPosition().getX(), 7);
+                p2Score += Position.manhattanDistance(dice.getPosition(), startPosition);
+                if (dice.getPosition().getY() == 1) // The dice has reached the end.
+                    p2Score += 100 * dice.getTopNumber();
+            }
+        }
+        return p1Score - p2Score;
+    }
+
+
+    // Cublino Contra Heuristic Function
+    public int stateEvaluateContra () {
+        return 0; // FIXME
+    }
+
+    //===============================================DEAD CODE========================================================//
+
+    // (By Rajin)
+    // Gets the piece at an X and Y coordinate
+    public Dice getPieceAt(int x, int y) {
+        for (Dice dice:dices) {
+            if (dice.getPosition().getX() == x && dice.getPosition().getY() == y) {
+                return dice;
+            }
+        }
+        return null;
     }
 
     // (By Rajin)
@@ -291,7 +371,7 @@ public class State {
     public ArrayList<Step> generateAllTipPur() {
         ArrayList<Step> possibleTips = new ArrayList<>();
 
-        ArrayList<Dice> dices = getPieces(getPlayerTurn());
+        ArrayList<Dice> dices = getCurrentPlayerDices();
 
         // get each dice for this player
         for (Dice dice:dices) {
@@ -310,7 +390,7 @@ public class State {
         ArrayList<Step> possibleJumps = new ArrayList<>();
 
         // get each dice for this player
-        for (Dice dice:getPieces(getPlayerTurn())) {
+        for (Dice dice:getCurrentPlayerDices()) {
             // 2. generate possible jumps
             for (Position jumpPos:getJumpPositions(dice.getPosition())) {
                 possibleJumps.add(new Step(dice.getPosition(), jumpPos));
@@ -319,18 +399,19 @@ public class State {
         return possibleJumps;
     }
 
-    //=================================================STATIC METHODS=================================================//
-
-
     //======================================================TESTS=====================================================//
+
 
     public static void main(String[] args) {
         State state1 = new State("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7");
         State state2 = new State("pMb6");
+        State state3 = new State("pWb1Wc1Wd1We1Wf1Wg1La2va7vb7vc7vd7ve7vf7vg7");
         Position pos = new Position("b6");
         System.out.println(state2.containDice(pos));
         System.out.println(state1.toString().equals("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7"));
         System.out.println(state1.getPlayerTurn());
         System.out.println(state2.getPlayerTurn());
+        System.out.println(state3.stateEvaluate());
     }
 }
+
