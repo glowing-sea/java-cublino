@@ -499,26 +499,26 @@ public class Cublino {
         else if (Cublino.isGameOverContra(state) == 1 && !isPlayer1 || Cublino.isGameOverContra(state) == 2 && isPlayer1) {
             gameOverFactor = -15; // worst possible result
         }
-        else {
-            for (Dice d : s.getDices()) {
-                if (d.isPlayer1() == isPlayer1) {
-                    if (isPlayer1) {
-                        distancesFromEndPos.add(7 - d.getPosition().getY());
-                    }
-                    else {
-                        distancesFromEndPos.add(d.getPosition().getY() - 1);
-                    }
-                    yourDiceNumber++;
-
+        for (Dice d : s.getDices()) {
+            if (d.isPlayer1() == isPlayer1) {
+                if (isPlayer1) {
+                    distancesFromEndPos.add(7 - d.getPosition().getY());
                 }
                 else {
-                    opponentDiceNumber++;
+                    distancesFromEndPos.add(d.getPosition().getY() - 1);
                 }
+                yourDiceNumber++;
+
+                }
+            else {
+                opponentDiceNumber++;
             }
-        }
+            }
+
         closestDistanceToFinish = Collections.min(distancesFromEndPos);
 
         return ((float) (yourDiceNumber - opponentDiceNumber)/2) - closestDistanceToFinish + gameOverFactor;
+        // because I want to maximise my dice, miminise their dice, and minimise the closest distance
 
     }
 }
