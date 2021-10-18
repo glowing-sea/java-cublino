@@ -114,8 +114,7 @@ public class Move {
 
        State st = new State(state.toString()); // Clone the state.
 
-        if(!m.isValidMovePur(st))
-            return st;
+        assert(m.isValidMovePur(st)) : "The input move is invalid.";
 
         ArrayList<Position> pos = m.getPositions();
         Position start = pos.get(0); // Starting position of a move.

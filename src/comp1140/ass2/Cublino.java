@@ -198,6 +198,7 @@ public class Cublino {
     // (By Anubhav and Haoting)
     // For marking only. Please use the method applyMovePur in Move Class.
     public static String applyMovePur(String state, String move) {
+        if (!isValidMovePur(state, move)) return state;
         Move m = new Move(move);
         State st = new State(state);
         return Move.applyMovePur(st, m).toString();
@@ -229,34 +230,34 @@ public class Cublino {
         assert(difficulty == 1 || difficulty == 2) : "Invalid difficulty";
         boolean useMinimax = difficulty == 2;
 
-        ArrayList<StatePlus> newStates = new ArrayList<>(); // A list of new states after applying each legal move.
+        ArrayList<MovePlus> legalMoves = new ArrayList<>(); // A list of legal moves.
 
         for (Move move : state.legalMoves()){
-            StatePlus st = new StatePlus(move, Move.applyMove(state, move), useMinimax);
+            MovePlus st = new MovePlus(move, state, useMinimax);
             // System.out.println("" + st.getSTATE() + " " + st.SCORE);
-            newStates.add(st);
+            legalMoves.add(st);
         }
-        return Collections.max(newStates).getMOVE(); // Find the move leading to the state with the highest score.
+        return Collections.max(legalMoves).getMOVE(); // Find the move leading to the state with the highest score.
     }
 
     // (By Haoting)
-    public static class StatePlus implements Comparable<StatePlus>{
-        final Move MOVE;
-        final State STATE;
-        final int SCORE;
+    // A pair that store a move and the score of the new state result from the move.
+    private static class MovePlus implements Comparable<MovePlus>{
+        private final Move MOVE; // A move
+        private final int SCORE; // The score of the new state result from the move.
 
-        public StatePlus(Move move, State state, boolean useMinimax) {
+        public MovePlus(Move move, State state, boolean useMinimax) {
             this.MOVE = move;
-            this.STATE = state;
+            State newState = Move.applyMove(state, move);
             if (useMinimax){
-                GameTree tree = new GameTree(state, 3);
+                GameTree tree = new GameTree(newState, 3);
                 this.SCORE = tree.miniMaxAB(-9999, 9999); }
             else
-                this.SCORE = state.stateEvaluate();
+                this.SCORE = newState.stateEvaluate();
         }
         @Override
-        public int compareTo(StatePlus other) {
-            return this.SCORE - other.SCORE;
+        public int compareTo(MovePlus other) {
+            return this.SCORE - other.SCORE; // The best move is the one with the highest score.
         }
         public Move getMOVE() { return MOVE; }
     }

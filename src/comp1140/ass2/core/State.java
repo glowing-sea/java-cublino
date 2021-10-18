@@ -302,8 +302,7 @@ public class State {
     }
 
     //===============================================DEAD CODE========================================================//
-
-
+    
 
     // (Written Rajin, edited by Haoting)
     // Given a state, return a list of available jump steps
