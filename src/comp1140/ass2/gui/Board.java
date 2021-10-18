@@ -127,9 +127,8 @@ public class Board extends Application {
         controls.getChildren().addAll(vb);
     }
 
-    // TODO: use the legalMoves() for both variant
     public void generateLegalIndicators(Dice dice) {
-        ArrayList<Step> legalSteps = gameState.getLegalSteps(dice);
+        ArrayList<Step> legalSteps = gameState.getLegalStepPur(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();

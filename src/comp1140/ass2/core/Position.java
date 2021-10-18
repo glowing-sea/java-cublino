@@ -25,8 +25,7 @@ public class Position {
     // Create a Position based on the string encoding.
     public Position(String s) {
 
-        assert Cublino.isPositionWellFormed(s) && s.length() == 2 :
-                "The input position string is not well-formed.";
+        if (!(Cublino.isPositionWellFormed(s) && s.length() == 2)) throw new IllegalArgumentException();
 
         // This may be simpler.
         this.x = s.charAt(0) - 96;
@@ -50,10 +49,10 @@ public class Position {
     public void setY(int y) {this.y = y;}
 
     // (By Haoting)
-    // Get the position of a dice in terms of order (From 1 to 49)
+    // Get the position of a dice in terms of order (From 0 to 48)
     public int getPositionOrder() {
         HashMap<String, Integer> POSITION_ORDER = new HashMap<>();
-        Integer order = 1;
+        Integer order = 0;
         for (char y = '1'; y <= '7'; y++){
             for (char x = 'a'; x <= 'g'; x++){
                 POSITION_ORDER.put("" + x + y, order);
@@ -103,21 +102,31 @@ public class Position {
     } // sets the coordinate to a number corresponding to the position in the array
     // Dead Code
 
-    public ArrayList<Position> getAdjacentPositions() {
-        int[] ref = {-1, 1};
+
+    // (By Anubhav)
+    // Get a list of positions that is n distance away from the current position.
+    public ArrayList<Position> getPositions(int distance) {
+        int[] ref = {- distance, distance};
         ArrayList<Position> adjacentPieces = new ArrayList<>();
         for (int i : ref) {
-            if (!new Position(this.x + i, this.y).isOffBoard()) {
-                adjacentPieces.add(new Position(this.x + i, this.y));
-            }
-            if (!new Position(this.x, this.y + i).isOffBoard()) {
-                adjacentPieces.add(new Position(this.x, this.y + i));
-            }
 
+            Position horizontal = new Position(this.x + i, this.y);
+            Position vertical = new Position(this.x, this.y + i);
 
+            if (!horizontal.isOffBoard())
+                adjacentPieces.add(horizontal);
+            if (!vertical.isOffBoard())
+                adjacentPieces.add(vertical);
         }
         return adjacentPieces;
     }
+
+    // (By Anubhav)
+    public ArrayList<Position> getAdjacentPositions() { return this.getPositions(1); }
+
+
+    // (By Rajin, Haoting)
+    public ArrayList<Position> getJumpPositions() { return this.getPositions(2);}
 
 
 
@@ -173,8 +182,10 @@ public class Position {
         System.out.println(l1 + "," + l2 + "," + l3 + "," + l4 + "," + l5 + "," + l6 +  "," + l7);
         System.out.println(l1.getPositionOrder());
         System.out.println("testing adjacent pieces");
-        printList(new Position("d3").getAdjacentPositions());
-        printList(new Position("a1").getAdjacentPositions());
+        System.out.println(new Position("d3").getAdjacentPositions());
+        System.out.println(new Position("a1").getAdjacentPositions());
+        System.out.println(new Position("d3").getJumpPositions());
+        System.out.println(new Position("a1").getJumpPositions());
     }
 }
 

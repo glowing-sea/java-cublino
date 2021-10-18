@@ -1,6 +1,7 @@
 package extraTests;
 
 import comp1140.ass2.Cublino;
+import comp1140.ass2.core.State;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -12,15 +13,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class purGreedyHeuristicTest {
 
     private void testGreedyHeuristicInequality(String state1, String state2) {
-        float state1Heuristic = Cublino.purGreedyHeuristic(state1);
-        float state2Heuristic = Cublino.purGreedyHeuristic(state2);
+        State s1 = new State(state1);
+        State s2 = new State(state2);
+
+        int state1Heuristic = s1.stateEvaluate();
+        int state2Heuristic = s2.stateEvaluate();
 
         assertTrue(state1Heuristic > state2Heuristic, "purGreedyHeuristic: first state is " + state1Heuristic + " and the second is " + state2Heuristic);
     }
 
     private void testGreedyHeuristicEquality(String state1, String state2) {
-        float state1Heuristic = Cublino.purGreedyHeuristic(state1);
-        float state2Heuristic = Cublino.purGreedyHeuristic(state2);
+        State s1 = new State(state1);
+        State s2 = new State(state2);
+
+        int state1Heuristic = s1.stateEvaluate();
+        int state2Heuristic = s2.stateEvaluate();
 
         assertEquals(state1Heuristic, state2Heuristic, "purGreedyHeuristic: heuristic equality failed");
     }
