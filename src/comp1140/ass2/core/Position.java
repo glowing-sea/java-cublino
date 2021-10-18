@@ -25,8 +25,7 @@ public class Position {
     // Create a Position based on the string encoding.
     public Position(String s) {
 
-        assert Cublino.isPositionWellFormed(s) && s.length() == 2 :
-                "The input position string is not well-formed.";
+        if (!(Cublino.isPositionWellFormed(s) && s.length() == 2)) throw new IllegalArgumentException();
 
         // This may be simpler.
         this.x = s.charAt(0) - 96;
