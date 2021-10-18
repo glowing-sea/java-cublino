@@ -414,4 +414,42 @@ public class Cublino {
         System.out.println(bestMovePur(s2,1));
         System.out.println(bestMovePur(s2,2));
     }
+
+    public static float greedyContraHeuristic(String state, boolean isPlayer1) {
+        // implements a greedy contra heuristic
+        State s = new State(state);
+        int gameOverFactor = 0; // makes sure won games are prioritised
+        int yourDiceNumber = 0;
+        int opponentDiceNumber = 0;
+        int closestDistanceToFinish = 0;
+        ArrayList<Integer> distancesFromEndPos = new ArrayList<>(); // because there are maximum 7 in the board for each player
+
+        if (Cublino.isGameOverContra(state) == 1 && isPlayer1 || Cublino.isGameOverContra(state) == 2 && !isPlayer1) {
+            gameOverFactor = 15; // this ensures the heuristic will choose a winning game state
+        }
+        else if (Cublino.isGameOverContra(state) == 1 && !isPlayer1 || Cublino.isGameOverContra(state) == 2 && isPlayer1) {
+            gameOverFactor = -15; // worst possible result
+        }
+        for (Dice d : s.getDices()) {
+            if (d.isPlayer1() == isPlayer1) {
+                if (isPlayer1) {
+                    distancesFromEndPos.add(7 - d.getPosition().getY());
+                }
+                else {
+                    distancesFromEndPos.add(d.getPosition().getY() - 1);
+                }
+                yourDiceNumber++;
+
+                }
+            else {
+                opponentDiceNumber++;
+            }
+            }
+
+        closestDistanceToFinish = Collections.min(distancesFromEndPos);
+
+        return ((float) (yourDiceNumber - opponentDiceNumber)/2) - closestDistanceToFinish + gameOverFactor;
+        // because I want to maximise my dice, miminise their dice, and minimise the closest distance
+
+    }
 }
