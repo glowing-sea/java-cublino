@@ -105,13 +105,16 @@ public class Board extends Application {
         end_turn.setOnAction(actionEvent -> {
             // there is an ongoing move that can be ended
             if (onGoingMove.length() > 0 && onGoingDice != null) {
+                System.out.println(onGoingMove);
                 onGoingMove.replace(0, onGoingMove.length(), "");
                 onGoingDice = null;
-
-                gameState.setPlayer1Turn(!gameState.getPlayerTurn());
-                updateDices();
-                legalStepsGroup.getChildren().clear();
             }
+
+            // TODO: check if the ongoing move is invalid (if invalid tell player to redo turn)
+
+            gameState.setPlayer1Turn(!gameState.getPlayerTurn());
+            updateDices();
+            legalStepsGroup.getChildren().clear();
         });
 
         VBox vb = new VBox();
@@ -124,8 +127,9 @@ public class Board extends Application {
         controls.getChildren().addAll(vb);
     }
 
+    // TODO: use the legalMoves() for both variant
     public void generateLegalIndicators(Dice dice) {
-        ArrayList<Step> legalSteps = gameState.getLegalMove(dice);
+        ArrayList<Step> legalSteps = gameState.getLegalSteps(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();

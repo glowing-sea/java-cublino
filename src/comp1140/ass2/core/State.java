@@ -321,7 +321,7 @@ public class State {
 
     // (By Rajin)
     // Given a Dice, return its legal moves
-    public ArrayList<Step> getLegalMove(Dice dice) {
+    public ArrayList<Step> getLegalSteps(Dice dice) {
         ArrayList<Step> legalSteps = new ArrayList<>();
         ArrayList<Step> allSteps = new ArrayList<>();
 
