@@ -48,11 +48,11 @@ public class State {
     //============================================ CHECKER METHODS ===================================================//
 
     /**
-     * Task 4: (Object version) (Written by Anubhav, edited by Haoting)
+     * Task 4: (Written by Anubhav, edited by Haoting)
      * Determine whether the input state is valid.
      * ASSUMPTIONS: the state is well-formed.
      */
-    public Boolean isStateValid(){
+    public boolean isStateValid(){
 
         LinkedList<Position> tempPos = new LinkedList<>();
         int p1onOtherSide = 0; // The number of player1's dices that reaches player2's end.
@@ -96,24 +96,26 @@ public class State {
         }
     }
 
-
-    // (By Haoting Chen)
-    // Given a position, check if there is a dice at that position.
-    public boolean containDice (Position position){
-        for(Dice dice : this.getDices())
-            if (position.equals(dice.getPosition()))
-                return true;
+    /**
+     * (By Haoting Chen)
+     * Given a position, check if there is a dice at that position.
+     * Extra Condition enable: check if there is a dice at that position and the dice belongs to the current player.
+     */
+    //
+    public boolean containDice (Position position, boolean extraCondition){
+        if (extraCondition){
+            for(Dice dice : this.getDices())
+                if (position.equals(dice.getPosition()) && dice.isPlayer1() == this.player1Turn)
+                    return true;
+        }
+        else{
+            for(Dice dice : this.getDices())
+                if (position.equals(dice.getPosition()))
+                    return true;
+        }
         return false;
     }
 
-    // (By Haoting Chen)
-    // Given a position and a player name, check if there is a player's dice at that position.
-    public boolean containPlayerDice (Position position, Boolean isPlayer1){
-        for(Dice dice : this.getDices())
-            if (position.equals(dice.getPosition()) && dice.isPlayer1() == isPlayer1)
-                return true;
-        return false;
-    }
 
     // Take a Pur or Contra state, check if it is over.
     public boolean isOver () {
@@ -157,28 +159,13 @@ public class State {
             return 0;
     }
 
-    //======================================= SETTER & GETTER METHODS ================================================//
 
-    // Gets all the dices in a state (By Group)
-    public ArrayList<Dice> getDices() {return dices;}
-
-    // (Written by Rajin, edited by Haoting)
-    // Gets all dices belonging to the current player. (Player1 = white = true, vice versa.)
-    public ArrayList<Dice> getCurrentPlayerDices() {
-        ArrayList<Dice> dices = new ArrayList<>();
-        for (Dice dice: this.dices) {
-            if (dice.isPlayer1() == this.getPlayerTurn())
-                dices.add(dice);}
-        return dices;
-    }
+    //============================================= SETTER METHODS ===================================================//
 
     // (By Group)
     public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
     public void setPlayer1Turn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;}
-    public boolean getPlayerTurn() {return this.player1Turn;}
-    public boolean isPur() {return this.pur;}
     public void changeTurn(){player1Turn = !this.player1Turn;}
-
 
 
     /**
@@ -209,7 +196,22 @@ public class State {
     }
 
 
+    //======================================== GENERAL GETTER METHODS ================================================//
 
+    // Getter Methods (By Group)
+    public ArrayList<Dice> getDices() {return dices;}
+    public boolean getPlayerTurn() {return this.player1Turn;}
+    public boolean isPur() {return this.pur;}
+
+    // (Written by Rajin, edited by Haoting)
+    // Gets all dices belonging to the current player. (Player1 = white = true, vice versa.)
+    public ArrayList<Dice> getCurrentPlayerDices() {
+        ArrayList<Dice> dices = new ArrayList<>();
+        for (Dice dice: this.dices) {
+            if (dice.isPlayer1() == this.getPlayerTurn())
+                dices.add(dice);}
+        return dices;
+    }
 
     //============================================== LEGAL MOVES =====================================================//
 
@@ -261,7 +263,7 @@ public class State {
     (State state, Set<Move> legalMoves, boolean[] visited, Position start, Position destination, Move soFar){
 
         visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
-        Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
+        Step further = new Step (soFar.getEnd(), destination); // A new potential step.
         Move candidate = soFar.copy(); // Copy the move so far.
         candidate.moveFurther(destination); // A new potential move.
 
@@ -283,7 +285,7 @@ public class State {
     }
 
 
-    //============================================ HEURISTIC METHODS==================================================//
+    //============================================ HEURISTIC METHODS =================================================//
 
     // Take a Pur or Contra state, return the heuristic score of the state.
     public int stateEvaluate () {
@@ -326,7 +328,7 @@ public class State {
         return 0; // FIXME
     }
 
-    //===============================================DEAD CODE========================================================//
+    //============================================== DEAD CODE =======================================================//
     
 
     // (Written Rajin, edited by Haoting)
@@ -370,10 +372,8 @@ public class State {
         return output;
     }
 
-    //=================================================STATIC METHODS=================================================//
 
-
-    //======================================================TESTS=====================================================//
+    //================================================== TEST ========================================================//
 
 
     public static void main(String[] args) {
@@ -381,7 +381,7 @@ public class State {
         State state2 = new State("pMb6");
         State state3 = new State("pWb1Wc1Wd1We1Wf1Wg1La2va7vb7vc7vd7ve7vf7vg7");
         Position pos = new Position("b6");
-        System.out.println(state2.containDice(pos));
+        System.out.println(state2.containDice(pos, false));
         System.out.println(state1.toString().equals("Pwb1bc1sf1if2ca3ub3gc3Cb5Mb6Hf6Oa7Fb7Sc7We7"));
         System.out.println(state1.getPlayerTurn());
         System.out.println(state2.getPlayerTurn());

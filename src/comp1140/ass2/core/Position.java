@@ -1,9 +1,7 @@
 package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
-import javafx.geometry.Pos;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +10,7 @@ public class Position {
     private int x;
     private int y;
 
-    //================================================CONSTRUCTOR=====================================================//
+    //=========================================== CONSTRUCTOR & PRINTER ==============================================//
 
     // (By Anubhav)
     // Create a Position based on the x and y coordinates.
@@ -32,14 +30,14 @@ public class Position {
         this.y = s.charAt(1) - 48;
     }
 
-    //=============================================NON-STATIC METHODS=================================================//
-
     // (By Haoting)
     @Override
     public String toString() {
         char x = (char) (this.x + 96);
         return "" + x + this.y;
     }
+
+    //========================================== GETTER & SETTER METHODS =============================================//
 
     // (By Group)
     // Setter and getter methods.
@@ -60,6 +58,33 @@ public class Position {
         return POSITION_ORDER.get(this.toString());
     }
 
+    // (By Anubhav)
+    // Get a list of positions that is n distance away from the current position.
+    public ArrayList<Position> getPositions(int distance) {
+        int[] ref = {- distance, distance};
+        ArrayList<Position> adjacentPieces = new ArrayList<>();
+        for (int i : ref) {
+
+            Position horizontal = new Position(this.x + i, this.y);
+            Position vertical = new Position(this.x, this.y + i);
+
+            if (horizontal.isOnBoard())
+                adjacentPieces.add(horizontal);
+            if (vertical.isOnBoard())
+                adjacentPieces.add(vertical);
+        }
+        return adjacentPieces;
+    }
+
+    // (By Anubhav)
+    public ArrayList<Position> getAdjacentPositions() { return this.getPositions(1); }
+
+
+    // (By Rajin, Haoting)
+    public ArrayList<Position> getJumpPositions() { return this.getPositions(2);}
+
+
+    //============================================ CHECKER METHODS ===================================================//
 
     // (By Anubhav)
     // Check if two locations are equal.
@@ -85,53 +110,11 @@ public class Position {
     }
 
     // (By Anubhav)
-    public boolean isOffBoard () {
-        return !((this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1));
+    public boolean isOnBoard() {
+        return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
     }
 
-    // (By Group)
-    // Dead Code
-    // is 2 locations adjacent
-    public boolean isValid(Position loc) { // checks if a location is valid
-        return false; // default
-    } // checks if location is valid
-
-    // (By Group)
-    public int toPosition(int x, int y) {
-        return 0; // default
-    } // sets the coordinate to a number corresponding to the position in the array
-    // Dead Code
-
-
-    // (By Anubhav)
-    // Get a list of positions that is n distance away from the current position.
-    public ArrayList<Position> getPositions(int distance) {
-        int[] ref = {- distance, distance};
-        ArrayList<Position> adjacentPieces = new ArrayList<>();
-        for (int i : ref) {
-
-            Position horizontal = new Position(this.x + i, this.y);
-            Position vertical = new Position(this.x, this.y + i);
-
-            if (!horizontal.isOffBoard())
-                adjacentPieces.add(horizontal);
-            if (!vertical.isOffBoard())
-                adjacentPieces.add(vertical);
-        }
-        return adjacentPieces;
-    }
-
-    // (By Anubhav)
-    public ArrayList<Position> getAdjacentPositions() { return this.getPositions(1); }
-
-
-    // (By Rajin, Haoting)
-    public ArrayList<Position> getJumpPositions() { return this.getPositions(2);}
-
-
-
-
-    //=================================================STATIC METHODS=================================================//
+    //================================================ STATIC METHODS ================================================//
 
     // (By Rajin)
     // Method to calculate the manhattanDistance between two locations
@@ -139,15 +122,8 @@ public class Position {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
     }
 
-    public static void printList(ArrayList<Position> pos) {
 
-        // used for printing all values in a list of positions, used to test my function
-        for (Position p : pos) {
-            System.out.println(p.toString());
-        }
-    }
-
-    //======================================================TESTS=====================================================//
+    //===================================================== TESTS ====================================================//
 
     // (By Group)
     // Check Methods
