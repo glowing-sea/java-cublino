@@ -400,7 +400,7 @@ public class Cublino {
             Position pos = d.getPosition();
             if (d.isPlayer1() == st.getPlayerTurn()) {
                 for (Position p : pos.getAdjacentPositions()) {
-                    if (! st.containDice(p)) {
+                    if (! st.containDice(p, false)) {
                         moves.add(pos + p.toString());
 
                     }

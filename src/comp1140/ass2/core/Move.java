@@ -2,12 +2,11 @@ package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class Move {
-    private ArrayList<Position> positions;
+    private final ArrayList<Position> positions;
 
-    //================================================CONSTRUCTOR=====================================================//
+    //================================== CONSTRUCTOR & PRINTER & COPIER ==============================================//
 
     // (By Haoting)
     public Move(String encoding) {
@@ -22,15 +21,6 @@ public class Move {
 
     public Move(ArrayList<Position> move){this.positions = move;}
 
-    // Copier (By Group)
-    public Move copy(){ return new Move(this.toString()); }
-
-    // (By Group)
-    public ArrayList<Position> getPositions() {return positions;}
-    public void setPositions(ArrayList<Position> positions) {this.positions = positions;}
-
-    //=============================================NON-STATIC METHODS=================================================//
-
     @Override // (By Haoting)
     public String toString(){
         StringBuilder output = new StringBuilder();
@@ -39,6 +29,23 @@ public class Move {
         return output.toString();
     }
 
+    // Copier (By Group)
+    public Move copy(){ return new Move(this.toString()); }
+
+
+    //========================================== SETTER & GETTER METHODS =============================================//
+
+    // (By Group)
+    public ArrayList<Position> getPositions() {return positions;}
+
+    // (By Haoting)
+    // Get the last position of the move
+    public Position getEnd (){ return this.positions.get(positions.size() - 1); }
+
+    // Add a new position to the move. (Change the current Move object)
+    public void moveFurther (Position destination){ this.positions.add(destination); }
+
+    //============================================== CHECKER METHODS =================================================//
 
     /**
      * Task 8: (By Haoting)
@@ -61,13 +68,13 @@ public class Move {
 
         // Condition 5
         Position start = positions.get(0);
-        Position end = this.getLastPosition();
+        Position end = this.getEnd();
         if (start.equals(end))
             return false;
 
         // Condition 1
         boolean result = false;
-        result = state.containPlayerDice(start,state.getPlayerTurn());
+        result = state.containDice(start,true);
         if (!result)
             return false;
 
@@ -82,21 +89,6 @@ public class Move {
         }
         return true;
     }
-
-
-    // Add a position to the move. (Change the current Move object)
-    public void moveFurther (Position destination){
-        this.positions.add(destination);
-    }
-
-
-    // By Haoting
-    // Get the last position of the move
-    public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
-
-    //=================================================STATIC METHODS=================================================//
-
-
 
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {
