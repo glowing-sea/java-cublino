@@ -38,7 +38,7 @@ public class GameTree {
         }
     }
 
-    //=============================================NON-STATIC METHODS=================================================//
+    //============================================ NON-STATIC METHODS ================================================//
 
     /**
      * Given a game tree, return the score of the tree. (By Haoting)
