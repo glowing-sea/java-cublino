@@ -29,7 +29,7 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
     private final static Group gamePieces = new Group();
@@ -46,7 +46,9 @@ public class Board extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Cublino");
+        primaryStage.setResizable(false);
         Scene scene = new Scene(root, BOARD_WIDTH, BOARD_HEIGHT);
+
         makeControls();
         makeBoard();
         updateDices();
@@ -128,7 +130,8 @@ public class Board extends Application {
     }
 
     public void generateLegalIndicators(Dice dice) {
-        ArrayList<Step> legalSteps = gameState.getLegalStepPur(dice);
+        // get legal steps based on whether the game mode is pur or contra
+        ArrayList<Step> legalSteps = gameState.isPur() ? gameState.getLegalStepPur(dice) : gameState.getLegalStepContra(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();
@@ -250,32 +253,40 @@ public class Board extends Application {
                         gamePane.getChildren().add(legalStepsGroup);
 
                         // TODO: implement a way to find out if subsequent legal steps are available and show them (a way to complete the step)
-                        gameState = new State(Cublino.applyMovePur(gameState.toString(), step.toString()));
+
+                        if (gameState.isPur()) {
+                            gameState = new State(Cublino.applyMovePur(gameState.toString(), step.toString()));
+                        } else {
+                            gameState = new State(Cublino.applyMoveContra(gameState.toString(), step.toString()));
+                        }
 
                         State potentialNextState = new State(gameState.toString());
                         potentialNextState.setPlayer1Turn(!potentialNextState.getPlayerTurn());
 
-                        // there are more steps that can happen in this current move
-                        if (potentialNextState.generateAllJumpPur().size() != 0) {
+                        // potential jumps after a step in Pur
+                        if (gameState.isPur()) {
+                            // there are more steps that can happen in this current move
+                            if (potentialNextState.generateAllJumpPur().size() != 0) {
 
-                            for (Step jump: potentialNextState.generateAllJumpPur()) {
-                                if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
-                                    gameState = potentialNextState;
-                                    onGoingMove.append(step.toString());
-                                    // update game board state
-                                    updateDices();
-                                    System.out.println("on going");
-                                    for (Dice dice:dicePieces) {
-                                        if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
-                                            onGoingDice = dice;
-                                            generateLegalIndicators(dice);
+                                for (Step jump: potentialNextState.generateAllJumpPur()) {
+                                    if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
+                                        gameState = potentialNextState;
+                                        onGoingMove.append(step.toString());
+                                        // update game board state
+                                        updateDices();
+                                        System.out.println("on going");
+                                        for (Dice dice:dicePieces) {
+                                            if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
+                                                onGoingDice = dice;
+                                                generateLegalIndicators(dice);
+                                            }
                                         }
                                     }
                                 }
+                            } else {
+                                onGoingMove.replace(0, onGoingMove.length(), "");
+                                onGoingDice = null;
                             }
-                        } else {
-                            onGoingMove.replace(0, onGoingMove.length(), "");
-                            onGoingDice = null;
                         }
 
                         // update game board state

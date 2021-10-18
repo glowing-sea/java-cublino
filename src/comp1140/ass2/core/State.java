@@ -370,6 +370,22 @@ public class State {
         return output;
     }
 
+    // (By Rajin)
+    public ArrayList<Step> getLegalStepContra(Dice dice) {
+        Position start = dice.getPosition();
+        ArrayList<Step> output = new ArrayList<>();
+
+        // If the dice the user click does not belong to the current player, return nothing.
+        if (this.player1Turn != dice.isPlayer1()) return output;
+
+        for(Position end : start.getAdjacentPositions()){ // Get all the positions 1 unit away from the dice, named "end".
+            Step possibleStep = new Step (start,end);
+            if(possibleStep.isValidStepPur(this,start)) // If the step from "start" to "end" is valid, add it.
+                output.add(possibleStep);
+        }
+        return output;
+    }
+
     //=================================================STATIC METHODS=================================================//
 
 
