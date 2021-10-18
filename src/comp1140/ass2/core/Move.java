@@ -11,8 +11,9 @@ public class Move {
 
     // (By Haoting)
     public Move(String encoding) {
-        assert Cublino.isMoveWellFormed(encoding) :
-                "The input move string is not well-formed.";
+
+        if (!Cublino.isMoveWellFormed(encoding)) throw new IllegalArgumentException();
+
         ArrayList<Position> move = new ArrayList<>();
         for(int i = 0; i < encoding.length(); i+=2)
             move.add(new Position(encoding.substring(i, i + 2)));
@@ -21,10 +22,12 @@ public class Move {
 
     public Move(ArrayList<Position> move){this.positions = move;}
 
+    // Copier (By Group)
+    public Move copy(){ return new Move(this.toString()); }
+
     // (By Group)
     public ArrayList<Position> getPositions() {return positions;}
     public void setPositions(ArrayList<Position> positions) {this.positions = positions;}
-
 
     //=============================================NON-STATIC METHODS=================================================//
 
@@ -93,45 +96,7 @@ public class Move {
 
     //=================================================STATIC METHODS=================================================//
 
-    // Take a Pur or Contra move and a state, return the updated state after the move.
-    public static State applyMove(State st, Move m) {
-        return st.isPur() ? applyMovePur(st, m) : applyMoveContra(st, m); // FIXME apply move for contra
-    }
 
-    public static State applyMoveContra(State st, Move m) {
-        return st;
-    }
-
-    /**
-     * Task 9: (By Anubhav and Haoting)
-     * Given a Pur game state and a move to play, determine the state that results from that move being played.
-     * If the move ends the game, the turn should be the player who would have played next had the game not ended. If
-     * the move is invalid the game state should remain unchanged.
-     *
-     * ASSUMPTION: the state is of Pur and valid. The move is well-formed.
-     */
-    public static State applyMovePur(State state, Move m) {
-
-       State st = new State(state.toString()); // Clone the state.
-
-        if(!m.isValidMovePur(st))
-            return st;
-
-        ArrayList<Position> pos = m.getPositions();
-        Position start = pos.get(0); // Starting position of a move.
-        Position end = pos.get(pos.size() - 1); // Ending position of a move.
-        Step firstStep = new Step(start, (pos.get(1))); // The first step of a move.
-
-        for (Dice dice : st.getDices()) {
-            if (dice.getPosition().equals(start)) { // Find out the dice that need to be moved!
-                dice.tip(firstStep); // Tip the dice if needed.
-                dice.jump(end); // Update the location of the dice
-            }
-        }
-        st.changeTurn(); // Update the turn.
-        Collections.sort(st.getDices()); // Sort the list of dices.
-        return st;
-    }
 
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {

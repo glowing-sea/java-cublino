@@ -14,6 +14,7 @@ public class Game {
         // 1 if player1 (White) is winner, 2 if player2 (Black) 3 if draw
         State s = initialiseBoard();
         // initialises board
+        State newState = s.copy(); // Make a copy of the state.
         while (s.isGameOverPur() == 0) {
             boolean isPlayer1 = s.getPlayerTurn();
             System.out.println(s.toString());
@@ -26,11 +27,11 @@ public class Game {
                 String m1 = q.next();
                 m = new Move(m1);
             }
-            s = Move.applyMovePur(s, m);
+            newState.applyMove(m);
 
         }
         // error, registers all moves are invalid for some reason.
-        return s.isGameOverPur();
+        return newState.isGameOverPur();
     }
     public static void main(String[] args) {
         System.out.println("Welcome to the game!");

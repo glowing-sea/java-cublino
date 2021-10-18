@@ -125,7 +125,7 @@ public class Board extends Application {
     }
 
     public void generateLegalIndicators(Dice dice) {
-        ArrayList<Step> legalSteps = gameState.getLegalMove(dice);
+        ArrayList<Step> legalSteps = gameState.getLegalStepPur(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();

@@ -3,10 +3,7 @@ package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 import javafx.geometry.Pos;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 import java.lang.Cloneable;
 
 // (By Group)
@@ -16,11 +13,12 @@ public class State {
     private boolean player1Turn; // "true" means player1's (White) turn."false" means player2 (Black) turn.
     private ArrayList<Dice> dices = new ArrayList<>();
 
-    //======================================= CONSTRUCTOR & PRINTER ==================================================//
+    //================================== CONSTRUCTOR & PRINTER & COPIER ==============================================//
 
-    // (Created by Rajin, edited by Haoting)
+    // Constructor (Created by Rajin, edited by Haoting)
     public State(String state) {
-        assert Cublino.isStateWellFormed(state) : "The input state string is not well-formed.";
+
+        if (!Cublino.isStateWellFormed(state)) throw new IllegalArgumentException();
 
         this.player1Turn = state.charAt(0) == 'P' || state.charAt(0) == 'C';
         this.pur = state.charAt(0) == 'P' || state.charAt(0) == 'p';
@@ -31,13 +29,7 @@ public class State {
         }
     }
 
-    public State(boolean pur, boolean player1Turn, ArrayList<Dice> dices){
-        this.pur = pur;
-        this.player1Turn = player1Turn;
-        this.dices = dices;
-    }
-
-    // (By Haoting)
+    // Printer (By Haoting)
     @Override
     public String toString(){
         StringBuilder output = new StringBuilder();
@@ -50,6 +42,8 @@ public class State {
         return output.toString();
     }
 
+    // Copier (By Group)
+    public State copy(){ return new State(this.toString()); }
 
     //============================================ CHECKER METHODS ===================================================//
 
@@ -186,6 +180,37 @@ public class State {
     public void changeTurn(){player1Turn = !this.player1Turn;}
 
 
+
+    /**
+     * Task 9 & 14(b) (By Anubhav and Haoting)
+     * Given a Pur or Contra game state and a move, update the state from the move.
+     * If the move ends the game, the turn should be the player who would have played next had the game not ended.
+     * If the move is invalid the, return an EXCEPTION (SLIGHTLY DIFFERENT FROM THE ORIGINAL TASKS).
+     *
+     * ASSUMPTION: the state is valid and the move is well-formed.
+     */
+    public void applyMove(Move m) {
+
+        if (!m.isValidMovePur(this)) throw new IllegalArgumentException(); // FIXME Contra
+
+        ArrayList<Position> pos = m.getPositions();
+        Position start = pos.get(0); // Starting position of a move.
+        Position end = pos.get(pos.size() - 1); // Ending position of a move.
+        Step firstStep = new Step(start, (pos.get(1))); // The first step of a move.
+
+        for (Dice dice : this.getDices()) {
+            if (dice.getPosition().equals(start)) { // Find out the dice that need to be moved!
+                dice.tip(firstStep); // Tip the dice if needed.
+                dice.jump(end); // Update the location of the dice.
+            }
+        }
+        this.changeTurn(); // Update the turn.
+        Collections.sort(this.getDices()); // Sort the list of dices.
+    }
+
+
+
+
     //============================================== LEGAL MOVES =====================================================//
 
     // Take a Pur or Contra state, return a list of legal moves of the state. (By Group)
@@ -237,7 +262,7 @@ public class State {
 
         visited[destination.getPositionOrder()] = true; // Record that the position has been visited.
         Step further = new Step (soFar.getLastPosition(), destination); // A new potential step.
-        Move candidate = new Move(soFar.toString()); // Clone the move so far.
+        Move candidate = soFar.copy(); // Copy the move so far.
         candidate.moveFurther(destination); // A new potential move.
 
         // Since we assume that the move so far is valid, we only need to check if the step from the last position of
@@ -302,120 +327,47 @@ public class State {
     }
 
     //===============================================DEAD CODE========================================================//
+    
 
-    // (By Rajin)
-    // Gets the piece at an X and Y coordinate
-    public Dice getPieceAt(int x, int y) {
-        for (Dice dice:dices) {
-            if (dice.getPosition().getX() == x && dice.getPosition().getY() == y) {
-                return dice;
-            }
-        }
-        return null;
-    }
-
-    // (By Rajin)
-    // Given a dice, find available tip spots
-    public ArrayList<Position> getTipPositions(Position dicePos) {
-        ArrayList<Position> positions = new ArrayList<>();
-        int forwardIncrement = getPlayerTurn() ? 1 : -1;
-        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
-        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
-        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
-
-        if (!leftPos.isOffBoard() && !containDice(leftPos)) {
-            positions.add(leftPos);
-        }
-
-        if (!rightPos.isOffBoard() && !containDice(rightPos)) {
-            positions.add(rightPos);
-        }
-
-        if (!forwardPos.isOffBoard() && !containDice(forwardPos)) {
-            positions.add(forwardPos);
-        }
-
-        return positions;
-    }
-
-    // (By Rajin)
-    // Given a dice, find available jump spots
-    public ArrayList<Position> getJumpPositions(Position dicePos) {
-        ArrayList<Position> jumpEndPositions = new ArrayList<>();
-
-        int forwardIncrement = getPlayerTurn() ? 1 : -1;
-        Position leftPos = new Position(dicePos.getX() - 1, dicePos.getY());
-        Position leftEndPos = new Position(leftPos.getX() -1, dicePos.getY());
-        Position rightPos = new Position(dicePos.getX() + 1, dicePos.getY());
-        Position rightEndPos = new Position(rightPos.getX() + 1, dicePos.getY());
-        Position forwardPos = new Position(dicePos.getX(), dicePos.getY() + forwardIncrement);
-        Position forwardEndPos = new Position(dicePos.getX(), forwardPos.getY() + forwardIncrement);
-
-        if (containDice(leftPos) && !leftEndPos.isOffBoard() && !containDice(leftEndPos)) {
-            jumpEndPositions.add(leftEndPos);
-        }
-
-        if (containDice(rightPos) && !rightEndPos.isOffBoard() && !containDice(rightEndPos)) {
-            jumpEndPositions.add(rightEndPos);
-        }
-
-        if (containDice(forwardPos) && !forwardEndPos.isOffBoard() && !containDice(forwardEndPos)) {
-            jumpEndPositions.add(forwardEndPos);
-        }
-
-        return jumpEndPositions;
-    }
-
-    // (By Rajin)
-    // Given a state, return a list of available tip steps
-    public ArrayList<Step> generateAllTipPur() {
-        ArrayList<Step> possibleTips = new ArrayList<>();
-
-        ArrayList<Dice> dices = getCurrentPlayerDices();
-
-        // get each dice for this player
-        for (Dice dice:dices) {
-            // 1. generate possible tips
-            ArrayList<Position> tipPositions = getTipPositions(dice.getPosition());
-            for (Position tipPos:tipPositions) {
-                possibleTips.add(new Step(dice.getPosition(), tipPos));
-            }
-        }
-        return possibleTips;
-    }
-
-    // (By Rajin)
+    // (Written Rajin, edited by Haoting)
     // Given a state, return a list of available jump steps
     public ArrayList<Step> generateAllJumpPur() {
-        ArrayList<Step> possibleJumps = new ArrayList<>();
+        ArrayList<Step> output = new ArrayList<>();
 
-        // get each dice for this player
+        // Get a list of all the dices of this player
         for (Dice dice:getCurrentPlayerDices()) {
-            // 2. generate possible jumps
-            for (Position jumpPos:getJumpPositions(dice.getPosition())) {
-                possibleJumps.add(new Step(dice.getPosition(), jumpPos));
+            Position start = dice.getPosition(); // The position of the dice
+            for (Position end : start.getJumpPositions()) { // Get all the positions 2 units away from the dice.
+                Step jump = new Step(start, end);
+                // If the step from the position of the dice to the destination is valid, add it to the output list.
+                if (jump.isValidStepPur(this, start))
+                    output.add(jump);
             }
         }
-        return possibleJumps;
+        return output;
     }
 
-    // (By Rajin)
-    // Given a Dice, return its legal moves
-    public ArrayList<Step> getLegalMove(Dice dice) {
-        ArrayList<Step> legalSteps = new ArrayList<>();
-        ArrayList<Step> allSteps = new ArrayList<>();
+    // (Written by Rajin, edited by Haoting)
+    // Given a Dice, return a list of position that the dice can be moved in a step.
+    public ArrayList<Step> getLegalStepPur(Dice dice) {
+        Position start = dice.getPosition(); // The start position of the dice, named "start".
+        ArrayList<Step> output = new ArrayList<>();
 
-        allSteps.addAll(generateAllTipPur());
-        allSteps.addAll(generateAllJumpPur());
+        // If the dice the user click does not belong to the current player, return nothing.
+        if (this.player1Turn != dice.isPlayer1()) return output;
 
-        // get all the legal steps
-        for (Step step:allSteps) {
-            if (step.getStartPosition().equals(dice.getPosition())) {
-                legalSteps.add(step);
-            }
+        for(Position end : start.getJumpPositions()){ // Get all the positions 2 units away from the dice, named "end".
+            Step possibleStep = new Step (start,end);
+            if(possibleStep.isValidStepPur(this,start)) // If the step from "start" to "end" is valid, add it.
+                output.add(possibleStep);
         }
 
-        return legalSteps;
+        for(Position end : start.getAdjacentPositions()){ // Get all the positions 1 unit away from the dice, named "end".
+            Step possibleStep = new Step (start,end);
+            if(possibleStep.isValidStepPur(this,start)) // If the step from "start" to "end" is valid, add it.
+                output.add(possibleStep);
+        }
+        return output;
     }
 
     //=================================================STATIC METHODS=================================================//

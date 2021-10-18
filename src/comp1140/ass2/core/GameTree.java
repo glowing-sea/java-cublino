@@ -12,24 +12,27 @@ public class GameTree {
     // (By Haoting)
     // Given a depth (>=1), generate a game tree from a game state.
     // Helper functions required: applyMove, isOver, legalMoves.
-    public GameTree(State state, int depth) {
+    public GameTree(State parent, int depth) {
         // If the required depth is reached or the state is over, stop generating.
-        if (depth == 1 || state.isOver())
-            this.parent = state;
+        if (depth == 1 || parent.isOver())
+            this.parent = parent;
         else {
-            this.parent = state;
+            this.parent = parent;
+            // System.out.println(parent + " " + parent.stateEvaluate());
 
             // If there there is no legal move, the turn is skipped.
             // The only child state will be same as the parent state except for the turn.
-            if (state.legalMoves().isEmpty()) {
-                State child = new State(state.toString()); // Clone the state.
+            if (parent.legalMoves().isEmpty()) {
+                State child = parent.copy(); // Make a child by copying the parent.
                 child.changeTurn();
                 this.children.add(new GameTree(child, depth - 1));
             }
             // If there are any legal moves, the child states are generated after every legal move of the parent state
             else {
-                for (Move move : state.legalMoves()) {
-                    this.children.add(new GameTree(Move.applyMove(state, move), depth - 1));
+                for (Move move : parent.legalMoves()) {
+                    State child = parent.copy(); // Make a child by copying the parent.
+                    child.applyMove(move); // Apply move to the child.
+                    this.children.add(new GameTree(child, depth - 1));
                 }
             }
         }

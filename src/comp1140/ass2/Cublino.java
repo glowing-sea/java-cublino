@@ -198,9 +198,11 @@ public class Cublino {
     // (By Anubhav and Haoting)
     // For marking only. Please use the method applyMovePur in Move Class.
     public static String applyMovePur(String state, String move) {
+        if (!isValidMovePur(state, move)) return state;
         Move m = new Move(move);
         State st = new State(state);
-        return Move.applyMovePur(st, m).toString();
+        st.applyMove(m);
+        return st.toString();
     }
 
     /**
@@ -229,34 +231,36 @@ public class Cublino {
         assert(difficulty == 1 || difficulty == 2) : "Invalid difficulty";
         boolean useMinimax = difficulty == 2;
 
-        ArrayList<StatePlus> newStates = new ArrayList<>(); // A list of new states after applying each legal move.
+        ArrayList<MovePlus> legalMoves = new ArrayList<>(); // A list of legal moves.
 
         for (Move move : state.legalMoves()){
-            StatePlus st = new StatePlus(move, Move.applyMove(state, move), useMinimax);
+            MovePlus st = new MovePlus(move, state, useMinimax);
             // System.out.println("" + st.getSTATE() + " " + st.SCORE);
-            newStates.add(st);
+            legalMoves.add(st);
         }
-        return Collections.max(newStates).getMOVE(); // Find the move leading to the state with the highest score.
+        return Collections.max(legalMoves).getMOVE(); // Find the move leading to the state with the highest score.
     }
 
     // (By Haoting)
-    public static class StatePlus implements Comparable<StatePlus>{
-        final Move MOVE;
-        final State STATE;
-        final int SCORE;
+    // A pair that store a move and the score of the new state result from the move.
+    private static class MovePlus implements Comparable<MovePlus>{
+        private final Move MOVE; // A move
+        private final int SCORE; // The score of the new state result from the move.
 
-        public StatePlus(Move move, State state, boolean useMinimax) {
+        public MovePlus(Move move, State parent, boolean useMinimax) {
             this.MOVE = move;
-            this.STATE = state;
+            State child = parent.copy(); // Make a child by copying the parent
+            child.applyMove(move); // Apply the move to the child
+
             if (useMinimax){
-                GameTree tree = new GameTree(state, 3);
-                this.SCORE = tree.miniMaxAB(-9999, 9999); }
+                GameTree tree = new GameTree(child, 3); // Build a tree from the child.
+                this.SCORE = tree.miniMaxAB(-9999, 9999); } // Evaluate the tree.
             else
-                this.SCORE = state.stateEvaluate();
+                this.SCORE = child.stateEvaluate(); // Evaluate the child state directly.
         }
         @Override
-        public int compareTo(StatePlus other) {
-            return this.SCORE - other.SCORE;
+        public int compareTo(MovePlus other) {
+            return this.SCORE - other.SCORE; // The best move is the one with the highest score.
         }
         public Move getMOVE() { return MOVE; }
     }
@@ -316,7 +320,9 @@ public class Cublino {
      * @return the resulting state after the move has been applied
      */
     public static String applyMoveContra(String state, String move) {
-        State st = (Move.applyMovePur(new State(state), new Move(move)));
+        State st = new State(state);
+        Move m = new Move(move);
+        st.applyMove(m);
         ArrayList<Dice> removedDice = new ArrayList<>();
         for (Dice d : st.getDices()) {
             for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {
@@ -404,18 +410,6 @@ public class Cublino {
         return moves.get(0); // FIXME Task 14c (HD)
     }
 
-    public static void main(String[] args) {
-        System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
-
-
-        State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-        State s2 = new State("Psc1ma2if2ca3gc3we3Qc4td4Qa5Cb5Oc5Hf6Wb7We7");
-        Move m = new Move("f6e6");
-
-        System.out.println(s2.legalMoves());
-        System.out.println(bestMovePur(s2,1));
-        System.out.println(bestMovePur(s2,2));
-    }
 
     public static float greedyContraHeuristic(String state, boolean isPlayer1) {
         // implements a greedy contra heuristic
@@ -453,5 +447,19 @@ public class Cublino {
         return ((float) (yourDiceNumber - opponentDiceNumber)/2) - closestDistanceToFinish + gameOverFactor;
         // because I want to maximise my dice, miminise their dice, and minimise the closest distance
 
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
+
+
+        State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        State s2 = new State("Psc1ma2if2ca3gc3we3Qc4td4Qa5Cb5Oc5Hf6Wb7We7");
+        Move m = new Move("f6e6");
+
+        System.out.println(s2.legalMoves());
+        System.out.println(bestMovePur(s2,1));
+        System.out.println(bestMovePur(s2,2));
     }
 }
