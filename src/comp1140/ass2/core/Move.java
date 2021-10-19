@@ -95,19 +95,26 @@ public class Move {
     }
 
     // (Written by Anubhav, edited by Haoting)
-    public Boolean isValidMoveContra(State state) {
+    public Boolean isValidMoveContra(State state, boolean quickCheck) {
 
-        // Only one step.
-        if (positions.size() != 2)
-            return false;
+        // Only one step is allowed.
+        if (positions.size() != 2) return false;
 
         Position start = positions.get(0);
         Position end = positions.get(1);
-        int forward = state.getPlayerTurn() ? 1 : -1;
 
-        // Check if the starting position and the ending position are adjacent.
-        if (!start.isAdjacent(end))
-            return false;
+        if(!quickCheck){
+
+            // Check if there is a current player's dice in the starting position
+            if (!state.containDice(start, true))
+                return false;
+
+            // Check if the starting position and the ending position are adjacent.
+            if (!start.isAdjacent(end))
+                return false;
+        }
+
+        int forward = state.getPlayerTurn() ? 1 : -1;
 
         // Check if it is a valid forward move
         if (start.getX() == end.getX()) {
@@ -116,7 +123,7 @@ public class Move {
         }
 
         // No dice in the ending position and there is a current player's dice in the starting position.
-        return !state.containDice(end, false) && state.containDice(start, true);
+        return !state.containDice(end, false);
     }
 
 
@@ -137,13 +144,6 @@ public class Move {
         State s2 = new State("PWa1Db3Wc1Wd1We1Wf1Wg1va7vb4vc7vd7ve7vf7vg7");
         State s3 = new State("PWa1Wb3Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
 
-//        System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a7"));
-        System.out.println("Move " + m + " is valid is " + m.isValidMoveContra(s1));
-        System.out.println("Move " + m3 + " is valid is " + m3.isValidMoveContra(s1));
-        System.out.println("Move " + m4 + " is valid is " + m4.isValidMoveContra(s1));
-        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s1));
-        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s2));
-        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s3));
     }
 
 

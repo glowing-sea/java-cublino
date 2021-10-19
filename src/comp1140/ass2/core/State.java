@@ -189,7 +189,7 @@ public class State {
         if(this.pur){
             if (!m.isValidMovePur(this)) throw new IllegalArgumentException(); }
         else{
-            if (!m.isValidMoveContra(this)) throw new IllegalArgumentException(); }
+            if (!m.isValidMoveContra(this, false)) throw new IllegalArgumentException(); }
 
         // Move a dice
         ArrayList<Position> pos = m.getPositions();
@@ -264,14 +264,14 @@ public class State {
     //============================================== LEGAL MOVES =====================================================//
 
     // Take a Pur or Contra state, return a list of legal moves of the state. (By Group)
-    public ArrayList<Move> legalMoves () {
-        return this.pur ? legalMovesPur() : legalMovesContra(); // FIXME: legal move for Contra needed.
+    public Set<Move> legalMoves () {
+        return this.pur ? legalMovesPur() : legalMovesContra();
     }
 
     // (By Rajin & Haoting)
     // Give a valid Pur state, generate a list of legal moves.
-    public ArrayList<Move> legalMovesPur (){
-        Set<Move> legalMoves = new HashSet<>(); // A list of all the legal moves.
+    private Set<Move> legalMovesPur (){
+        Set<Move> legalMoves = new HashSet<>(); // A set storing all the legal moves.
         ArrayList<Dice> playerDices = this.getCurrentPlayerDices(); // All the dice belonging to the current player.
         boolean[] visited = new boolean[49];
 
@@ -291,7 +291,7 @@ public class State {
                 dice.jump(start); // reset the position of the dice after a move propagation.
             }
         }
-        return new ArrayList<>(legalMoves);
+        return legalMoves;
     }
 
     /**
@@ -335,19 +335,29 @@ public class State {
         visited[start.getPositionOrder()] = false; // Reset in order for the function to be used again.
     }
 
-    public ArrayList<Move> legalMovesContra (){
-        return new ArrayList<>();
+    // (Written by Anubhav, reviewed by Haoting)
+    private Set<Move> legalMovesContra (){
+        Set<Move> legalMoves = new HashSet<>();
+        for (Dice d : this.getDices()) {
+            Position pos = d.getPosition();
+            if (d.isPlayer1() == this.getPlayerTurn()) {
+                for (Position p : pos.getAdjacentPositions()) {
+                    Move potentialMove = new Move(d.getPosition().toString());
+                    potentialMove.moveFurther(p);
+                    if (potentialMove.isValidMoveContra(this, true))
+                        legalMoves.add(potentialMove);
+                }
+            }
+        }
+        return legalMoves;
     }
-
 
     //============================================ HEURISTIC METHODS =================================================//
 
     // Take a Pur or Contra state, return the heuristic score of the state.
     public int stateEvaluate (boolean currentPlayer) {
         return this.pur ? stateEvaluatePur (currentPlayer) : stateEvaluateContra(currentPlayer);
-        // FIXME: heuristic function for Contra needed.
     }
-
 
     /**
      * Cublino Pur Heuristic Function (Written by Rajin & edited by Haoting)
@@ -358,7 +368,7 @@ public class State {
      * 100 * the top values if the dice reaches the end.
      *
      */
-    public int stateEvaluatePur (boolean currentPlayer) {
+    private int stateEvaluatePur (boolean currentPlayer) {
 
         int p1Score = 0;
         int p2Score = 0;
@@ -384,10 +394,52 @@ public class State {
     }
 
 
-    // Cublino Contra Heuristic Function
-    public int stateEvaluateContra (boolean currentPlayer) {
-        return 0; // FIXME
+    /**
+     * Cublino Contra Heuristic Function (Written by Anubhav, reviewed by Haoting)
+     *
+     * The final score = the current player score - the opponent score.
+     * A player's score = the number of dices + (the distance from the starting position to the farthest dice) ^ 2
+     *
+     */
+    private int stateEvaluateContra (boolean currentPlayer) {
+
+        int p1Score = 0;
+        int p2Score = 0;
+
+        // Makes sure won games are prioritised
+        switch(this.isGameOver()){
+            // Player 1 win, the current player is Player 1, then return 5000.
+            case 1 -> {return currentPlayer ? 5000 : -5000;}
+            // Player 2 win, the current player is Player 2, then return 5000.
+            case 2 -> {return currentPlayer ? -5000 : 5000;}
+        }
+
+        int p1Farthest = 0; // The vertical distance between the starting point and the farthest dice of player 1.
+        int p2Farthest = 0; // The vertical distance between the starting point and the farthest dice of player 2.
+        int p1DiceNumber = 0;
+        int p2DiceNumber = 0;
+
+        for (Dice d : this.getDices()) {
+            if (d.isPlayer1()) {
+                p1DiceNumber++;
+                if (d.getPosition().getY() - 1 > p1Farthest)
+                    p1Farthest = d.getPosition().getY() - 1; // Update the maximum distance.
+            }
+            else{
+                p2DiceNumber++;
+                if (7 - d.getPosition().getY() > p2Farthest)
+                    p2Farthest = 7 - d.getPosition().getY(); // Update the maximum distance.
+            }
+        }
+
+        p1Score = p1DiceNumber + p1Farthest ^ 2;
+        p2Score = p2DiceNumber + p2Farthest ^ 2;
+
+        // If the current player is player 1, the result is p1Score (current player) - p2Score (opponent)
+        // If the current player is player 2, the result is p2Score (current player) - p1Score (opponent)
+        return currentPlayer ? p1Score - p2Score : p2Score - p1Score;
     }
+
 
     //============================================== DEAD CODE =======================================================//
     
@@ -454,8 +506,15 @@ public class State {
         State s4 = new State("Cic4uc5Ud5");
         System.out.println("the battle result is " + battle(d1,d2,s4));
         System.out.println("the battle result is " + battle(d2,d3,s4));
+        System.out.println();
 
-
+        // legalMovesContra test
+        State st1 = new State("Cga1Se1Tb2Ld2Lg2Gc3Pa4Jb4vf5eb6ic6ed6ef6vd7");
+        State st2 = new State("csc1ca3sf3Mb4jc4td4Qa5Cb5Oc5vf5qb6Lg6Ga7Gd7");
+        State st3 = new State("CWa1Wb1Wc7Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        System.out.println("The legal moves for st1 is " + st1.legalMoves());
+        System.out.println("The legal moves for st2 is " + st1.legalMoves());
+        System.out.println(st3.isGameOver());
     }
 }
 

@@ -30,16 +30,16 @@ class isValidMoveContraTest {
     @Test
     public void validMoves() {
         for (String move : m1)
-            assertTrue(getMove(move).isValidMoveContra(st1), "Move \"" + move + "\" is valid for state \"" + st1 + "\"");
+            assertTrue(getMove(move).isValidMoveContra(st1, false), "Move \"" + move + "\" is valid for state \"" + st1 + "\"");
         for (String move : m2)
-            assertTrue(getMove(move).isValidMoveContra(st2), "Move \"" + move + "\" is valid for state \"" + st2 + "\"");
+            assertTrue(getMove(move).isValidMoveContra(st2, false), "Move \"" + move + "\" is valid for state \"" + st2 + "\"");
     }
 
     @Test
     public void invalidMoves() {
         for (String move : m3)
-            assertFalse(getMove(move).isValidMoveContra(st1), "Move \"" + move + "\" is invalid for state \"" + st1 + "\"");
+            assertFalse(getMove(move).isValidMoveContra(st1, false), "Move \"" + move + "\" is invalid for state \"" + st1 + "\"");
         for (String move : m4)
-            assertFalse(getMove(move).isValidMoveContra(st2), "Move \"" + move + "\" is invalid for state \"" + st2 + "\"");
+            assertFalse(getMove(move).isValidMoveContra(st2, false), "Move \"" + move + "\" is invalid for state \"" + st2 + "\"");
     }
 }
