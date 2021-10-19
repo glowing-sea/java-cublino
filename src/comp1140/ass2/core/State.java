@@ -116,18 +116,26 @@ public class State {
         return false;
     }
 
-
-    // Take a Pur or Contra state, check if it is over.
-    public boolean isOver () {
-        return false; // FIXME
-    }
-
     /**
-     * Task 6: (Object version) (Written by Anubhav, edited by Haoting)
+     * Task 6 & Task 14a (Written by Anubhav, edited by Haoting)
      * Determine whether a state represents a finished Pur game, and if so who the winner is.
      * ASSUMPTIONS: the state is of the Pur variant and valid.
      */
-    public int isGameOverPur() {
+    public int isGameOver() {
+
+        // Check if a Contra game is over.
+        if (!this.pur){
+            for (Dice dice : this.getDices()){
+                if (dice.isPlayer1()) {
+                    if (dice.getPosition().getY() == 7)
+                        return 1; }
+                else {
+                    if (dice.getPosition().getY() == 1)
+                        return 2; } }
+            return 0;
+        }
+
+        // Check if a Pur game is over.
         int p1OnOtherSide = 0; // The number of player1's dice at the opponent's end.
         int p2OnOtherSide = 0; // The number of player2's dice at the opponent's end.
         int p1score = 0; // Player1's score.
@@ -181,13 +189,14 @@ public class State {
         if (!m.isValidMovePur(this)) throw new IllegalArgumentException(); // FIXME Contra
 
         ArrayList<Position> pos = m.getPositions();
-        Position start = pos.get(0); // Starting position of a move.
-        Position end = pos.get(pos.size() - 1); // Ending position of a move.
+        Position start = m.getStart(); // Starting position of a move.
+        Position end = m.getEnd(); // Ending position of a move.
         Step firstStep = new Step(start, (pos.get(1))); // The first step of a move.
 
-        for (Dice dice : this.getDices()) {
-            if (dice.getPosition().equals(start)) { // Find out the dice that need to be moved!
-                dice.tip(firstStep); // Tip the dice if needed.
+        for (Dice dice : this.getDices()) { // Find the dice that need to be moved.
+            if (dice.getPosition().equals(start)) {
+                if(firstStep.isTip())
+                    dice.tip(firstStep); // Tip the dice if needed.
                 dice.jump(end); // Update the location of the dice.
             }
         }

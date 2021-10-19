@@ -43,6 +43,8 @@ public class Move {
     // (By Haoting)
     // Get the last position of the move
     public Position getEnd (){ return this.positions.get(positions.size() - 1); }
+    public Position getStart (){ return this.positions.get(0); }
+
 
     // Add a new position to the move. (Change the current Move object)
     public void moveFurther (Position destination){ this.positions.add(destination); }
@@ -92,26 +94,31 @@ public class Move {
         return true;
     }
 
+    // (Written by Anubhav, edited by Haoting)
     public Boolean isValidMoveContra(State state) {
-        if (positions.size() != 2) {
+
+        // Only one step.
+        if (positions.size() != 2)
             return false;
+
+        Position start = positions.get(0);
+        Position end = positions.get(1);
+        int forward = state.getPlayerTurn() ? 1 : -1;
+
+        // Check if the starting position and the ending position are adjacent.
+        if (!start.isAdjacent(end))
+            return false;
+
+        // Check if it is a valid forward move
+        if (start.getX() == end.getX()) {
+            if (!(start.getY() + forward == end.getY())) // Tilt forward
+                return false;
         }
-        if (!(this.positions.get(0).isAdjacent(this.positions.get(1))) && (this.positions.get(0).getY() - this.positions.get(1).getY() !=1)) return false;
-        // note: accounted for the fact that you can't tip backwards, so starting y cannot be one bigger than ending y
-        boolean containsStartingDice = false;
-        for (Dice d : state.getDices()) {
-            if (d.getPosition().equals(this.positions.get(0))) {
-                containsStartingDice = true;
-            }
-            if (d.getPosition().equals(this.positions.get(1))) return false;
-            // none of the dice in the board should return the endpoint of the move location
-        }
-        return true && containsStartingDice; // move should contain starting dice
+
+        // No dice in the ending position and there is a current player's dice in the starting position.
+        return !state.containDice(end, false) && state.containDice(start, true);
     }
 
-    // By Haoting
-    // Get the last position of the move
-    public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
 
     //=================================================STATIC METHODS=================================================//
 
@@ -119,22 +126,24 @@ public class Move {
 
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {
-        Move m1 = new Move("g6f6d6");
-        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a8");
-        System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a8"));
         Move m = new Move("a1a2"); // empty spot, so should return true
+        Move m1 = new Move("g6f6d6");
+        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a7");
         Move m3 = new Move("a1a2a3"); // should return false
         Move m4 = new Move("a2a1"); // false, behind move is invalid
+        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
+
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
         State s2 = new State("PWa1Db3Wc1Wd1We1Wf1Wg1va7vb4vc7vd7ve7vf7vg7");
         State s3 = new State("PWa1Wb3Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
-        System.out.println("Move " + m.toString() + " is valid is " + m.isValidMoveContra(s1));
-        System.out.println("Move " + m3.toString() + " is valid is " + m3.isValidMoveContra(s1));
-        System.out.println("Move " + m4.toString() + " is valid is " + m4.isValidMoveContra(s1));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s2));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s1));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s3));
+
+//        System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a7"));
+        System.out.println("Move " + m + " is valid is " + m.isValidMoveContra(s1));
+        System.out.println("Move " + m3 + " is valid is " + m3.isValidMoveContra(s1));
+        System.out.println("Move " + m4 + " is valid is " + m4.isValidMoveContra(s1));
+        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s1));
+        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s2));
+        System.out.println("Move " + m5 + " is valid is " + m5.isValidMoveContra(s3));
     }
 
 

@@ -119,7 +119,7 @@ public class Cublino {
     // For marking only, please use the inner method isGameOverPur in State class.
     public static int isGameOverPur(String state) {
         State st = new State(state);
-        return st.isGameOverPur();
+        return st.isGameOver();
     }
 
     /**
@@ -225,8 +225,17 @@ public class Cublino {
         return bestMovePur(gameState, 1).toString();
     }
 
-    // Find the best move from a list of legal moves (By Rajin & Haoting)
-    // 1: greedy 2: Minimax
+    /**
+     * Give a state and a difficulty value n, find the best move.
+     * If n = 1, implement greedy AI. If n = 2 implement Minimax AI.
+     *
+     * How does the function work intuitively?
+     *
+     * The function generate a list of legal moves. For each move, it applies the move and gets a new state resulting
+     * from the move. It then evaluates the new state and save the move and the new state together in a pair called
+     * MovePlus. Finally, the function choose the move which will lead to the new state with the highest score.
+     */
+    // (By Rajin & Haoting)
     public static Move bestMovePur(State state, int difficulty){
         if (difficulty != 1 && difficulty != 2) throw new IllegalArgumentException();
         boolean useMinimax = difficulty == 2;
@@ -278,31 +287,11 @@ public class Cublino {
      * @param state a Contra game state
      * @return 1 if player one has won, 2 if player two has won, otherwise 0.
      */
+    // (By Anubhav)
+    // For marking only, please use the inner method isGameOverPur in State class.
     public static int isGameOverContra(String state) {
-        char[] stateChars = state.toCharArray();
-        int increment = 0;
-        for (int i=0;i<stateChars.length;i++) {
-            if (increment == 1) {
-                Position p = new Position("" + stateChars[i+1] + stateChars[i+2]);
-                if (Character.isUpperCase(stateChars[i])) {
-                    if (p.getY() == 7) {
-                        return 1;
-                    }
-                }
-                else {
-                    if (p.getY() == 1) {
-                        return 2;
-                    }
-                }
-            }
-            if (increment != 3) {
-                increment++;
-            }
-            else {
-                increment = 1;
-            }
-        }
-        return 0; // FIXME Task 14a (HD)
+        State st = new State(state);
+        return st.isGameOver();
     }
 
     /**
@@ -323,6 +312,8 @@ public class Cublino {
         State st = new State(state);
         Move m = new Move(move);
         st.applyMove(m);
+
+
         ArrayList<Dice> removedDice = new ArrayList<>();
         for (Dice d : st.getDices()) {
             for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {

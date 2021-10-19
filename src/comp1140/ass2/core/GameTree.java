@@ -14,7 +14,7 @@ public class GameTree {
     // Helper functions required: applyMove, isOver, legalMoves.
     public GameTree(State parent, int depth) {
         // If the required depth is reached or the state is over, stop generating.
-        if (depth == 1 || parent.isOver())
+        if (depth == 1 || parent.isGameOver() != 0)
             this.parent = parent;
         else {
             this.parent = parent;

@@ -69,8 +69,10 @@ public class Dice implements Comparable<Dice> {
 
     // (Written by Anubhav and edited by Haoting)
     // Give a tip step, update the both position and direction of the dice result from the step.
-    // Do nothing if a step is not a tip.
     public void tip(Step step){
+        if (!step.isTip()) throw new IllegalArgumentException();
+
+        this.position = step.getEndPosition();
         int[] initialFaces = this.getFaces();
         int[] newFaces = new int[6];
 
@@ -267,6 +269,9 @@ public class Dice implements Comparable<Dice> {
         Dice d5 = new Dice("Td4");
         System.out.println(adjacentDices(d5.getPosition(),state1));
         System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
+
+        d1.tip(new Step("c2c3"));
+        System.out.println(d1);
     }
 }
 
