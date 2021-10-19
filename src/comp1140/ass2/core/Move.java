@@ -38,22 +38,21 @@ public class Move {
     //========================================== SETTER & GETTER METHODS =============================================//
 
     // (By Group)
-    public ArrayList<Position> getPositions() {return positions;}
+    public ArrayList<Position> getPositions() {return positions;} // Get a list of positions of the move.
 
     // (By Haoting)
-    // Get the last position of the move
-    public Position getEnd (){ return this.positions.get(positions.size() - 1); }
-    public Position getStart (){ return this.positions.get(0); }
+    public Position getStart (){ return this.positions.get(0); } // Get the starting position of the move.
+    public Position getEnd (){ return this.positions.get(positions.size() - 1); } // Get the ending position of the move.
 
 
-    // Add a new position to the move. (Change the current Move object)
+    // Add a new position to the current move object.
     public void moveFurther (Position destination){ this.positions.add(destination); }
 
     //============================================== CHECKER METHODS =================================================//
 
     /**
      * Task 8: (By Haoting)
-     * Determine whether a move (sequence of steps) is valid for a given game.
+     * Determine whether a move (sequence of steps) is valid for a given Pur game.
      *
      * A move is valid if it satisfies the following conditions:
      * 1. The starting position of the move contains a dice belonging to the player who's turn it is.
@@ -95,6 +94,7 @@ public class Move {
     }
 
     // (Written by Anubhav, edited by Haoting)
+    // Determine whether a move is valid for a given Contra game.
     public Boolean isValidMoveContra(State state, boolean quickCheck) {
 
         // Only one step is allowed.

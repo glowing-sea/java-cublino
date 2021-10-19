@@ -1,17 +1,13 @@
 package comp1140.ass2.core;
 
 import comp1140.ass2.Cublino;
-import javafx.geometry.Pos;
-
 import java.util.*;
-import java.lang.Cloneable;
 
 // (By Group)
 public class State {
-    private static final int BOARD_SIZE = 7;
     private final boolean pur; // "true" means Pur."false" mean Contra.
+    private final ArrayList<Dice> dices = new ArrayList<>();
     private boolean player1Turn; // "true" means player1's (White) turn."false" means player2 (Black) turn.
-    private ArrayList<Dice> dices = new ArrayList<>();
 
     //================================== CONSTRUCTOR & PRINTER & COPIER ==============================================//
 
@@ -47,9 +43,11 @@ public class State {
 
     //============================================ CHECKER METHODS ===================================================//
 
+    public boolean isPur() {return this.pur;} // Check if it is a Pur state.
+
     /**
      * Task 4: (Written by Anubhav, edited by Haoting)
-     * Determine whether the input state is valid.
+     * Determine whether a Pur or Contra state is valid.
      * ASSUMPTIONS: the state is well-formed.
      */
     public boolean isStateValid(){
@@ -98,7 +96,7 @@ public class State {
 
     /**
      * (By Haoting Chen)
-     * Given a position, check if there is a dice at that position.
+     * Check if the state contains a dice at a given position.
      * Extra Condition enable: check if there is a dice at that position and the dice belongs to the current player.
      */
     //
@@ -118,7 +116,7 @@ public class State {
 
     /**
      * Task 6 & Task 14a (Written by Anubhav, edited by Haoting)
-     * Determine whether a state represents a finished Pur game, and if so who the winner is.
+     * Determine whether a state represents a finished Pur or Contra game, and if so who the winner is.
      * ASSUMPTIONS: the state is of the Pur variant and valid.
      */
     public int isGameOver() {
@@ -171,9 +169,8 @@ public class State {
     //============================================= SETTER METHODS ===================================================//
 
     // (By Group)
-    public void setDices(ArrayList<Dice> dices) {this.dices = dices;}
-    public void setPlayer1Turn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;}
-    public void changeTurn(){player1Turn = !this.player1Turn;}
+    public void setTurn(boolean isPlayer1Turn) {this.player1Turn = isPlayer1Turn;} // Given a player, set the turn.
+    public void changeTurn(){player1Turn = !this.player1Turn;} // Change the turn.
 
 
     /**
@@ -247,12 +244,11 @@ public class State {
     //======================================== GENERAL GETTER METHODS ================================================//
 
     // Getter Methods (By Group)
-    public ArrayList<Dice> getDices() {return dices;}
-    public boolean getPlayerTurn() {return this.player1Turn;}
-    public boolean isPur() {return this.pur;}
+    public ArrayList<Dice> getDices() {return dices;} // Get a list of all dices.
+    public boolean getPlayerTurn() {return this.player1Turn;} // Get the current turn of the state.
 
     // (Written by Rajin, edited by Haoting)
-    // Gets all dices belonging to the current player. (Player1 = white = true, vice versa.)
+    // Gets a list of all dices belonging to the current player.
     public ArrayList<Dice> getCurrentPlayerDices() {
         ArrayList<Dice> dices = new ArrayList<>();
         for (Dice dice: this.dices) {
@@ -263,7 +259,7 @@ public class State {
 
     //============================================== LEGAL MOVES =====================================================//
 
-    // Take a Pur or Contra state, return a list of legal moves of the state. (By Group)
+    // Get a set of legal moves of the Pur or Contra state. (By Group)
     public Set<Move> legalMoves () {
         return this.pur ? legalMovesPur() : legalMovesContra();
     }
@@ -352,15 +348,56 @@ public class State {
         return legalMoves;
     }
 
+    // (Written Rajin, edited by Haoting)
+    // Get a list of all the legal steps in for a given dice in a Pur state. (used for UI only)
+    public ArrayList<Step> legalJumpsPur() {
+        ArrayList<Step> output = new ArrayList<>();
+
+        // Get a list of all the dices of this player
+        for (Dice dice:getCurrentPlayerDices()) {
+            Position start = dice.getPosition(); // The position of the dice
+            for (Position end : start.getJumpPositions()) { // Get all the positions 2 units away from the dice.
+                Step jump = new Step(start, end);
+                // If the step from the position of the dice to the destination is valid, add it to the output list.
+                if (jump.isValidStepPur(this))
+                    output.add(jump);
+            }
+        }
+        return output;
+    }
+
+    // (Written by Rajin, edited by Haoting)
+    // Return all the legal steps in in a state. (used for UI only)
+    public ArrayList<Step> legalStepsPur(Dice dice) {
+        Position start = dice.getPosition(); // The start position of the dice, named "start".
+        ArrayList<Step> output = new ArrayList<>();
+
+        // If the dice the user click does not belong to the current player, return nothing.
+        if (this.player1Turn != dice.isPlayer1()) return output;
+
+        for(Position end : start.getJumpPositions()){ // Get all the positions 2 units away from the dice, named "end".
+            Step possibleStep = new Step (start,end);
+            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
+                output.add(possibleStep);
+        }
+
+        for(Position end : start.getAdjacentPositions()){ // Get all the positions 1 unit away from the dice, named "end".
+            Step possibleStep = new Step (start,end);
+            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
+                output.add(possibleStep);
+        }
+        return output;
+    }
+
     //============================================ HEURISTIC METHODS =================================================//
 
     /**
-     * Take a Pur or Contra state, return the heuristic score of the state.
+     * Evaluate a Pur or Contra state.
      *
      * @param currentPlayer The role of the AI.
      * If the AI is Player 1, the score of the state = Player 1 score - Player 2 score.
      * If the AI is Player 2, the score of the state = Player 2 score - Player 1 score.
-     * i.e. the AI always want to maximise its score.
+     * The score = AI’s score – its opponent’s score.
      * If the score is positive, the AI is winning the game.
      * If the score is negative, the AI is losing the game.
      */
@@ -451,51 +488,6 @@ public class State {
     }
 
 
-    //============================================== DEAD CODE =======================================================//
-    
-
-    // (Written Rajin, edited by Haoting)
-    // Given a state, return a list of available jump steps
-    public ArrayList<Step> generateAllJumpPur() {
-        ArrayList<Step> output = new ArrayList<>();
-
-        // Get a list of all the dices of this player
-        for (Dice dice:getCurrentPlayerDices()) {
-            Position start = dice.getPosition(); // The position of the dice
-            for (Position end : start.getJumpPositions()) { // Get all the positions 2 units away from the dice.
-                Step jump = new Step(start, end);
-                // If the step from the position of the dice to the destination is valid, add it to the output list.
-                if (jump.isValidStepPur(this))
-                    output.add(jump);
-            }
-        }
-        return output;
-    }
-
-    // (Written by Rajin, edited by Haoting)
-    // Given a Dice, return a list of position that the dice can be moved in a step.
-    public ArrayList<Step> getLegalStepPur(Dice dice) {
-        Position start = dice.getPosition(); // The start position of the dice, named "start".
-        ArrayList<Step> output = new ArrayList<>();
-
-        // If the dice the user click does not belong to the current player, return nothing.
-        if (this.player1Turn != dice.isPlayer1()) return output;
-
-        for(Position end : start.getJumpPositions()){ // Get all the positions 2 units away from the dice, named "end".
-            Step possibleStep = new Step (start,end);
-            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
-                output.add(possibleStep);
-        }
-
-        for(Position end : start.getAdjacentPositions()){ // Get all the positions 1 unit away from the dice, named "end".
-            Step possibleStep = new Step (start,end);
-            if(possibleStep.isValidStepPur(this)) // If the step from "start" to "end" is valid, add it.
-                output.add(possibleStep);
-        }
-        return output;
-    }
-
-
     //================================================== TEST ========================================================//
 
 
@@ -525,6 +517,7 @@ public class State {
         System.out.println("The legal moves for st1 is " + st1.legalMoves());
         System.out.println("The legal moves for st2 is " + st1.legalMoves());
         System.out.println(st3.isGameOver());
+        System.out.println(state1.isGameOver());
     }
 }
 

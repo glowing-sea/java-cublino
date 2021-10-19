@@ -11,7 +11,6 @@ public class GameTree {
 
     // (By Haoting)
     // Given a depth (>=1), generate a game tree from a game state.
-    // Helper functions required: applyMove, isOver, legalMoves.
     public GameTree(State parent, int depth) {
         // If the required depth is reached or the state is over, stop generating.
         if (depth == 1 || parent.isGameOver() != 0)

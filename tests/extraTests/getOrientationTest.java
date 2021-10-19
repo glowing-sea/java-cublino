@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Timeout;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static comp1140.ass2.core.Dice.*;
 
 @Timeout(value = 1000, unit = MILLISECONDS)
 class getOrientationTest {
@@ -69,5 +68,89 @@ class getOrientationTest {
         assertEquals('x', getOrientation(new int[] {6,5,3,1,4}, false));
         assertEquals('X', getOrientation(new int[] {6,5,3,1,4}, true));
 
+    }
+
+    // May no long needed
+    // (By Anubhav)
+    public static char getOrientation(int[] sides, boolean isPlayer1) {
+        char x = 0;
+        if (sides[0] == 1 && sides[1] == 2) {
+            x = 'a';
+        }
+        else if (sides[0] == 1 && sides[1] == 3) {
+            x = 'b';
+        }
+        else if (sides[0] == 1 && sides[1] == 4) {
+            x = 'c';
+        }
+        else if (sides[0] == 1 && sides[1] == 5) {
+            x = 'd';
+        }
+        else if (sides[0] == 2 && sides[1] == 1) {
+            x = 'e';
+        }
+        else if (sides[0] == 2 && sides[1] == 3) {
+            x = 'f';
+        }
+        else if (sides[0] == 2 && sides[1] == 4) {
+            x = 'g';
+        }
+        else if (sides[0] == 2 && sides[1] == 6) {
+            x = 'h';
+        }
+        else if (sides[0] == 3 && sides[1] == 1) {
+            x = 'i';
+        }
+        else if (sides[0] == 3 && sides[1] == 2) {
+            x = 'j';
+        }
+        else if (sides[0] == 3 && sides[1] == 5) {
+            x = 'k';
+        }
+        else if (sides[0] == 3 && sides[1] == 6) {
+            x = 'l';
+        }
+        else if (sides[0] == 4 && sides[1] == 1) {
+            x = 'm';
+        }
+        else if (sides[0] == 4 && sides[1] == 2) {
+            x = 'n';
+        }
+        else if (sides[0] == 4 && sides[1] == 5) {
+            x = 'o';
+        }
+        else if (sides[0] == 4 && sides[1] == 6) {
+            x = 'p';
+        }
+        else if (sides[0] == 5 && sides[1] == 1) {
+            x = 'q';
+        }
+        else if (sides[0] == 5 && sides[1] == 3) {
+            x = 'r';
+        }
+        else if (sides[0] == 5 && sides[1] == 4) {
+            x = 's';
+        }
+        else if (sides[0] == 5 && sides[1] == 6) {
+            x = 't';
+        }
+        else if (sides[0] == 6 && sides[1] == 2) {
+            x = 'u';
+        }
+        else if (sides[0] == 6 && sides[1] == 3) {
+            x = 'v';
+        }
+        else if (sides[0] == 6 && sides[1] == 4) {
+            x = 'w';
+        }
+        else if (sides[0] == 6 && sides[1] == 5) {
+            x = 'x';
+        }
+        if (isPlayer1) {
+            return Character.toUpperCase(x);
+        }
+        else {
+            return x;
+        }
     }
 }

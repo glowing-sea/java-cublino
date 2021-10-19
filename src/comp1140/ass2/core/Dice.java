@@ -51,12 +51,11 @@ public class Dice implements Comparable<Dice> {
     //========================================= SETTER & GETTER METHODS ==============================================//
 
     // (By Group)
-    // Getter Methods.
-    public boolean isPlayer1() {return isPlayer1;}
-    public Position getPosition() {return position;}
+    public boolean isPlayer1() {return isPlayer1;} // Get the player of the dice.
+    public Position getPosition() {return position;} // Get the position of the dice.
 
     // (By Haoting & Rajin)
-    // Get the number of all faces of a dice
+    // Get an array of numbers indicating the faces of a dice.
     // Format: {TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM}
     public int[] getFaces (){
         return TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation));
@@ -64,11 +63,23 @@ public class Dice implements Comparable<Dice> {
     // Get the top number of a dice
     public int getTopNumber() { return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0]; }
 
+    // (By Haoting & Anubhav)
+    // Get all the enemies of a dice in a state. (Used in Contra)
+    // Enemies are all the dice that are adjacent to the current dice but have different colours.
+    public ArrayList<Dice> getEnemies (State state){
+        ArrayList<Dice> enemies = new ArrayList<>();
+        for (Dice enemy : state.getDices()){
+            if (this.getPosition().isAdjacent(enemy.getPosition()) && this.isPlayer1() != enemy.isPlayer1())
+                enemies.add(enemy);
+        }
+        return enemies;
+    }
+
     // Give a position, update the position of the dice. (By Haoting)
     public void jump(Position position) {this.position = position;}
 
     // (Written by Anubhav and edited by Haoting)
-    // Give a tip step, update the both position and direction of the dice result from the step.
+    // Give a tip step, update the both position and direction of the dice.
     public void tip(Step step){
         if (!step.isTip()) throw new IllegalArgumentException();
 
@@ -118,21 +129,11 @@ public class Dice implements Comparable<Dice> {
         }
     }
 
-    // (By Haoting & Anubhav)
-    // Give a state and a dice called defender, find all the dice adjacent to d1 and have different colours to d1.
-    public ArrayList<Dice> getEnemies (State state){
-        ArrayList<Dice> enemies = new ArrayList<>();
-        for (Dice enemy : state.getDices()){
-            if (this.getPosition().isAdjacent(enemy.getPosition()) && this.isPlayer1() != enemy.isPlayer1())
-                enemies.add(enemy);
-        }
-        return enemies;
-    }
 
     //=================================================STATIC METHODS=================================================//
 
     // (By Haoting)
-    // Give a state(board) and a position, find all the adjacent dices.
+    // Give a state and a position, find all the dices adjacent to the position.
     public static ArrayList<Dice> adjacentDices (Position position, State state){
         ArrayList<Dice> adjDices = new ArrayList<>();
         for (Dice dice : state.getDices()){
@@ -176,92 +177,6 @@ public class Dice implements Comparable<Dice> {
         TRANSLATION_TABLE.put('v', new int[]{6, 3, 5, 4, 2, 1});
         TRANSLATION_TABLE.put('w', new int[]{6, 4, 2, 3, 5, 1});
         TRANSLATION_TABLE.put('x', new int[]{6, 5, 4, 2, 3, 1});
-    }
-
-    //============================================== DEAD CODE =======================================================//
-
-    // May no long needed
-    // (By Anubhav)
-    public static char getOrientation(int[] sides, boolean isPlayer1) {
-        char x = 0;
-        if (sides[0] == 1 && sides[1] == 2) {
-            x = 'a';
-        }
-        else if (sides[0] == 1 && sides[1] == 3) {
-            x = 'b';
-        }
-        else if (sides[0] == 1 && sides[1] == 4) {
-            x = 'c';
-        }
-        else if (sides[0] == 1 && sides[1] == 5) {
-            x = 'd';
-        }
-        else if (sides[0] == 2 && sides[1] == 1) {
-            x = 'e';
-        }
-        else if (sides[0] == 2 && sides[1] == 3) {
-            x = 'f';
-        }
-        else if (sides[0] == 2 && sides[1] == 4) {
-            x = 'g';
-        }
-        else if (sides[0] == 2 && sides[1] == 6) {
-            x = 'h';
-        }
-        else if (sides[0] == 3 && sides[1] == 1) {
-            x = 'i';
-        }
-        else if (sides[0] == 3 && sides[1] == 2) {
-            x = 'j';
-        }
-        else if (sides[0] == 3 && sides[1] == 5) {
-            x = 'k';
-        }
-        else if (sides[0] == 3 && sides[1] == 6) {
-            x = 'l';
-        }
-        else if (sides[0] == 4 && sides[1] == 1) {
-            x = 'm';
-        }
-        else if (sides[0] == 4 && sides[1] == 2) {
-            x = 'n';
-        }
-        else if (sides[0] == 4 && sides[1] == 5) {
-            x = 'o';
-        }
-        else if (sides[0] == 4 && sides[1] == 6) {
-            x = 'p';
-        }
-        else if (sides[0] == 5 && sides[1] == 1) {
-            x = 'q';
-        }
-        else if (sides[0] == 5 && sides[1] == 3) {
-            x = 'r';
-        }
-        else if (sides[0] == 5 && sides[1] == 4) {
-            x = 's';
-        }
-        else if (sides[0] == 5 && sides[1] == 6) {
-            x = 't';
-        }
-        else if (sides[0] == 6 && sides[1] == 2) {
-            x = 'u';
-        }
-        else if (sides[0] == 6 && sides[1] == 3) {
-            x = 'v';
-        }
-        else if (sides[0] == 6 && sides[1] == 4) {
-            x = 'w';
-        }
-        else if (sides[0] == 6 && sides[1] == 5) {
-            x = 'x';
-        }
-        if (isPlayer1) {
-            return Character.toUpperCase(x);
-        }
-        else {
-            return x;
-        }
     }
 
     //======================================================TESTS=====================================================//
