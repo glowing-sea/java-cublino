@@ -109,19 +109,9 @@ public class Move {
         return true && containsStartingDice; // move should contain starting dice
     }
 
-
-    // Add a position to the move. (Change the current Move object)
-    public void moveFurther (Position destination){
-        this.positions.add(destination);
-    }
-
-
     // By Haoting
     // Get the last position of the move
     public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
-
-
-
 
     //=================================================STATIC METHODS=================================================//
 
