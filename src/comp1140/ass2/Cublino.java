@@ -287,7 +287,7 @@ public class Cublino {
 
 
     /**
-     * Give a state and a difficulty value n, find the best move.
+     * Give a Pur or Contra state and a difficulty value n, find the best move.
      * If n = 1, implement greedy AI. If n = 2 implement Minimax AI.
      *
      * How does the function work intuitively?

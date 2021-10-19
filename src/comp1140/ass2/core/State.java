@@ -354,7 +354,17 @@ public class State {
 
     //============================================ HEURISTIC METHODS =================================================//
 
-    // Take a Pur or Contra state, return the heuristic score of the state.
+    /**
+     * Take a Pur or Contra state, return the heuristic score of the state.
+     *
+     * @param currentPlayer The role of the AI.
+     * If the AI is Player 1, the score of the state = Player 1 score - Player 2 score.
+     * If the AI is Player 2, the score of the state = Player 2 score - Player 1 score.
+     * i.e. the AI always want to maximise its score.
+     * If the score is positive, the AI is winning the game.
+     * If the score is negative, the AI is losing the game.
+     */
+
     public int stateEvaluate (boolean currentPlayer) {
         return this.pur ? stateEvaluatePur (currentPlayer) : stateEvaluateContra(currentPlayer);
     }
