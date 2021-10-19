@@ -479,8 +479,8 @@ public class State {
             }
         }
 
-        p1Score = p1DiceNumber + 2 * p1Farthest ^ 2;
-        p2Score = p2DiceNumber + 2 * p2Farthest ^ 2;
+        p1Score = p1DiceNumber + p1Farthest ^ 2;
+        p2Score = p2DiceNumber + p2Farthest ^ 2;
 
         // If the current player is player 1, the result is p1Score (current player) - p2Score (opponent)
         // If the current player is player 2, the result is p2Score (current player) - p1Score (opponent)
