@@ -118,6 +118,17 @@ public class Dice implements Comparable<Dice> {
         }
     }
 
+    // (By Haoting & Anubhav)
+    // Give a state and a dice called defender, find all the dice adjacent to d1 and have different colours to d1.
+    public ArrayList<Dice> getEnemies (State state){
+        ArrayList<Dice> enemies = new ArrayList<>();
+        for (Dice enemy : state.getDices()){
+            if (this.getPosition().isAdjacent(enemy.getPosition()) && this.isPlayer1() != enemy.isPlayer1())
+                enemies.add(enemy);
+        }
+        return enemies;
+    }
+
     //=================================================STATIC METHODS=================================================//
 
     // (By Haoting)
@@ -130,6 +141,7 @@ public class Dice implements Comparable<Dice> {
         }
         return adjDices;
     }
+
 
     // (Written by Rajin and reviewed by Hoating)
     // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
@@ -272,6 +284,14 @@ public class Dice implements Comparable<Dice> {
 
         d1.tip(new Step("c2c3"));
         System.out.println(d1);
+
+        // getEnemies test
+        State c1 = new State("csc1ca3sf3Mb4jc4td4Qa5Cb5Oc5vf5qb6Lg6Ga7Gd7");
+        Dice d6 = new Dice("Cb5"); // One enemy
+        Dice d7 = new Dice("jc4"); // Two enemies
+        Dice d8 = new Dice("sf3"); // No enemies
+
+        System.out.println(d6.getEnemies(c1) + "," + d7.getEnemies(c1) + "," + d8.getEnemies(c1));
     }
 }
 

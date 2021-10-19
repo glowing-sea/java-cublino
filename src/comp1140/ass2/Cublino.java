@@ -312,67 +312,10 @@ public class Cublino {
         State st = new State(state);
         Move m = new Move(move);
         st.applyMove(m);
-
-
-        ArrayList<Dice> removedDice = new ArrayList<>();
-        for (Dice d : st.getDices()) {
-            for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {
-                if (d.isPlayer1() != q.isPlayer1()) {
-                    removedDice.add(battle(d, q, Dice.adjacentDices(d.getPosition(), st), Dice.adjacentDices(q.getPosition(), st)));
-                }
-            }
-        }
-        for (Dice d : removedDice) {
-            if (d!= null) {
-                st.getDices().remove(d);
-            }
-        }
-
-        return st.toString(); // FIXME Task 14b (HD)
+        return st.toString();
     }
 
-    public static Dice battle(Dice attacker, Dice defender, ArrayList<Dice> adjacentA, ArrayList<Dice> adjacentD) {
 
-        int attackerTopFaces = 0;
-        int defenderTopFaces = 0;
-        if (attacker.getTopNumber() > defender.getTopNumber()) {
-
-            return defender;
-        }
-        else if (attacker.getTopNumber() < defender.getTopNumber()) {
-
-            return attacker;
-        }
-        else {
-            if (adjacentA.size() == 0 && adjacentD.size()==0 || adjacentA == null && adjacentD == null) {
-                return null;
-            } else {
-                for (Dice i : adjacentA) {
-                    if (i.isPlayer1() != attacker.isPlayer1()) {
-                        defenderTopFaces+= i.getTopNumber();
-                        // sum of top faces gets incremented for the defender
-                    }
-                }
-                for (Dice i : adjacentD) {
-                    if (i.isPlayer1() != defender.isPlayer1()) {
-                        attackerTopFaces+= i.getTopNumber();
-                        // sum of top faces gets incremented for the defender
-                    }
-                }
-                if (defenderTopFaces > attackerTopFaces) {
-                    // attacker eliminated
-                    return attacker;
-                }
-                else if (defenderTopFaces < attackerTopFaces) {
-                    // defender eliminated
-                    return defender;
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-    }
 
     /**
      * Task 14c:
@@ -457,5 +400,6 @@ public class Cublino {
         System.out.println(bestMovePur(s2,2));
         System.out.println();
         System.out.println(s3.legalMoves());
+
     }
 }

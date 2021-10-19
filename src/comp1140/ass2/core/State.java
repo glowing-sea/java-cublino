@@ -186,8 +186,12 @@ public class State {
      */
     public void applyMove(Move m) {
 
-        if (!m.isValidMovePur(this)) throw new IllegalArgumentException(); // FIXME Contra
+        if(this.pur){
+            if (!m.isValidMovePur(this)) throw new IllegalArgumentException(); }
+        else{
+            if (!m.isValidMoveContra(this)) throw new IllegalArgumentException(); }
 
+        // Move a dice
         ArrayList<Position> pos = m.getPositions();
         Position start = m.getStart(); // Starting position of a move.
         Position end = m.getEnd(); // Ending position of a move.
@@ -200,10 +204,45 @@ public class State {
                 dice.jump(end); // Update the location of the dice.
             }
         }
+
+        // Solve a battle (By Anubhav)
+        if (!this.pur){
+            ArrayList<Dice> removedDice = new ArrayList<>();
+            for (Dice d : this.getDices()) {
+                for (Dice enemy : d.getEnemies(this)) {
+                    switch (battle(d, enemy, this)){
+                        case 1 -> removedDice.add(enemy);
+                        case 2 -> removedDice.add(d);
+                    }
+                }
+            }
+            for (Dice d : removedDice) {
+                this.getDices().remove(d);
+            }
+        }
+
         this.changeTurn(); // Update the turn.
         Collections.sort(this.getDices()); // Sort the list of dices.
     }
 
+
+    // (By Anubhav and Haoting)
+    // Solve a battle. Return 1 if d1 win, 2 if d2 win, 0 if it is a draw.
+    private static int battle(Dice d1, Dice d2, State state){
+        ArrayList<Dice> d1Soldiers = d2.getEnemies(state); // the dices adjacent to d2 and having the same colours as d1.
+        ArrayList<Dice> d2Soldiers = d1.getEnemies(state); // the dices adjacent to d1 and having the same colours as d2.
+
+        int d1Power = 0;
+        int d2Power = 0;
+
+        for (Dice d1Soldier : d1Soldiers){ d1Power += d1Soldier.getTopNumber(); }
+        for (Dice d2Soldier : d2Soldiers){ d2Power += d2Soldier.getTopNumber(); }
+
+        if (d1Power > d2Power) return 1;
+        if (d1Power < d2Power) return 2;
+
+        return 0;
+    }
 
     //======================================== GENERAL GETTER METHODS ================================================//
 
@@ -272,7 +311,7 @@ public class State {
      * @param soFar  The valid move so far in this particular search (variance)
      */
     // Give a valid Pur state and a position, return all the legal moves from that position
-    public static void propagateMovePur
+    private static void propagateMovePur
     (State state, Set<Move> legalMoves, boolean[] visited, Dice dice, Position destination, Move soFar){
 
         Position start = soFar.getEnd(); // The position where the dice start from.
@@ -408,6 +447,15 @@ public class State {
         System.out.println(state1.getPlayerTurn());
         System.out.println(state2.getPlayerTurn());
         System.out.println(state3.stateEvaluate(true));
+
+        Dice d1 = new Dice("ic4");
+        Dice d2 = new Dice("uc5");
+        Dice d3 = new Dice("Ud5");
+        State s4 = new State("Cic4uc5Ud5");
+        System.out.println("the battle result is " + battle(d1,d2,s4));
+        System.out.println("the battle result is " + battle(d2,d3,s4));
+
+
     }
 }
 
