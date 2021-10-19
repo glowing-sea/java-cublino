@@ -47,7 +47,7 @@ public class Position {
     public void setY(int y) {this.y = y;}
 
     // (By Haoting)
-    // Get the position of a dice in terms of order (From 0 to 48)
+    // Get the integer encoding (order) of a position. i.e., a1 = 0, b1 = 2, c1 = 3, a2 = 8, g7 = 48.
     public int getPositionOrder() {
         HashMap<String, Integer> POSITION_ORDER = new HashMap<>();
         Integer order = 0;
@@ -60,7 +60,7 @@ public class Position {
 
     // (By Anubhav)
     // Get a list of positions that is n distance away from the current position.
-    public ArrayList<Position> getPositions(int distance) {
+    private ArrayList<Position> getPositions(int distance) {
         int[] ref = {- distance, distance};
         ArrayList<Position> adjacentPieces = new ArrayList<>();
         for (int i : ref) {
@@ -77,10 +77,12 @@ public class Position {
     }
 
     // (By Anubhav)
+    // Get all the positions adjacent to the current position.
     public ArrayList<Position> getAdjacentPositions() { return this.getPositions(1); }
 
 
     // (By Rajin, Haoting)
+    // Get all the positions 2 unit away from the current position.
     public ArrayList<Position> getJumpPositions() { return this.getPositions(2);}
 
 
@@ -110,6 +112,7 @@ public class Position {
     }
 
     // (By Anubhav)
+    // Check if the current position is on the board.
     public boolean isOnBoard() {
         return (this.x <= 7 && this.x >= 1) && (this.y <= 7 && this.y >= 1);
     }
@@ -117,7 +120,7 @@ public class Position {
     //================================================ STATIC METHODS ================================================//
 
     // (By Rajin)
-    // Method to calculate the manhattanDistance between two locations
+    // Calculate the manhattanDistance between two locations
     public static int manhattanDistance(Position loc1, Position loc2) {
         return (Math.abs(loc1.getX() - loc2.getX()) + Math.abs(loc1.getY() - loc2.getY()));
     }

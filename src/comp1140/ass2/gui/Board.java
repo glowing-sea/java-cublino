@@ -108,7 +108,7 @@ public class Board extends Application {
                 onGoingMove.replace(0, onGoingMove.length(), "");
                 onGoingDice = null;
 
-                gameState.setPlayer1Turn(!gameState.getPlayerTurn());
+                gameState.setTurn(!gameState.getPlayerTurn());
                 updateDices();
                 legalStepsGroup.getChildren().clear();
             }
@@ -125,7 +125,7 @@ public class Board extends Application {
     }
 
     public void generateLegalIndicators(Dice dice) {
-        ArrayList<Step> legalSteps = gameState.getLegalStepPur(dice);
+        ArrayList<Step> legalSteps = gameState.legalStepsPur(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();
@@ -250,12 +250,12 @@ public class Board extends Application {
                         gameState = new State(Cublino.applyMovePur(gameState.toString(), step.toString()));
 
                         State potentialNextState = new State(gameState.toString());
-                        potentialNextState.setPlayer1Turn(!potentialNextState.getPlayerTurn());
+                        potentialNextState.setTurn(!potentialNextState.getPlayerTurn());
 
                         // there are more steps that can happen in this current move
-                        if (potentialNextState.generateAllJumpPur().size() != 0) {
+                        if (potentialNextState.legalJumpsPur().size() != 0) {
 
-                            for (Step jump: potentialNextState.generateAllJumpPur()) {
+                            for (Step jump: potentialNextState.legalJumpsPur()) {
                                 if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
                                     gameState = potentialNextState;
                                     onGoingMove.append(step.toString());

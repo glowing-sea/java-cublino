@@ -38,20 +38,21 @@ public class Move {
     //========================================== SETTER & GETTER METHODS =============================================//
 
     // (By Group)
-    public ArrayList<Position> getPositions() {return positions;}
+    public ArrayList<Position> getPositions() {return positions;} // Get a list of positions of the move.
 
     // (By Haoting)
-    // Get the last position of the move
-    public Position getEnd (){ return this.positions.get(positions.size() - 1); }
+    public Position getStart (){ return this.positions.get(0); } // Get the starting position of the move.
+    public Position getEnd (){ return this.positions.get(positions.size() - 1); } // Get the ending position of the move.
 
-    // Add a new position to the move. (Change the current Move object)
+
+    // Add a new position to the current move object.
     public void moveFurther (Position destination){ this.positions.add(destination); }
 
     //============================================== CHECKER METHODS =================================================//
 
     /**
      * Task 8: (By Haoting)
-     * Determine whether a move (sequence of steps) is valid for a given game.
+     * Determine whether a move (sequence of steps) is valid for a given Pur game.
      *
      * A move is valid if it satisfies the following conditions:
      * 1. The starting position of the move contains a dice belonging to the player who's turn it is.
@@ -92,26 +93,39 @@ public class Move {
         return true;
     }
 
-    public Boolean isValidMoveContra(State state) {
-        if (positions.size() != 2) {
-            return false;
+    // (Written by Anubhav, edited by Haoting)
+    // Determine whether a move is valid for a given Contra game.
+    public Boolean isValidMoveContra(State state, boolean quickCheck) {
+
+        // Only one step is allowed.
+        if (positions.size() != 2) return false;
+
+        Position start = positions.get(0);
+        Position end = positions.get(1);
+
+        if(!quickCheck){
+
+            // Check if there is a current player's dice in the starting position
+            if (!state.containDice(start, true))
+                return false;
+
+            // Check if the starting position and the ending position are adjacent.
+            if (!start.isAdjacent(end))
+                return false;
         }
-        if (!(this.positions.get(0).isAdjacent(this.positions.get(1))) && (this.positions.get(0).getY() - this.positions.get(1).getY() !=1)) return false;
-        // note: accounted for the fact that you can't tip backwards, so starting y cannot be one bigger than ending y
-        boolean containsStartingDice = false;
-        for (Dice d : state.getDices()) {
-            if (d.getPosition().equals(this.positions.get(0))) {
-                containsStartingDice = true;
-            }
-            if (d.getPosition().equals(this.positions.get(1))) return false;
-            // none of the dice in the board should return the endpoint of the move location
+
+        int forward = state.getPlayerTurn() ? 1 : -1;
+
+        // Check if it is a valid forward move
+        if (start.getX() == end.getX()) {
+            if (!(start.getY() + forward == end.getY())) // Tilt forward
+                return false;
         }
-        return true && containsStartingDice; // move should contain starting dice
+
+        // No dice in the ending position and there is a current player's dice in the starting position.
+        return !state.containDice(end, false);
     }
 
-    // By Haoting
-    // Get the last position of the move
-    public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
 
     //=================================================STATIC METHODS=================================================//
 
@@ -119,22 +133,17 @@ public class Move {
 
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {
-        Move m1 = new Move("g6f6d6");
-        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a8");
-        System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a8"));
         Move m = new Move("a1a2"); // empty spot, so should return true
+        Move m1 = new Move("g6f6d6");
+        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a7");
         Move m3 = new Move("a1a2a3"); // should return false
         Move m4 = new Move("a2a1"); // false, behind move is invalid
+        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
+
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
         State s2 = new State("PWa1Db3Wc1Wd1We1Wf1Wg1va7vb4vc7vd7ve7vf7vg7");
         State s3 = new State("PWa1Wb3Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
-        System.out.println("Move " + m.toString() + " is valid is " + m.isValidMoveContra(s1));
-        System.out.println("Move " + m3.toString() + " is valid is " + m3.isValidMoveContra(s1));
-        System.out.println("Move " + m4.toString() + " is valid is " + m4.isValidMoveContra(s1));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s2));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s1));
-        System.out.println("Move " + m5.toString() + " is valid is " + m5.isValidMoveContra(s3));
+
     }
 
 

@@ -32,20 +32,20 @@ public class Step {
 
     //========================================== SETTER & GETTER METHODS =============================================//
 
-    // Setter and getter method
-    // (By Haoting)
+    // (By Group)
+    // Update the starting position and the ending position of a step.
     public void setStep(Position start, Position end) {
         this.start = start;
         this.end = end;
     }
 
     // (By Group)
-    public Position getStartPosition() {return start;}
-    public Position getEndPosition() {return end;}
+    public Position getStartPosition() {return start;} // Get the starting position of a step.
+    public Position getEndPosition() {return end;} // Get the ending position of a step.
 
     //============================================== CHECKER METHODS =================================================//
 
-    // Check whether a step is a step (By Group)
+    // Check whether it is a tipping step (By Group)
     public boolean isTip(){
         return start.isAdjacent(end);
     }

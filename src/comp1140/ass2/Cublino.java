@@ -119,7 +119,7 @@ public class Cublino {
     // For marking only, please use the inner method isGameOverPur in State class.
     public static int isGameOverPur(String state) {
         State st = new State(state);
-        return st.isGameOverPur();
+        return st.isGameOver();
     }
 
     /**
@@ -222,12 +222,82 @@ public class Cublino {
     // For marking only. Please use the method bestMovePur in Cublino Class.
     public static String generateMovePur(String state) {
         State gameState = new State(state);
-        return bestMovePur(gameState, 1).toString();
+        return bestMove(gameState, 1).toString();
     }
 
-    // Find the best move from a list of legal moves (By Rajin & Haoting)
-    // 1: greedy 2: Minimax
-    public static Move bestMovePur(State state, int difficulty){
+    /**
+     * Task 14a:
+     * Determine whether a state represents a finished Contra game, and if so who the winner is.
+     *
+     * A player wins a game of Cublino Contra by reaching the opponent's end of the board with one of their dice.
+     *
+     * You may assume that all states input into this method will be of the Contra variant and that the state will be
+     * valid.
+     *
+     * @param state a Contra game state
+     * @return 1 if player one has won, 2 if player two has won, otherwise 0.
+     */
+     //(By Anubhav)
+     // For marking only, please use the inner method isGameOverPur in State class.
+    public static int isGameOverContra(String state) {
+        State st = new State(state);
+        return st.isGameOver();
+    }
+
+    /**
+     * Task 14b:
+     * Given a Contra game state and a move to play, determine the state that results from that move being played.
+     * If the move ends the game, the turn should be the player who would have played next had the game not ended. If
+     * the move is invalid the game state should remain unchanged. See the README for what constitutes a valid Contra
+     * move and the rules for updating the game state.
+     *
+     * You may assume that all states input into this method will be of the Contra variant and that the state will be
+     * valid.
+     *
+     * @param state a Contra game state
+     * @param move a move being played
+     * @return the resulting state after the move has been applied
+     */
+    // (Written by Anubhav, reviewed by Haoting)
+    public static String applyMoveContra(String state, String move) {
+        State st = new State(state);
+        Move m = new Move(move);
+        if (!m.isValidMoveContra(st, false)) return state;
+        st.applyMove(m);
+        return st.toString();
+    }
+
+
+    /**
+     * Task 14c:
+     * Given a valid Contra game state, return a valid move.
+     *
+     * You may assume that all states input into this method will be of the Contra variant and that the state will be
+     * valid.
+     *
+     * @param state the Pur game state
+     * @return a move for the current game state.
+     */
+    // (Written by Anubhav, reviewed by Haoting)
+    // For marking only, please use the inner method isGameOverPur in State class.
+    public static String generateMoveContra(String state) {
+        State gameState = new State(state);
+        return bestMove(gameState, 1).toString();
+    }
+
+
+    /**
+     * Give a Pur or Contra state and a difficulty value n, find the best move.
+     * If n = 1, implement greedy AI. If n = 2 implement Minimax AI.
+     *
+     * How does the function work intuitively?
+     *
+     * The function generate a list of legal moves. For each move, it applies the move and gets a new state resulting
+     * from the move. It then evaluates the new state and save the move and the new state together in a pair called
+     * MovePlus. Finally, the function choose the move which will lead to the new state with the highest score.
+     */
+    // (By Rajin & Haoting)
+    public static Move bestMove(State state, int difficulty){
         if (difficulty != 1 && difficulty != 2) throw new IllegalArgumentException();
         boolean useMinimax = difficulty == 2;
 
@@ -266,189 +336,7 @@ public class Cublino {
     }
 
 
-    /**
-     * Task 14a:
-     * Determine whether a state represents a finished Contra game, and if so who the winner is.
-     *
-     * A player wins a game of Cublino Contra by reaching the opponent's end of the board with one of their dice.
-     *
-     * You may assume that all states input into this method will be of the Contra variant and that the state will be
-     * valid.
-     *
-     * @param state a Contra game state
-     * @return 1 if player one has won, 2 if player two has won, otherwise 0.
-     */
-    public static int isGameOverContra(String state) {
-        char[] stateChars = state.toCharArray();
-        int increment = 0;
-        for (int i=0;i<stateChars.length;i++) {
-            if (increment == 1) {
-                Position p = new Position("" + stateChars[i+1] + stateChars[i+2]);
-                if (Character.isUpperCase(stateChars[i])) {
-                    if (p.getY() == 7) {
-                        return 1;
-                    }
-                }
-                else {
-                    if (p.getY() == 1) {
-                        return 2;
-                    }
-                }
-            }
-            if (increment != 3) {
-                increment++;
-            }
-            else {
-                increment = 1;
-            }
-        }
-        return 0; // FIXME Task 14a (HD)
-    }
-
-    /**
-     * Task 14b:
-     * Given a Contra game state and a move to play, determine the state that results from that move being played.
-     * If the move ends the game, the turn should be the player who would have played next had the game not ended. If
-     * the move is invalid the game state should remain unchanged. See the README for what constitutes a valid Contra
-     * move and the rules for updating the game state.
-     *
-     * You may assume that all states input into this method will be of the Contra variant and that the state will be
-     * valid.
-     *
-     * @param state a Contra game state
-     * @param move a move being played
-     * @return the resulting state after the move has been applied
-     */
-    public static String applyMoveContra(String state, String move) {
-        State st = new State(state);
-        Move m = new Move(move);
-        st.applyMove(m);
-        ArrayList<Dice> removedDice = new ArrayList<>();
-        for (Dice d : st.getDices()) {
-            for (Dice q : Dice.adjacentDices(d.getPosition(),st)) {
-                if (d.isPlayer1() != q.isPlayer1()) {
-                    removedDice.add(battle(d, q, Dice.adjacentDices(d.getPosition(), st), Dice.adjacentDices(q.getPosition(), st)));
-                }
-            }
-        }
-        for (Dice d : removedDice) {
-            if (d!= null) {
-                st.getDices().remove(d);
-            }
-        }
-
-        return st.toString(); // FIXME Task 14b (HD)
-    }
-
-    public static Dice battle(Dice attacker, Dice defender, ArrayList<Dice> adjacentA, ArrayList<Dice> adjacentD) {
-
-        int attackerTopFaces = 0;
-        int defenderTopFaces = 0;
-        if (attacker.getTopNumber() > defender.getTopNumber()) {
-
-            return defender;
-        }
-        else if (attacker.getTopNumber() < defender.getTopNumber()) {
-
-            return attacker;
-        }
-        else {
-            if (adjacentA.size() == 0 && adjacentD.size()==0 || adjacentA == null && adjacentD == null) {
-                return null;
-            } else {
-                for (Dice i : adjacentA) {
-                    if (i.isPlayer1() != attacker.isPlayer1()) {
-                        defenderTopFaces+= i.getTopNumber();
-                        // sum of top faces gets incremented for the defender
-                    }
-                }
-                for (Dice i : adjacentD) {
-                    if (i.isPlayer1() != defender.isPlayer1()) {
-                        attackerTopFaces+= i.getTopNumber();
-                        // sum of top faces gets incremented for the defender
-                    }
-                }
-                if (defenderTopFaces > attackerTopFaces) {
-                    // attacker eliminated
-                    return attacker;
-                }
-                else if (defenderTopFaces < attackerTopFaces) {
-                    // defender eliminated
-                    return defender;
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-    }
-
-    /**
-     * Task 14c:
-     * Given a valid Contra game state, return a valid move.
-     *
-     * You may assume that all states input into this method will be of the Contra variant and that the state will be
-     * valid.
-     *
-     * @param state the Pur game state
-     * @return a move for the current game state.
-     */
-    public static String generateMoveContra(String state) {
-        State st = new State(state);
-        ArrayList<String> moves = new ArrayList<>();
-        for (Dice d : st.getDices()) {
-            Position pos = d.getPosition();
-            if (d.isPlayer1() == st.getPlayerTurn()) {
-                for (Position p : pos.getAdjacentPositions()) {
-                    if (! st.containDice(p, false)) {
-                        moves.add(pos + p.toString());
-
-                    }
-                }
-            }
-        }
-        return moves.get(0); // FIXME Task 14c (HD)
-    }
-
-
-    public static float greedyContraHeuristic(String state, boolean isPlayer1) {
-        // implements a greedy contra heuristic
-        State s = new State(state);
-        int gameOverFactor = 0; // makes sure won games are prioritised
-        int yourDiceNumber = 0;
-        int opponentDiceNumber = 0;
-        int closestDistanceToFinish = 0;
-        ArrayList<Integer> distancesFromEndPos = new ArrayList<>(); // because there are maximum 7 in the board for each player
-
-        if (Cublino.isGameOverContra(state) == 1 && isPlayer1 || Cublino.isGameOverContra(state) == 2 && !isPlayer1) {
-            gameOverFactor = 15; // this ensures the heuristic will choose a winning game state
-        }
-        else if (Cublino.isGameOverContra(state) == 1 && !isPlayer1 || Cublino.isGameOverContra(state) == 2 && isPlayer1) {
-            gameOverFactor = -15; // worst possible result
-        }
-        for (Dice d : s.getDices()) {
-            if (d.isPlayer1() == isPlayer1) {
-                if (isPlayer1) {
-                    distancesFromEndPos.add(7 - d.getPosition().getY());
-                }
-                else {
-                    distancesFromEndPos.add(d.getPosition().getY() - 1);
-                }
-                yourDiceNumber++;
-
-                }
-            else {
-                opponentDiceNumber++;
-            }
-            }
-
-        closestDistanceToFinish = Collections.min(distancesFromEndPos);
-
-        return ((float) (yourDiceNumber - opponentDiceNumber)/2) - closestDistanceToFinish + gameOverFactor;
-        // because I want to maximise my dice, miminise their dice, and minimise the closest distance
-
-    }
-
+    //================================================== TEST ========================================================//
 
     public static void main(String[] args) {
         System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
@@ -462,9 +350,10 @@ public class Cublino {
         System.out.println(s3.legalMoves());
 
         System.out.println(s2.legalMoves());
-        System.out.println(bestMovePur(s2,1));
-        System.out.println(bestMovePur(s2,2));
+        System.out.println(bestMove(s2,1));
+        System.out.println(bestMove(s2,2));
         System.out.println();
         System.out.println(s3.legalMoves());
+
     }
 }
