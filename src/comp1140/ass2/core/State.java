@@ -386,6 +386,16 @@ public class State {
         return output;
     }
 
+    // (By Rajin)
+    public Dice getDiceAt(Position dicePos) {
+        for (Dice dice:getDices()) {
+            if (dice.getPosition().equals(dicePos)) {
+                return dice;
+            }
+        }
+        return null;
+    }
+
     //=================================================STATIC METHODS=================================================//
 
 

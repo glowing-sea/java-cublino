@@ -29,7 +29,9 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State prevGameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
     private final static Group gamePieces = new Group();
@@ -42,6 +44,7 @@ public class Board extends Application {
     private Dice onGoingDice;
 
     private Label playerTurnLabel = new Label("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
+    private Label validityLabel = new Label("Valid Move: N/A");
 
     @Override
     public void start(Stage primaryStage) {
@@ -84,6 +87,7 @@ public class Board extends Application {
     public void updateDices() {
         gamePieces.getChildren().clear();
         gamePane.getChildren().remove(gamePieces);
+
         dicePieces.clear();
 
         for (Dice dice:gameState.getDices()) {
@@ -105,23 +109,36 @@ public class Board extends Application {
         Button end_turn = new Button("End Turn");
         end_turn.setStyle("-fx-background-radius: 1em; ");
         end_turn.setOnAction(actionEvent -> {
-            // there is an ongoing move that can be ended
+
+            // TODO: FIX this section
+
             if (onGoingMove.length() > 0 && onGoingDice != null) {
-                System.out.println(onGoingMove);
-                onGoingMove.replace(0, onGoingMove.length(), "");
-                onGoingDice = null;
+                if (!Cublino.isValidMovePur(prevGameState.toString(), onGoingMove.toString())) {
+                    gameState = prevGameState;
+                    gameState.setPlayer1Turn(!gameState.getPlayerTurn());
+                    System.out.println("returned to previous state: " + gameState);
+                    validityLabel.setText("Valid Move: Invalid");
+                } else {
+                    validityLabel.setText("Valid Move: Valid");
+                }
             }
 
-            // TODO: check if the ongoing move is invalid (if invalid tell player to redo turn)
+            System.out.println("AAA");
+            onGoingMove.replace(0, onGoingMove.length(), "");
+            onGoingDice = null;
+
 
             gameState.setPlayer1Turn(!gameState.getPlayerTurn());
             updateDices();
+
             legalStepsGroup.getChildren().clear();
+
+            System.out.println("Game State: "+gameState);
         });
 
         VBox vb = new VBox();
 
-        vb.getChildren().addAll(playerTurnLabel, end_turn);
+        vb.getChildren().addAll(playerTurnLabel, validityLabel, end_turn);
         vb.setSpacing(10);
         vb.setLayoutX(100);
         vb.setLayoutY(BOARD_HEIGHT - 120);
@@ -135,6 +152,9 @@ public class Board extends Application {
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();
+
+        System.out.println(legalSteps);
+        System.out.println(onGoingMove.length() > 0 && onGoingDice != null);
 
         if (onGoingMove.length() > 0 && onGoingDice != null) {
             if (dice.compareTo(onGoingDice) == 0) {
@@ -215,7 +235,9 @@ public class Board extends Application {
                 ColorAdjust colorAdjust = new ColorAdjust();
                 colorAdjust.setBrightness(-0.25);
                 this.setEffect(colorAdjust);
+
                 generateLegalIndicators(dice);
+                System.out.println("Game State: "+gameState);
             });
         }
     }
@@ -254,39 +276,55 @@ public class Board extends Application {
 
                         // TODO: implement a way to find out if subsequent legal steps are available and show them (a way to complete the step)
 
+                        if (onGoingMove.length() == 0 && onGoingDice == null) {
+                            onGoingMove.append(step.getStartPosition());
+                            prevGameState = gameState;
+                        }
+
                         if (gameState.isPur()) {
                             gameState = new State(Cublino.applyMovePur(gameState.toString(), step.toString()));
-                        } else {
+                        } else if (!gameState.isPur()) {
                             gameState = new State(Cublino.applyMoveContra(gameState.toString(), step.toString()));
                         }
+
+                        validityLabel.setText("Valid Move: Valid");
+
+
 
                         State potentialNextState = new State(gameState.toString());
                         potentialNextState.setPlayer1Turn(!potentialNextState.getPlayerTurn());
 
-                        // potential jumps after a step in Pur
-                        if (gameState.isPur()) {
-                            // there are more steps that can happen in this current move
-                            if (potentialNextState.generateAllJumpPur().size() != 0) {
 
-                                for (Step jump: potentialNextState.generateAllJumpPur()) {
-                                    if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
-                                        gameState = potentialNextState;
-                                        onGoingMove.append(step.toString());
-                                        // update game board state
-                                        updateDices();
-                                        System.out.println("on going");
-                                        for (Dice dice:dicePieces) {
-                                            if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
-                                                onGoingDice = dice;
-                                                generateLegalIndicators(dice);
-                                            }
+
+                        System.out.println("Potential Jumps: " + potentialNextState.generateAllJumpPur());
+
+
+                        ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.getLegalStepPur(gameState.getDiceAt(step.getEndPosition())));
+                        potentialJumpStates.removeIf(p -> p.isTip());
+
+                        // there are more steps that can happen in this current move
+                        if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
+                            for (Step jump: potentialJumpStates) {
+                                if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
+                                    gameState = potentialNextState;
+                                    // update game board state
+                                    onGoingMove.append(jump.getStartPosition().toString());
+                                    updateDices();
+                                    System.out.println("on going");
+                                    for (Dice dice:dicePieces) {
+                                        if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
+                                            onGoingDice = dice;
+                                            generateLegalIndicators(dice);
+                                            break;
                                         }
                                     }
                                 }
-                            } else {
-                                onGoingMove.replace(0, onGoingMove.length(), "");
-                                onGoingDice = null;
                             }
+                        // there are no other possible steps that could occur (i.e. ends player turn)
+                        } else {
+                            System.out.println("AAA");
+                            onGoingMove.replace(0, onGoingMove.length(), "");
+                            onGoingDice = null;
                         }
 
                         // update game board state
@@ -294,6 +332,7 @@ public class Board extends Application {
                         break;
                     }
                 }
+                System.out.println("OnGoing Move : "+onGoingMove);
             });
         }
     }
