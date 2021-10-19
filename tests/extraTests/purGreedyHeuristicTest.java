@@ -16,8 +16,8 @@ public class purGreedyHeuristicTest {
         State s1 = new State(state1);
         State s2 = new State(state2);
 
-        int state1Heuristic = s1.stateEvaluate();
-        int state2Heuristic = s2.stateEvaluate();
+        int state1Heuristic = s1.stateEvaluate(true);
+        int state2Heuristic = s2.stateEvaluate(true);
 
         assertTrue(state1Heuristic > state2Heuristic, "purGreedyHeuristic: first state is " + state1Heuristic + " and the second is " + state2Heuristic);
     }
@@ -26,8 +26,8 @@ public class purGreedyHeuristicTest {
         State s1 = new State(state1);
         State s2 = new State(state2);
 
-        int state1Heuristic = s1.stateEvaluate();
-        int state2Heuristic = s2.stateEvaluate();
+        int state1Heuristic = s1.stateEvaluate(true);
+        int state2Heuristic = s2.stateEvaluate(true);
 
         assertEquals(state1Heuristic, state2Heuristic, "purGreedyHeuristic: heuristic equality failed");
     }
