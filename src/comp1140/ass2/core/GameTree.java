@@ -44,20 +44,20 @@ public class GameTree {
      * Given a game tree, return the score of the tree. (By Haoting)
      */
 
-    public int miniMax() {
+    public int miniMax(boolean currentPlayer) {
         // If the function reach a leaf, call the heuristic function to evaluate the leaf.
         if (children.isEmpty())
-            return parent.stateEvaluate();
+            return parent.stateEvaluate(currentPlayer);
         else {
             LinkedList<Integer> childrenScores = new LinkedList<>();
-            if (parent.getPlayerTurn()){
+            if (parent.getPlayerTurn() == currentPlayer){ // A current player's turn, maximise the score.
                 for (GameTree child : children){
-                    childrenScores.add(child.miniMax());}
+                    childrenScores.add(child.miniMax(currentPlayer));}
                 return Collections.max(childrenScores);
             }
-            else{
+            else{ // A opponent's turn, minimise the score.
                 for (GameTree child : children){
-                    childrenScores.add(child.miniMax());}
+                    childrenScores.add(child.miniMax(currentPlayer));}
                 return Collections.min(childrenScores);
             }
         }
@@ -68,31 +68,31 @@ public class GameTree {
      *
      * @param alpha initialised to be -9999.
      * @param beta initialised to be 9999.
+     * @param currentPlayer whether the current player is player1 or player2. (invariance)
      */
 
-    public int miniMaxAB(int alpha, int beta) {
+    public int miniMaxAB(int alpha, int beta, boolean currentPlayer) {
         // If the function reach a leaf, call the heuristic function to evaluate the leaf.
-        // System.out.println("" + parent + " " + parent.stateEvaluate());
         if (children.isEmpty())
-            return parent.stateEvaluate();
+            return parent.stateEvaluate(currentPlayer);
         else {
             int valueSoFar; // The maximum score so far.
             int childScore; // The score of a subtree.
 
-            if (parent.getPlayerTurn()){ // Check if it is a max (player 1) turn.
+            if (parent.getPlayerTurn() == currentPlayer){ // A current player's turn, maximise the score.
                 valueSoFar = -9999;
                 for (GameTree child : children){
-                    childScore = child.miniMaxAB(alpha, beta);
+                    childScore = child.miniMaxAB(alpha, beta, currentPlayer);
                     valueSoFar = Math.max(childScore, valueSoFar); // Update the score so far.
                     alpha = Math.max(alpha, valueSoFar); // Update the alpha value.
                     if (alpha >= beta)
                         break; // No point to continue.
                 }
             }
-            else{
+            else{ // A opponent's turn, minimise the score.
                 valueSoFar = 9999;
                 for (GameTree child : children){
-                    childScore = child.miniMaxAB(alpha, beta);
+                    childScore = child.miniMaxAB(alpha, beta, currentPlayer);
                     valueSoFar = Math.min(childScore, valueSoFar); // Update the score so far.
                     beta = Math.min(beta, valueSoFar); // Update the beta value.
                     if (beta <= alpha)

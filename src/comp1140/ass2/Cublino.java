@@ -228,14 +228,13 @@ public class Cublino {
     // Find the best move from a list of legal moves (By Rajin & Haoting)
     // 1: greedy 2: Minimax
     public static Move bestMovePur(State state, int difficulty){
-        assert(difficulty == 1 || difficulty == 2) : "Invalid difficulty";
+        if (difficulty != 1 && difficulty != 2) throw new IllegalArgumentException();
         boolean useMinimax = difficulty == 2;
 
         ArrayList<MovePlus> legalMoves = new ArrayList<>(); // A list of legal moves.
 
         for (Move move : state.legalMoves()){
             MovePlus st = new MovePlus(move, state, useMinimax);
-            // System.out.println("" + st.getSTATE() + " " + st.SCORE);
             legalMoves.add(st);
         }
         return Collections.max(legalMoves).getMOVE(); // Find the move leading to the state with the highest score.
@@ -249,14 +248,15 @@ public class Cublino {
 
         public MovePlus(Move move, State parent, boolean useMinimax) {
             this.MOVE = move;
+            boolean currentPlayer = parent.getPlayerTurn(); // The current player who is going to make a move decision.
             State child = parent.copy(); // Make a child by copying the parent
             child.applyMove(move); // Apply the move to the child
 
             if (useMinimax){
                 GameTree tree = new GameTree(child, 3); // Build a tree from the child.
-                this.SCORE = tree.miniMaxAB(-9999, 9999); } // Evaluate the tree.
+                this.SCORE = tree.miniMaxAB(-9999, 9999, currentPlayer); } // Evaluate the tree.
             else
-                this.SCORE = child.stateEvaluate(); // Evaluate the child state directly.
+                this.SCORE = child.stateEvaluate(currentPlayer); // Evaluate the child state directly.
         }
         @Override
         public int compareTo(MovePlus other) {
