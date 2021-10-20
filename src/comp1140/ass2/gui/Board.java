@@ -18,7 +18,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -32,8 +31,8 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State prevGameState = new State("Pvb1pc1vd1ve1vf1vg1Lb5we5Ba7Wc7Wd7We7Wf7Wg7");
-    private State gameState = new State("Pvb1pc1vd1ve1vf1vg1Lb5we5Ba7Wc7Wd7We7Wf7Wg7");
+    private State prevGameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
 
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
@@ -42,13 +41,13 @@ public class Board extends Application {
     private final Group controls = new Group();
     private final Group header = new Group();
 
-    private ArrayList<Step> availableLegalSteps = new ArrayList<>();
-    private ArrayList<Dice> dicePieces = new ArrayList<>();
-    private StringBuilder onGoingMove = new StringBuilder();
+    private final ArrayList<Step> availableLegalSteps = new ArrayList<>();
+    private final ArrayList<Dice> dicePieces = new ArrayList<>();
+    private final StringBuilder onGoingMove = new StringBuilder();
     private Dice onGoingDice;
 
-    private Label playerTurnLabel = new Label("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
-    private Label validityLabel = new Label("Valid Move: N/A");
+    private final Label playerTurnLabel = new Label("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
+    private final Label validityLabel = new Label("Valid Move: N/A");
     ChoiceBox<String> variantChoice = new ChoiceBox<>();
 
     @Override
@@ -142,6 +141,8 @@ public class Board extends Application {
         updateLabelUI();
     }
 
+    // (By Rajin)
+    // updates the label UI
     public void updateLabelUI() {
         playerTurnLabel.setText("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
     }
@@ -187,6 +188,8 @@ public class Board extends Application {
         controls.getChildren().addAll(vb);
     }
 
+    // (By Rajin)
+    // render the header
     public void makeHeader() {
         Label title = new Label("Cublino");
         title.setFont(new Font(30));
@@ -213,6 +216,8 @@ public class Board extends Application {
         header.getChildren().add(headerVBox);
     }
 
+    // (By Rajin)
+    // generate indicators for the possible legal moves
     public void generateLegalIndicators(Dice dice) {
         // get legal steps based on whether the game mode is pur or contra
         ArrayList<Step> legalSteps = gameState.isPur() ? gameState.legalStepsPur(dice) : gameState.legalStepsContra(dice);
