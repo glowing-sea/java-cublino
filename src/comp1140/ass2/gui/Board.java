@@ -5,15 +5,21 @@ import comp1140.ass2.core.Dice;
 import comp1140.ass2.core.State;
 import comp1140.ass2.core.Step;
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -26,22 +32,24 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State prevGameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-    private State gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State prevGameState = new State("Pvb1pc1vd1ve1vf1vg1Lb5we5Ba7Wc7Wd7We7Wf7Wg7");
+    private State gameState = new State("Pvb1pc1vd1ve1vf1vg1Lb5we5Ba7Wc7Wd7We7Wf7Wg7");
 
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
     private final static Group gamePieces = new Group();
     private final static Group legalStepsGroup = new Group();
     private final Group controls = new Group();
+    private final Group header = new Group();
 
     private ArrayList<Step> availableLegalSteps = new ArrayList<>();
     private ArrayList<Dice> dicePieces = new ArrayList<>();
-    private StringBuilder onGoingMove = new StringBuilder("");
+    private StringBuilder onGoingMove = new StringBuilder();
     private Dice onGoingDice;
 
     private Label playerTurnLabel = new Label("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
     private Label validityLabel = new Label("Valid Move: N/A");
+    ChoiceBox<String> variantChoice = new ChoiceBox<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,11 +57,12 @@ public class Board extends Application {
         primaryStage.setResizable(false);
         Scene scene = new Scene(root, BOARD_WIDTH, BOARD_HEIGHT);
 
+        makeHeader();
         makeControls();
         makeBoard();
         updateDices();
 
-        root.getChildren().addAll(gamePane, controls);
+        root.getChildren().addAll(gamePane, controls, header);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -64,7 +73,7 @@ public class Board extends Application {
         gamePane.getChildren().clear();
         gamePane.setMinSize(GAMEPANE_SIZE,GAMEPANE_SIZE);
         gamePane.setLayoutX(100);
-        gamePane.setLayoutY(100);
+        gamePane.setLayoutY(115);
         gamePane.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"board.png"),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
@@ -94,12 +103,49 @@ public class Board extends Application {
 
         gamePane.getChildren().add(gamePieces);
 
+        // check if game state is an end state and show pop up
+        if (gameState.isGameOver() == 1 || gameState.isGameOver() == 2 || gameState.isGameOver() == 3) { // if the game is over
+            System.out.println("Game Over : " + (gameState.isGameOver() == 1 ? "Player 1 Wins" : "Player 2 Wins"));
+
+            final Stage gameStatusStage = new Stage();
+            gameStatusStage.initModality(Modality.APPLICATION_MODAL);
+            gameStatusStage.setTitle("Game Over");
+            gameStatusStage.setResizable(false);
+
+            VBox dialogVbox = new VBox();
+            dialogVbox.setAlignment(Pos.CENTER);
+            dialogVbox.setPadding(new Insets(30));
+            dialogVbox.setSpacing(20);
+
+            Label gameStatusLabel = new Label(gameState.isGameOver() == 1 ? "Player 1 Wins" : (gameState.isGameOver() == 2 ? "Player 2 Wins" : "It's a Draw") );
+            gameStatusLabel.setFont(new Font(15));
+            gameStatusLabel.relocate(100, 100);
+
+            Button restartGameButton = new Button("Restart Game");
+            restartGameButton.setOnMouseClicked(mouseEvent -> {
+                variantChoice.setValue(gameState.isPur() ? "Pur" : "Contra");
+                gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+                updateDices();
+                gameStatusStage.close();
+            });
+
+
+            dialogVbox.getChildren().addAll(gameStatusLabel, restartGameButton);
+
+
+            Scene dialogScene = new Scene(dialogVbox, 300, 100);
+            gameStatusStage.setScene(dialogScene);
+            gameStatusStage.show();
+
+        }
+
         updateLabelUI();
     }
 
     public void updateLabelUI() {
         playerTurnLabel.setText("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
     }
+
 
     // (By Rajin)
     private void makeControls() {
@@ -110,7 +156,7 @@ public class Board extends Application {
             if (onGoingMove.length() > 0 && onGoingDice != null) {
                 if (!Cublino.isValidMovePur(prevGameState.toString(), onGoingMove.toString())) {
                     gameState = prevGameState;
-                    gameState.setPlayer1Turn(!gameState.getPlayerTurn());
+                    gameState.setTurn(!gameState.getPlayerTurn());
                     System.out.println("returned to previous state: " + gameState);
                     validityLabel.setText("Valid Move: Invalid");
                 } else {
@@ -123,7 +169,7 @@ public class Board extends Application {
             onGoingDice = null;
 
 
-            gameState.setPlayer1Turn(!gameState.getPlayerTurn());
+            gameState.setTurn(!gameState.getPlayerTurn());
             updateDices();
 
             legalStepsGroup.getChildren().clear();
@@ -134,16 +180,42 @@ public class Board extends Application {
         VBox vb = new VBox();
 
         vb.getChildren().addAll(playerTurnLabel, validityLabel, end_turn);
-        vb.setSpacing(10);
+        vb.setSpacing(5);
         vb.setLayoutX(100);
         vb.setLayoutY(BOARD_HEIGHT - 120);
 
         controls.getChildren().addAll(vb);
     }
 
+    public void makeHeader() {
+        Label title = new Label("Cublino");
+        title.setFont(new Font(30));
+
+        variantChoice.getItems().add("Pur");
+        variantChoice.getItems().add("Contra");
+        variantChoice.setValue("Pur");
+
+        variantChoice.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
+            if (t1.equals("Contra")) {
+                gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+                updateDices();
+            } else if (t1.equals("Pur")) {
+                gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+                updateDices();
+            }
+        });
+
+        VBox headerVBox = new VBox();
+        headerVBox.getChildren().addAll(title, variantChoice);
+        headerVBox.setLayoutX(100);
+        headerVBox.setLayoutY(15);
+
+        header.getChildren().add(headerVBox);
+    }
+
     public void generateLegalIndicators(Dice dice) {
         // get legal steps based on whether the game mode is pur or contra
-        ArrayList<Step> legalSteps = gameState.isPur() ? gameState.getLegalStepPur(dice) : gameState.getLegalStepContra(dice);
+        ArrayList<Step> legalSteps = gameState.isPur() ? gameState.legalStepsPur(dice) : gameState.legalStepsContra(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();
@@ -153,7 +225,7 @@ public class Board extends Application {
 
         if (onGoingMove.length() > 0 && onGoingDice != null) {
             if (dice.compareTo(onGoingDice) == 0) {
-                legalSteps.removeIf(step -> step.isTip());
+                legalSteps.removeIf(Step::isTip);
                 legalSteps.removeIf(step -> !step.getStartPosition().equals(onGoingDice.getPosition()));
                 legalSteps.removeIf(step -> onGoingMove.substring(onGoingMove.length()-2, onGoingMove.length()).contains(step.getEndPosition().toString()));
 
@@ -223,7 +295,7 @@ public class Board extends Application {
                     if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
                         ColorAdjust colorAdjust = new ColorAdjust();
                         colorAdjust.setBrightness(0);
-                        ((PieceGUI) node).setEffect(colorAdjust);
+                        node.setEffect(colorAdjust);
                     }
                 }
 
@@ -278,24 +350,22 @@ public class Board extends Application {
 
                         if (gameState.isPur()) {
                             gameState = new State(Cublino.applyMovePur(gameState.toString(), step.toString()));
-                        } else if (!gameState.isPur()) {
+                        } else {
                             gameState = new State(Cublino.applyMoveContra(gameState.toString(), step.toString()));
                         }
 
                         validityLabel.setText("Valid Move: Valid");
 
-
-
                         State potentialNextState = new State(gameState.toString());
-                        potentialNextState.setPlayer1Turn(!potentialNextState.getPlayerTurn());
+                        potentialNextState.setTurn(!potentialNextState.getPlayerTurn());
 
 
 
-                        System.out.println("Potential Jumps: " + potentialNextState.generateAllJumpPur());
+                        System.out.println("Potential Jumps: " + potentialNextState.legalJumpsPur());
 
                         if (gameState.getDiceAt(step.getEndPosition()) != null) {
-                            ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.getLegalStepPur(gameState.getDiceAt(step.getEndPosition())));
-                            potentialJumpStates.removeIf(p -> p.isTip());
+                            ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
+                            potentialJumpStates.removeIf(Step::isTip);
 
                             // there are more steps that can happen in this current move
                             if (gameState.isPur() && potentialJumpStates.size() != 0 ) {

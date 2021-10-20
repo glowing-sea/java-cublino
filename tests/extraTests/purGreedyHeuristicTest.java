@@ -64,7 +64,7 @@ public class purGreedyHeuristicTest {
     @Test
     public void testHeuristic() {
         // win state checks
-        testGreedyHeuristicInequality("PWa7Wb7Wc7Wd7We7Wf1Wg7aa1ab1ac1ad1ae1af1ag1","PMa7Mb7Mc7Md7Me7Mf7Mg7aa1ab1ac1ad1ae1af1ag1", true);
+        testGreedyHeuristicInequality("PWa7Wb7Wc7Wd7We7Wf1Wg7aa1ab1ac1ad1ae1af1ag1","PWa1Wb4Wc7Wd7We7Wf7Wg7va7vb1vc4vd1ve1vf1vg1", true);
         testGreedyHeuristicInequality("PMa7Mb7Mc7Md7Me7Mf7Mg7aa1ab1ac1ad1ae1af1ag1", "pAa7Ab7Ac7Ad7Ae7Af7Ag7va1vb1vc1vd1ve1vf1vg1", true);
 
         // edge case check: distance from end point
