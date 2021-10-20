@@ -1,14 +1,13 @@
 package extraTests;
-import comp1140.ass2.Cublino;
 import comp1140.ass2.core.Move;
 import comp1140.ass2.core.State;
+import comp1140.ass2.ExampleGames;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,10 +17,10 @@ public class legalMovesPurTest {
 
     @Test
     // (By Haoting)
-    public void testGeneratePurMove() {
+    public void testGeneratePurMove1() {
         for (int i = 0; i < states.length; i++) {
             State testState = new State(states[i]);
-            ArrayList<Move> generatedMoves = testState.legalMoves();
+            Set<Move> generatedMoves = testState.legalMoves();
             Set<String> expectedMoves = new HashSet<>(Arrays.asList(moves[i]));
 
             // The number of legal moves generated must be the same as the example.
@@ -32,6 +31,25 @@ public class legalMovesPurTest {
             }
         }
     }
+
+    @Test
+    public void testGeneratePurMove2() {
+        for (int i = 0; i < ExampleGames.FULL_PUR_GAME_WITH_MOVES_STATES.length; i++) {
+            State testState = new State(ExampleGames.FULL_PUR_GAME_WITH_MOVES_STATES[i]);
+            Set<Move> generatedMoves = testState.legalMoves();
+            Set<String> expectedMoves = new HashSet<>(Arrays.asList(ExampleGames.FULL_GAME_WITH_MOVES_MOVES[i]));
+            System.out.println(i);
+
+            // The number of legal moves generated must be the same as the example.
+            assertEquals(generatedMoves.size(), expectedMoves.size());
+            for (Move move : generatedMoves){
+                // All the legal moves in the example must be contained in the list of legal moves generated.
+                assertTrue(expectedMoves.contains(move.toString()));
+            }
+        }
+    }
+
+
 
     public static final String[] states = {
             "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7"

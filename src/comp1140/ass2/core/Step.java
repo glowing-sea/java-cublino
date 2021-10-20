@@ -6,7 +6,7 @@ public class Step {
     private Position start;
     private Position end;
 
-    //================================================CONSTRUCTOR=====================================================//
+    //=========================================== CONSTRUCTOR & PRINTER ==============================================//
 
     // (By Haoting)
     // A simple constructor of a step.
@@ -23,8 +23,6 @@ public class Step {
         this.end = endPosition;
     }
 
-    //=============================================NON-STATIC METHODS=================================================//
-
     // (By Haoting)
     @Override
     public String toString() {
@@ -32,18 +30,25 @@ public class Step {
     }
 
 
-    // Setter and getter method
-    // (By Haoting)
+    //========================================== SETTER & GETTER METHODS =============================================//
+
+    // (By Group)
+    // Update the starting position and the ending position of a step.
     public void setStep(Position start, Position end) {
         this.start = start;
         this.end = end;
     }
 
     // (By Group)
-    public Position getStartPosition() {return start;}
-    public Position getEndPosition() {return end;}
+    public Position getStartPosition() {return start;} // Get the starting position of a step.
+    public Position getEndPosition() {return end;} // Get the ending position of a step.
 
+    //============================================== CHECKER METHODS =================================================//
 
+    // Check whether it is a tipping step (By Group)
+    public boolean isTip(){
+        return start.isAdjacent(end);
+    }
 
     /**
      * Task 7 (Object Version) (By Haoting Chen):
@@ -58,10 +63,10 @@ public class Step {
      * ASSUMPTIONS: the state is of the Pur variant and valid. The step is well-formed.
      */
 
-    public boolean isValidStepPur(State state, Position movingDicePosition) {
+    public boolean isValidStepPur(State state) {
 
         // Check if the ending position is not occupied
-        if (state.containDice(end))
+        if (state.containDice(end, false))
             return false;
 
         int x1 = start.getX();
@@ -79,7 +84,7 @@ public class Step {
                 return true;
             if (y1 + forward * 2 == y2) { // Jump forward
                 over.setY(y1 + forward);
-                return state.containDice(over);
+                return state.containDice(over, false);
             }
         }
         // Check if it is a valid horizontal move
@@ -90,21 +95,16 @@ public class Step {
                 return true;
             if (x1 + 2 == x2) { // Jump to the right
                 over.setX(x1 + 1);
-                return !over.equals(movingDicePosition) && state.containDice(over);
+                return state.containDice(over, false);
             }
             if (x1 - 2 == x2) { // Jump to the left
                 over.setX(x1 - 1);
-                return !over.equals(movingDicePosition) && state.containDice(over);
+                return state.containDice(over, false);
             }
         }
         return false;
     }
 
-    public boolean isTip(){
-        return start.isAdjacent(end);
-    }
-
-    //=================================================STATIC METHODS=================================================//
 
     //======================================================TESTS=====================================================//
 

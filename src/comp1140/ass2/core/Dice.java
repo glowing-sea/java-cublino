@@ -13,7 +13,7 @@ public class Dice implements Comparable<Dice> {
     private Position position; // the piece's position
     private char orientation;
 
-    //================================================CONSTRUCTOR=====================================================//
+    //=========================================== CONSTRUCTOR & PRINTER ==============================================//
 
     // (By Haoting & Rajin)
     // A simple constructor of a Dice.
@@ -27,32 +27,14 @@ public class Dice implements Comparable<Dice> {
     // A constructor of a dice based on its encoding.
     public Dice(String encoding){
 
-        assert Cublino.isDiceWellFormed(encoding) && encoding.length() == 3 :
-                "The input dice string is not well-formed.";
+        if (!(Cublino.isDiceWellFormed(encoding)) && encoding.length() == 3) throw new IllegalArgumentException();
 
-        char colNumChar = encoding.charAt(1);
-        char rowNumChar = encoding.charAt(2);
-        int topNum;
-        int colNum;
-        int rowNum = Character.getNumericValue(rowNumChar);
-
-        switch (colNumChar) {
-            case 'a' -> colNum = 1;
-            case 'b' -> colNum = 2;
-            case 'c' -> colNum = 3;
-            case 'd' -> colNum = 4;
-            case 'e' -> colNum = 5;
-            case 'f' -> colNum = 6;
-            default -> colNum = 7;
-        }
-
+        int colNum = encoding.charAt(1) - 96;
+        int rowNum = encoding.charAt(2) - 48;
         this.orientation = encoding.charAt(0); // assign orientation value
         this.position = new Position(colNum,rowNum); // assignment of location based on encoding
         this.isPlayer1 = Character.isUpperCase(orientation); // assign the player's type
     }
-
-
-    //=============================================NON-STATIC METHODS=================================================//
 
     // (Written by Rajin and edited by Haoting)
     @Override
@@ -66,19 +48,14 @@ public class Dice implements Comparable<Dice> {
         return this.getPosition().getPositionOrder() - other.getPosition().getPositionOrder();
     }
 
+    //========================================= SETTER & GETTER METHODS ==============================================//
+
     // (By Group)
-    // Getter Methods.
-    public boolean isPlayer1() {return isPlayer1;}
-    public Position getPosition() {return position;}
-
-
-    public ArrayList<Step> getLegalMoves(Dice p1, State b1) {
-        return null;
-        // TODO: need to create a way to get all legal moves for a given piece with the current game state
-    }
+    public boolean isPlayer1() {return isPlayer1;} // Get the player of the dice.
+    public Position getPosition() {return position;} // Get the position of the dice.
 
     // (By Haoting & Rajin)
-    // Get the number of all faces of a dice
+    // Get an array of numbers indicating the faces of a dice.
     // Format: {TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM}
     public int[] getFaces (){
         return TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation));
@@ -86,15 +63,27 @@ public class Dice implements Comparable<Dice> {
     // Get the top number of a dice
     public int getTopNumber() { return (TRANSLATION_TABLE.get(Character.toLowerCase(this.orientation)))[0]; }
 
+    // (By Haoting & Anubhav)
+    // Get all the enemies of a dice in a state. (Used in Contra)
+    // Enemies are all the dice that are adjacent to the current dice but have different colours.
+    public ArrayList<Dice> getEnemies (State state){
+        ArrayList<Dice> enemies = new ArrayList<>();
+        for (Dice enemy : state.getDices()){
+            if (this.getPosition().isAdjacent(enemy.getPosition()) && this.isPlayer1() != enemy.isPlayer1())
+                enemies.add(enemy);
+        }
+        return enemies;
+    }
 
-
-    // (By Haoting)
+    // Give a position, update the position of the dice. (By Haoting)
     public void jump(Position position) {this.position = position;}
 
     // (Written by Anubhav and edited by Haoting)
-    // Tip dice according to a valid step.
-    // Do nothing if a step is not a tip.
+    // Give a tip step, update the both position and direction of the dice.
     public void tip(Step step){
+        if (!step.isTip()) throw new IllegalArgumentException();
+
+        this.position = step.getEndPosition();
         int[] initialFaces = this.getFaces();
         int[] newFaces = new int[6];
 
@@ -140,10 +129,11 @@ public class Dice implements Comparable<Dice> {
         }
     }
 
+
     //=================================================STATIC METHODS=================================================//
 
     // (By Haoting)
-    // Give a state(board) and a position, find all the adjacent dices.
+    // Give a state and a position, find all the dices adjacent to the position.
     public static ArrayList<Dice> adjacentDices (Position position, State state){
         ArrayList<Dice> adjDices = new ArrayList<>();
         for (Dice dice : state.getDices()){
@@ -152,6 +142,7 @@ public class Dice implements Comparable<Dice> {
         }
         return adjDices;
     }
+
 
     // (Written by Rajin and reviewed by Hoating)
     // A translation map from the characters available to an array containing [TOP, FORWARD, RIGHT, BEHIND, LEFT, BOTTOM]
@@ -188,89 +179,6 @@ public class Dice implements Comparable<Dice> {
         TRANSLATION_TABLE.put('x', new int[]{6, 5, 4, 2, 3, 1});
     }
 
-    // (By Anubhav)
-    public static char getOrientation(int[] sides, boolean isPlayer1) {
-        char x = 0;
-        if (sides[0] == 1 && sides[1] == 2) {
-            x = 'a';
-        }
-        else if (sides[0] == 1 && sides[1] == 3) {
-            x = 'b';
-        }
-        else if (sides[0] == 1 && sides[1] == 4) {
-            x = 'c';
-        }
-        else if (sides[0] == 1 && sides[1] == 5) {
-            x = 'd';
-        }
-        else if (sides[0] == 2 && sides[1] == 1) {
-            x = 'e';
-        }
-        else if (sides[0] == 2 && sides[1] == 3) {
-            x = 'f';
-        }
-        else if (sides[0] == 2 && sides[1] == 4) {
-            x = 'g';
-        }
-        else if (sides[0] == 2 && sides[1] == 6) {
-            x = 'h';
-        }
-        else if (sides[0] == 3 && sides[1] == 1) {
-            x = 'i';
-        }
-        else if (sides[0] == 3 && sides[1] == 2) {
-            x = 'j';
-        }
-        else if (sides[0] == 3 && sides[1] == 5) {
-            x = 'k';
-        }
-        else if (sides[0] == 3 && sides[1] == 6) {
-            x = 'l';
-        }
-        else if (sides[0] == 4 && sides[1] == 1) {
-            x = 'm';
-        }
-        else if (sides[0] == 4 && sides[1] == 2) {
-            x = 'n';
-        }
-        else if (sides[0] == 4 && sides[1] == 5) {
-            x = 'o';
-        }
-        else if (sides[0] == 4 && sides[1] == 6) {
-            x = 'p';
-        }
-        else if (sides[0] == 5 && sides[1] == 1) {
-            x = 'q';
-        }
-        else if (sides[0] == 5 && sides[1] == 3) {
-            x = 'r';
-        }
-        else if (sides[0] == 5 && sides[1] == 4) {
-            x = 's';
-        }
-        else if (sides[0] == 5 && sides[1] == 6) {
-            x = 't';
-        }
-        else if (sides[0] == 6 && sides[1] == 2) {
-            x = 'u';
-        }
-        else if (sides[0] == 6 && sides[1] == 3) {
-            x = 'v';
-        }
-        else if (sides[0] == 6 && sides[1] == 4) {
-            x = 'w';
-        }
-        else if (sides[0] == 6 && sides[1] == 5) {
-            x = 'x';
-        }
-        if (isPlayer1) {
-            return Character.toUpperCase(x);
-        }
-        else {
-            return x;
-        }
-    }
-
     //======================================================TESTS=====================================================//
 
     // (By Group)
@@ -280,7 +188,6 @@ public class Dice implements Comparable<Dice> {
         Dice d2 = new Dice("Xb7");
         Dice d3 = new Dice("ca1");
         Dice d4 = new Dice("Mb6");
-        System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
         System.out.println(Arrays.toString(d1.getFaces()));
         System.out.println(d1.getTopNumber());
 
@@ -288,6 +195,18 @@ public class Dice implements Comparable<Dice> {
         State state1 = new State("pCe1Xb2pd2fd3Ge3Rg3ia4Lc4Td4qe4Gb5rf5cg5if6");
         Dice d5 = new Dice("Td4");
         System.out.println(adjacentDices(d5.getPosition(),state1));
+        System.out.println(d1 + "," + d2 + "," + d3 + "," + d4);
+
+        d1.tip(new Step("c2c3"));
+        System.out.println(d1);
+
+        // getEnemies test
+        State c1 = new State("csc1ca3sf3Mb4jc4td4Qa5Cb5Oc5vf5qb6Lg6Ga7Gd7");
+        Dice d6 = new Dice("Cb5"); // One enemy
+        Dice d7 = new Dice("jc4"); // Two enemies
+        Dice d8 = new Dice("sf3"); // No enemies
+
+        System.out.println(d6.getEnemies(c1) + "," + d7.getEnemies(c1) + "," + d8.getEnemies(c1));
     }
 }
 

@@ -2,12 +2,13 @@ package comp1140.ass2.core;
 import comp1140.ass2.Cublino;
 
 import java.util.ArrayList;
-import java.util.Collections;
+
+
 
 public class Move {
-    private ArrayList<Position> positions;
+    private final ArrayList<Position> positions;
 
-    //================================================CONSTRUCTOR=====================================================//
+    //================================== CONSTRUCTOR & PRINTER & COPIER ==============================================//
 
     // (By Haoting)
     public Move(String encoding) {
@@ -22,15 +23,6 @@ public class Move {
 
     public Move(ArrayList<Position> move){this.positions = move;}
 
-    // Copier (By Group)
-    public Move copy(){ return new Move(this.toString()); }
-
-    // (By Group)
-    public ArrayList<Position> getPositions() {return positions;}
-    public void setPositions(ArrayList<Position> positions) {this.positions = positions;}
-
-    //=============================================NON-STATIC METHODS=================================================//
-
     @Override // (By Haoting)
     public String toString(){
         StringBuilder output = new StringBuilder();
@@ -39,10 +31,28 @@ public class Move {
         return output.toString();
     }
 
+    // Copier (By Group)
+    public Move copy(){ return new Move(this.toString()); }
+
+
+    //========================================== SETTER & GETTER METHODS =============================================//
+
+    // (By Group)
+    public ArrayList<Position> getPositions() {return positions;} // Get a list of positions of the move.
+
+    // (By Haoting)
+    public Position getStart (){ return this.positions.get(0); } // Get the starting position of the move.
+    public Position getEnd (){ return this.positions.get(positions.size() - 1); } // Get the ending position of the move.
+
+
+    // Add a new position to the current move object.
+    public void moveFurther (Position destination){ this.positions.add(destination); }
+
+    //============================================== CHECKER METHODS =================================================//
 
     /**
      * Task 8: (By Haoting)
-     * Determine whether a move (sequence of steps) is valid for a given game.
+     * Determine whether a move (sequence of steps) is valid for a given Pur game.
      *
      * A move is valid if it satisfies the following conditions:
      * 1. The starting position of the move contains a dice belonging to the player who's turn it is.
@@ -61,13 +71,13 @@ public class Move {
 
         // Condition 5
         Position start = positions.get(0);
-        Position end = this.getLastPosition();
+        Position end = this.getEnd();
         if (start.equals(end))
             return false;
 
         // Condition 1
         boolean result = false;
-        result = state.containPlayerDice(start,state.getPlayerTurn());
+        result = state.containDice(start,true);
         if (!result)
             return false;
 
@@ -75,7 +85,7 @@ public class Move {
         Step checkedStep = new Step("a1a1");
         for (int i = 0; i < positions.size() - 1; i++){
             checkedStep.setStep(positions.get(i), positions.get(i + 1));
-            if (!checkedStep.isValidStepPur(state, start))
+            if (!checkedStep.isValidStepPur(state))
                 return false;
             if (i != 0 && checkedStep.isTip())
                 return false;
@@ -83,16 +93,39 @@ public class Move {
         return true;
     }
 
+    // (Written by Anubhav, edited by Haoting)
+    // Determine whether a move is valid for a given Contra game.
+    public Boolean isValidMoveContra(State state, boolean quickCheck) {
 
-    // Add a position to the move. (Change the current Move object)
-    public void moveFurther (Position destination){
-        this.positions.add(destination);
+        // Only one step is allowed.
+        if (positions.size() != 2) return false;
+
+        Position start = positions.get(0);
+        Position end = positions.get(1);
+
+        if(!quickCheck){
+
+            // Check if there is a current player's dice in the starting position
+            if (!state.containDice(start, true))
+                return false;
+
+            // Check if the starting position and the ending position are adjacent.
+            if (!start.isAdjacent(end))
+                return false;
+        }
+
+        int forward = state.getPlayerTurn() ? 1 : -1;
+
+        // Check if it is a valid forward move
+        if (start.getX() == end.getX()) {
+            if (!(start.getY() + forward == end.getY())) // Tilt forward
+                return false;
+        }
+
+        // No dice in the ending position and there is a current player's dice in the starting position.
+        return !state.containDice(end, false);
     }
 
-
-    // By Haoting
-    // Get the last position of the move
-    public Position getLastPosition (){ return this.positions.get(positions.size() - 1); }
 
     //=================================================STATIC METHODS=================================================//
 
@@ -100,8 +133,20 @@ public class Move {
 
     //======================================================TESTS=====================================================//
     public static void main(String[] args) {
+        Move m = new Move("a1a2"); // empty spot, so should return true
         Move m1 = new Move("g6f6d6");
-        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a8");
-        System.out.println(m1 + ", " + m2.toString().equals("g6f6d6a1a2a3a4a5a6a7a8"));
+        Move m2 = new Move("g6f6d6a1a2a3a4a5a6a7a7");
+        Move m3 = new Move("a1a2a3"); // should return false
+        Move m4 = new Move("a2a1"); // false, behind move is invalid
+        Move m5 = new Move("b3b4"); // invalid because position is occupied, is valid for s3
+
+        State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+        State s2 = new State("PWa1Db3Wc1Wd1We1Wf1Wg1va7vb4vc7vd7ve7vf7vg7");
+        State s3 = new State("PWa1Wb3Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+
     }
+
+
+
+
 }
