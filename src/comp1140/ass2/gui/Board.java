@@ -36,6 +36,7 @@ public class Board extends Application {
 
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
+    private final static Pane orientationPanel = new Pane();
     private final static Group gamePieces = new Group();
     private final static Group legalStepsGroup = new Group();
     private final Group controls = new Group();
@@ -45,7 +46,10 @@ public class Board extends Application {
     private final ArrayList<Dice> dicePieces = new ArrayList<>();
     private final StringBuilder onGoingMove = new StringBuilder();
     private Dice onGoingDice;
+    private Dice currentlySelectedDice;
 
+
+    private final OrientationTiles orientationTiles = new OrientationTiles();
     private final Label playerTurnLabel = new Label("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
     private final Label validityLabel = new Label("Valid Move: N/A");
     ChoiceBox<String> variantChoice = new ChoiceBox<>();
@@ -60,8 +64,9 @@ public class Board extends Application {
         makeControls();
         makeBoard();
         updateDices();
+        makeOrientationPanel();
 
-        root.getChildren().addAll(gamePane, controls, header);
+        root.getChildren().addAll(gamePane, controls, header, orientationPanel);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -145,6 +150,71 @@ public class Board extends Application {
     // updates the label UI
     public void updateLabelUI() {
         playerTurnLabel.setText("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
+    }
+
+    private void makeOrientationPanel() {
+        orientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"orientation.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        orientationPanel.setPrefSize(200, 200);
+        orientationPanel.setLayoutX(600);
+        orientationPanel.setLayoutY(365);
+
+        // add default placeholders
+        orientationTiles.show();
+    }
+
+
+    class OrientationTiles  {
+        ArrayList<ImageView> orientationTileImages = new ArrayList<>();
+        OrientationTiles() {
+            ImageView topTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            topTile.relocate(75, 75);
+            orientationTileImages.add(topTile);
+
+            ImageView forwardTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            forwardTile.relocate(75, 15);
+            orientationTileImages.add(forwardTile);
+
+            ImageView rightTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            rightTile.relocate(135, 75);
+            orientationTileImages.add(rightTile);
+
+            ImageView behindTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            behindTile.relocate(75, 135);
+            orientationTileImages.add(behindTile);
+
+            ImageView leftTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            leftTile.relocate(15, 75);
+            orientationTileImages.add(leftTile);
+        }
+
+        public void show() {
+            orientationPanel.getChildren().clear();
+            for (ImageView tile:orientationTiles.orientationTileImages) {
+                orientationPanel.getChildren().add(tile);
+            }
+        }
+
+        public void updateOrientation(Dice dice) {
+            String currentDiceColour = dice.isPlayer1() ? "w_" : "b_";
+            int[] currentDiceFaces = dice.getFaces();
+
+            // update the images based on currently selected dice
+            orientationTileImages.get(0).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[0]+".png")); // top face
+            orientationTileImages.get(1).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[1]+".png")); // forward face
+            orientationTileImages.get(2).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[2]+".png")); // right face
+            orientationTileImages.get(3).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[3]+".png")); // bottom face
+            orientationTileImages.get(4).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[4]+".png")); // left face
+
+            show();
+        }
+
+        public void clearOrientation() {
+            orientationTileImages.get(0).setImage(new Image(URI_BASE+"tile.png")); // top face
+            orientationTileImages.get(1).setImage(new Image(URI_BASE+"tile.png")); // forward face
+            orientationTileImages.get(2).setImage(new Image(URI_BASE+"tile.png")); // right face
+            orientationTileImages.get(3).setImage(new Image(URI_BASE+"tile.png")); // bottom face
+            orientationTileImages.get(4).setImage(new Image(URI_BASE+"tile.png")); // left face
+        }
     }
 
 
@@ -239,7 +309,7 @@ public class Board extends Application {
                         if (node instanceof TileGUI) {
                             TileGUI tile = (TileGUI) node;
                             if (tile.xIndex == legalStep.getEndPosition().getX() && tile.yIndex == legalStep.getEndPosition().getY()) {
-                                LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex);
+                                LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex, legalStep);
                                 legalStepsGroup.getChildren().add(legalIndicator);
                                 availableLegalSteps.add(legalStep);
                                 System.out.println(availableLegalSteps);
@@ -254,7 +324,7 @@ public class Board extends Application {
                     if (node instanceof TileGUI) {
                         TileGUI tile = (TileGUI) node;
                         if (tile.xIndex == legalStep.getEndPosition().getX() && tile.yIndex == legalStep.getEndPosition().getY()) {
-                            LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex);
+                            LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex, legalStep);
                             legalStepsGroup.getChildren().add(legalIndicator);
                             availableLegalSteps.add(legalStep);
                             System.out.println(availableLegalSteps);
@@ -295,6 +365,8 @@ public class Board extends Application {
 
             // display all the legal moves
             setOnMouseClicked(mouseEvent -> {
+
+
                 // remove effects from the other PieceGUIs
                 for (Node node:gamePieces.getChildren()) {
                     if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
@@ -309,15 +381,35 @@ public class Board extends Application {
                 this.setEffect(colorAdjust);
 
                 generateLegalIndicators(dice);
-                System.out.println("Game State: "+gameState);
+
+                currentlySelectedDice = null;
+
+                // select the current dice
+                currentlySelectedDice = dice;
+                System.out.println("Current Dice :" + currentlySelectedDice);
+
+                // update the orientation pane
+                orientationTiles.updateOrientation(currentlySelectedDice);
+
             });
         }
     }
 
     class LegalIndicatorGUI extends TileGUI {
-        LegalIndicatorGUI(int xIndex, int yIndex) {
+        LegalIndicatorGUI(int xIndex, int yIndex, Step legalStep) {
             super(xIndex, yIndex);
             setImage(new Image(URI_BASE+"legal.png"));
+
+            setOnMouseEntered(mouseEvent -> {
+                State potentialState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), legalStep.toString()) : Cublino.applyMoveContra(gameState.toString(), legalStep.toString()));
+                Dice potentialDice = potentialState.getDiceAt(legalStep.getEndPosition());
+
+                orientationTiles.updateOrientation(potentialDice);
+            });
+
+            setOnMouseExited(mouseEvent -> {
+                orientationTiles.updateOrientation(currentlySelectedDice);
+            });
         }
     }
 
@@ -345,8 +437,6 @@ public class Board extends Application {
                         legalStepsGroup.getChildren().clear();
                         gamePane.getChildren().remove(legalStepsGroup);
                         gamePane.getChildren().add(legalStepsGroup);
-
-                        // TODO: implement a way to find out if subsequent legal steps are available and show them (a way to complete the step)
 
                         if (onGoingMove.length() == 0 && onGoingDice == null) {
                             onGoingMove.append(step.getStartPosition());
