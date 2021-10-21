@@ -340,8 +340,6 @@ public class Cublino {
 
     public static void main(String[] args) {
         System.out.println(generateMovePur("PGf1Kc2pd2Le2Ge3ff3Rg3Lc4qe4Ca5ce5rf5if6va7"));
-
-
         State s1 = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
         State s2 = new State("Psc1ma2if2ca3gc3we3Qc4td4Qa5Cb5Oc5Hf6Wb7We7");
         State s3 = new State("PWa1Wb1Wc1Wd4We1Wf1Wg1va7vb7vc7vd7ve4vf7vg7");
