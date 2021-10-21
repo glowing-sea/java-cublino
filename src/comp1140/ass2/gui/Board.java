@@ -22,6 +22,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Board extends Application {
 
@@ -54,6 +55,8 @@ public class Board extends Application {
     // 2 is Human v AI2
     // 3 is AI1 v AI2
     // 4 is AI2 v AI2
+    // 5 is AI1 v Human
+    // 6 is AI2 v Human
     private int AIchoice = 0;
 
 
@@ -110,7 +113,7 @@ public class Board extends Application {
 
         dicePieces.clear();
 
-        // apply AI move here
+        // Apply AI Move (for games where AI vs Human)
         if (AIchoice == 1 && !gameState.getPlayerTurn()) {
             // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
@@ -120,6 +123,37 @@ public class Board extends Application {
         if (AIchoice == 2 && !gameState.getPlayerTurn()) {
             // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        if (AIchoice == 5 && gameState.getPlayerTurn()) {
+            // APPLY AI MOVE
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        if (AIchoice == 6 && gameState.getPlayerTurn()) {
+            // APPLY AI MOVE
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        // Apply AI Moves (for games where AI vs AI)
+        if (AIchoice == 3) {
+            if (gameState.getPlayerTurn()) {
+                gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
+            } else {
+                gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            }
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        if (AIchoice == 4) {
+            if (gameState.getPlayerTurn()) {
+                gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            } else {
+                gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
+            }
             System.out.println("AI MOVED : " + gameState);
         }
 
@@ -225,6 +259,14 @@ public class Board extends Application {
                 AIchoice = 1;
             } else if (player1SettingChoice.getValue().equals("Human") && player2SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)")) {
                 AIchoice = 2;
+            } else if (player1SettingChoice.getValue().equals("AI 1 (Greedy)") && player2SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)")) {
+                AIchoice = 3;
+            } else if (player1SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)") && player2SettingChoice.getValue().equals("AI 1 (Greedy)")) {
+                AIchoice = 4;
+            } else if (player1SettingChoice.getValue().equals("AI 1 (Greedy)") && player2SettingChoice.getValue().equals("Human")) {
+                AIchoice = 5;
+            } else if (player1SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)") && player2SettingChoice.getValue().equals("Human")) {
+                AIchoice = 6;
             }
 
             updateDices();
@@ -329,8 +371,12 @@ public class Board extends Application {
             onGoingDice = null;
 
 
-            gameState.setTurn(!gameState.getPlayerTurn());
-            updateDices();
+            if (AIchoice == 3 || AIchoice == 4) {
+                updateDices();
+            } else {
+                gameState.setTurn(!gameState.getPlayerTurn());
+                updateDices();
+            }
 
             legalStepsGroup.getChildren().clear();
 
@@ -453,7 +499,7 @@ public class Board extends Application {
             this.setFitHeight(TILE_SIZE + 1);
 
             setOnMouseClicked(mouseEvent -> {
-                if (gameState.getPlayerTurn() == dice.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && dice.isPlayer1()) {
+                if (gameState.getPlayerTurn() == dice.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !dice.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !dice.isPlayer1()) {
                     // remove effects from the other PieceGUIs
                     for (Node node:gamePieces.getChildren()) {
                         if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
@@ -551,7 +597,7 @@ public class Board extends Application {
                             ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
                             potentialJumpStates.removeIf(Step::isTip);
 
-                            if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1()) {
+                            if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1()) {
 
                                 // APPLY PLAYER MOVE
 
