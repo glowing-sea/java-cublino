@@ -385,7 +385,9 @@ public class Board extends Application {
 
 
             if (AIchoice == 3 || AIchoice == 4 || AIchoice == 7 || AIchoice == 8) {
-                updateDices();
+                if (gameState.isGameOver() != 1 || gameState.isGameOver() != 2 || gameState.isGameOver() != 3) {
+                    updateDices();
+                }
             } else {
                 gameState.setTurn(!gameState.getPlayerTurn());
                 updateDices();
