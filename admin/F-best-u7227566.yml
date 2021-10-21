@@ -21,12 +21,14 @@ declaration: >-
 collaboration:
   - name: Haoting Chen
     comment: Haoting helped me in Task9, and made a well structured class breakdown for my task 4 and 6. I had built the core and the logic for task9, including the function which changes the faces of a dice given a move, which Haoting helped fix in the D2E code review.
+    Haoting also helped review all the functions, to help optimise them, and build on the logic to make the code more efficient
+
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - <Cublino.java> battle(Dice attacker, Dice defender, ArrayList<Dice> adjacentA, ArrayList<Dice> adjacentD) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L377-419
-   - <Cublino.java> applyMoveContra(String state, String move) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L357-371
+   - <State.java> stateEvaluateContra(boolean currentPlayer) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/State.java#L478-514
+
 
 # sign *your* name and uid here
 name: Anubhav
