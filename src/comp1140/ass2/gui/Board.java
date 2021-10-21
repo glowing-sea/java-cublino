@@ -18,6 +18,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -32,8 +33,8 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State prevGameState = new State("PWa1Wb4Wc7Wd7We7Wf7Wg7va7vb1vc4vd1ve1vf1vg1");
-    private State gameState = new State("PWa1Wb4Wc7Wd7We7Wf7Wg7va7vb1vc4vd1ve1vf1vg1");
+    private State prevGameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
 
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
@@ -57,6 +58,8 @@ public class Board extends Application {
     // 4 is AI2 v AI2
     // 5 is AI1 v Human
     // 6 is AI2 v Human
+    // 7 is AI1 v AI1
+    // 8 is AI2 v AI2
     private int AIchoice = 0;
 
 
@@ -89,7 +92,7 @@ public class Board extends Application {
         gamePane.getChildren().clear();
         gamePane.setMinSize(GAMEPANE_SIZE,GAMEPANE_SIZE);
         gamePane.setLayoutX(100);
-        gamePane.setLayoutY(115);
+        gamePane.setLayoutY(150);
         gamePane.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"board.png"),
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundRepeat.NO_REPEAT,
@@ -157,6 +160,16 @@ public class Board extends Application {
             System.out.println("AI MOVED : " + gameState);
         }
 
+        if (AIchoice == 7) {
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        if (AIchoice == 8) {
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
 
         for (Dice dice:gameState.getDices()) {
             gamePieces.getChildren().add(new PieceGUI(dice));
@@ -214,7 +227,7 @@ public class Board extends Application {
         orientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"orientation.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         orientationPanel.setPrefSize(200, 200);
         orientationPanel.setLayoutX(575);
-        orientationPanel.setLayoutY(365);
+        orientationPanel.setLayoutY(400);
 
         // add default placeholders
         orientationTiles.show();
@@ -228,27 +241,45 @@ public class Board extends Application {
         gameSettingsOrientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"settings.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         gameSettingsOrientationPanel.setPrefSize(200, 230);
         gameSettingsOrientationPanel.setLayoutX(575);
-        gameSettingsOrientationPanel.setLayoutY(115);
+        gameSettingsOrientationPanel.setLayoutY(150);
 
         Label gameSettingsLabel = new Label("Game Settings");
-        gameSettingsLabel.setFont(new Font(15));
+        gameSettingsLabel.setStyle("""
+                -fx-font: 20px Tahoma;
+                    -fx-stroke: black;
+                    -fx-stroke-width: 1;
+                """);
 
 
         VBox player1ChoicesVbox = new VBox();
-        Label player1Label = new Label("Player 1 : ");
+        Label player1Label = new Label("Player 1 (White) : ");
+
         ChoiceBox<String> player1SettingChoice = new ChoiceBox<>();
+        player1SettingChoice.setStyle("""
+                -fx-font: 12px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
         player1SettingChoice.getItems().addAll("Human", "AI 1 (Greedy)", "AI 2 (Minimax w/ AB)");
         player1SettingChoice.setValue("Human");
         player1ChoicesVbox.getChildren().addAll(player1Label, player1SettingChoice);
 
         VBox player2ChoicesVbox = new VBox();
-        Label player2Label = new Label("Player 2 : ");
+        Label player2Label = new Label("Player 2 (Black) : ");
+
         ChoiceBox<String> player2SettingChoice = new ChoiceBox<>();
+        player2SettingChoice.setStyle("""
+                -fx-font: 12x Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
         player2SettingChoice.getItems().addAll("Human", "AI 1 (Greedy)", "AI 2 (Minimax w/ AB)");
         player2SettingChoice.setValue("Human");
         player2ChoicesVbox.getChildren().addAll(player2Label, player2SettingChoice);
 
         Button restartGameButton = new Button("Restart Game");
+        restartGameButton.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
         // restart the game with new settings
         restartGameButton.setOnMouseClicked(mouseEvent -> {
             gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
@@ -267,6 +298,10 @@ public class Board extends Application {
                 AIchoice = 5;
             } else if (player1SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)") && player2SettingChoice.getValue().equals("Human")) {
                 AIchoice = 6;
+            } else if (player1SettingChoice.getValue().equals("AI 1 (Greedy)") && player2SettingChoice.getValue().equals("AI 1 (Greedy)")) {
+                AIchoice = 7;
+            } else if (player1SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)") && player2SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)")) {
+                AIchoice = 8;
             }
 
             updateDices();
@@ -351,9 +386,12 @@ public class Board extends Application {
 
     // (By Rajin)
     private void makeControls() {
-        Button end_turn = new Button("End Turn");
-        end_turn.setStyle("-fx-background-radius: 1em; ");
-        end_turn.setOnAction(actionEvent -> {
+        Button endTurnButton = new Button("End Turn");
+        endTurnButton.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
+        endTurnButton.setOnAction(actionEvent -> {
 
             if (onGoingMove.length() > 0 && onGoingDice != null) {
                 if (!Cublino.isValidMovePur(prevGameState.toString(), onGoingMove.toString())) {
@@ -371,7 +409,7 @@ public class Board extends Application {
             onGoingDice = null;
 
 
-            if (AIchoice == 3 || AIchoice == 4) {
+            if (AIchoice == 3 || AIchoice == 4 || AIchoice == 7 || AIchoice == 8) {
                 updateDices();
             } else {
                 gameState.setTurn(!gameState.getPlayerTurn());
@@ -385,10 +423,10 @@ public class Board extends Application {
 
         VBox vb = new VBox();
 
-        vb.getChildren().addAll(playerTurnLabel, validityLabel, end_turn);
+        vb.getChildren().addAll(validityLabel, endTurnButton);
         vb.setSpacing(5);
         vb.setLayoutX(100);
-        vb.setLayoutY(BOARD_HEIGHT - 120);
+        vb.setLayoutY(BOARD_HEIGHT - 80);
 
         controls.getChildren().addAll(vb);
     }
@@ -397,8 +435,16 @@ public class Board extends Application {
     // render the header
     public void makeHeader() {
         Label title = new Label("Cublino");
-        title.setFont(new Font(30));
+        title.setStyle("""
+                -fx-font: 30px Tahoma;
+                    -fx-stroke: black;
+                    -fx-stroke-width: 3;
+                """);
 
+        variantChoice.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
         variantChoice.getItems().add("Pur");
         variantChoice.getItems().add("Contra");
         variantChoice.setValue("Pur");
@@ -413,10 +459,18 @@ public class Board extends Application {
             }
         });
 
+        playerTurnLabel.setStyle("""
+                -fx-font: 15px Tahoma;
+                    -fx-stroke: black;
+                    -fx-stroke-width: 5;
+                """);
+
+
         VBox headerVBox = new VBox();
-        headerVBox.getChildren().addAll(title, variantChoice);
+        headerVBox.getChildren().addAll(title, variantChoice, playerTurnLabel);
         headerVBox.setLayoutX(100);
-        headerVBox.setLayoutY(15);
+        headerVBox.setLayoutY(30);
+        headerVBox.setSpacing(5);
 
         header.getChildren().add(headerVBox);
     }
