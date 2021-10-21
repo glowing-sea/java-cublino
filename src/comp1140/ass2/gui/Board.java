@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -84,9 +85,56 @@ public class Board extends Application {
         makeOrientationPanel();
         makeGameSettingsPanel();
 
-        root.getChildren().addAll(gamePane, controls, header, orientationPanel, gameSettingsOrientationPanel);
+        // Instruction Button
+        Button helpButton = new Button("Show Instructions");
+        helpButton.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
+        helpButton.setLayoutX(655);
+        helpButton.setLayoutY(40);
+        helpButton.setOnMouseClicked(mouseEvent -> showInstructions());
+
+
+        root.getChildren().addAll(gamePane, controls, header, orientationPanel, gameSettingsOrientationPanel, helpButton);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void showInstructions() {
+        final Stage gameStatusStage = new Stage();
+        gameStatusStage.initModality(Modality.APPLICATION_MODAL);
+        gameStatusStage.setTitle("Game Instructions");
+        gameStatusStage.setResizable(false);
+
+        VBox dialogVbox = new VBox();
+        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.setPadding(new Insets(30));
+        dialogVbox.setSpacing(10);
+        dialogVbox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        ImageView purRulesImage = new ImageView(new Image(URI_BASE+"pur_rules.png"));
+        purRulesImage.setFitHeight(450);
+        purRulesImage.setFitWidth(450);
+        ImageView contraRulesImage = new ImageView(new Image(URI_BASE+"contra_rules.png"));
+        contraRulesImage.setFitHeight(450);
+        contraRulesImage.setFitWidth(450);
+        ImageView additionalInfoImage = new ImageView(new Image(URI_BASE+"additional_notes.png"));
+        additionalInfoImage.setFitWidth(400);
+        additionalInfoImage.setFitHeight(150);
+
+
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnMouseClicked(mouseEvent -> gameStatusStage.close());
+
+
+        dialogVbox.getChildren().addAll((gameState.isPur() ? purRulesImage : contraRulesImage), additionalInfoImage, closeButton);
+
+
+        Scene dialogScene = new Scene(dialogVbox, 700, 700);
+        gameStatusStage.setScene(dialogScene);
+        gameStatusStage.show();
     }
 
     // (By Rajin)
@@ -211,7 +259,7 @@ public class Board extends Application {
             dialogVbox.getChildren().addAll(gameStatusLabel, restartGameButton);
 
 
-            Scene dialogScene = new Scene(dialogVbox, 300, 100);
+            Scene dialogScene = new Scene(dialogVbox, 500, 500);
             gameStatusStage.setScene(dialogScene);
             gameStatusStage.show();
 
@@ -603,9 +651,7 @@ public class Board extends Application {
                 orientationTiles.updateOrientation(potentialDice);
             });
 
-            setOnMouseExited(mouseEvent -> {
-                orientationTiles.updateOrientation(currentlySelectedDice);
-            });
+            setOnMouseExited(mouseEvent -> orientationTiles.updateOrientation(currentlySelectedDice));
         }
     }
 
