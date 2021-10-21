@@ -13,13 +13,20 @@ declaration: >-
   I submit the work below for assessment as my best work. I declare that this
   is entirely my own work, with the following documented exceptions:
 
+# I wish to submit the following classes as entirely my own (remove this if
+# you want to just submit methods):
+class:
+  - Board.java (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Board.java#L1-727)
+  - PieceGUI (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Board.java#L509-558)
+  - TileGUI (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Board.java#L581-653)
+
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - propagateMove (int depth, StringBuilder move, String state, Position dicePos)
-   - generateMovePur(String state)
-   - getTipPositions(Position dicePos)
-   - getJumpPositions(Position dicePos)
+   - legalStepsPur(Dice dice) in State.java (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/State.java#L371-390)
+   - setOnMouseClicked in TileGUI subclass in Board.java (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/gui/Board.java#L595-651)
+   - legalStepsContra(Dice dice) in State.java (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/State.java#L393-406)
+   - bestMove(State state, int difficulty) in Cublino.java (https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L300-311) 
 
 # sign *your* name and uid here
 name: Rajin Hossain
