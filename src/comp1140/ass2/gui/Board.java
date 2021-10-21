@@ -268,7 +268,7 @@ public class Board extends Application {
 
         ChoiceBox<String> player2SettingChoice = new ChoiceBox<>();
         player2SettingChoice.setStyle("""
-                -fx-font: 12x Tahoma;
+                -fx-font: 12px Tahoma;
                 -fx-background-radius: 0.5em;
                 """);
         player2SettingChoice.getItems().addAll("Human", "AI 1 (Greedy)", "AI 2 (Minimax w/ AB)");
