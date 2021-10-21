@@ -20,15 +20,10 @@ declaration: >-
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
   - name: Anubhav Saxena
-    comment: Anubhav Saxena and I worked on Task 9 together.
-    Task 4 and Task 6 was first written by Anubhav Saxena. However, it worked using strings before.
-    After having well-structured class breakdown, I edited the functions so that it operates using objects now.
-    Task 14 was first written by Anubhav Saxena. I reviewed and improved Task 14 afterwards.
+    comment: Anubhav Saxena and I worked on Task 9 together. Task 4 and Task 6 was first written by Anubhav Saxena. However, it worked using strings before. After having well-structured class breakdown, I edited the functions so that it operates using objects now. Task 14 was first written by Anubhav Saxena. I reviewed and improved Task 14 afterwards.
 
   - name: Rajin Hossain
-    comment: Task 11 and Task 13 was first written by Rajin Hossain. However, there were some limitations in the earily
-    version. For example, the function could only select the best step from a list of steps instead of the best move from
-    a list of moves. I improved the legalmoves function and propagateMove function to ensure it works appropriately.
+    comment: Task 11 and Task 13 was first written by Rajin Hossain. However, there were some limitations in the earily version. For example, the function could only select the best step from a list of steps instead of the best move from a list of moves. I improved the legalmoves function and propagateMove function to ensure it works appropriately.
 
 
 # I wish to submit the following classes as entirely my own (remove this if
