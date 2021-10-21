@@ -20,8 +20,7 @@ declaration: >-
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
   - name: Haoting Chen
-    comment: Haoting helped me in Task9, and made a well structured class breakdown for my task 4 and 6. I had built the core and the logic for task9, including the function which changes the faces of a dice given a move, which Haoting helped fix in the D2E code review.
-    Haoting also helped review all the functions, to help optimise them, and build on the logic to make the code more efficient
+    comment: Haoting helped me in Task9, and made a well structured class breakdown for my task 4 and 6. I had built the core and the logic for task9, including the function which changes the faces of a dice given a move, which Haoting helped fix in the D2E code review. Haoting also helped review all the functions, to help optimise them, and build on the logic to make the code more efficient
 
 
 # I wish to submit the following methods as entirely my own (remove this if
