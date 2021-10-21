@@ -20,15 +20,26 @@ declaration: >-
 # (or remove it altogether if you haven't collaborated with anyone)
 collaboration:
   - name: Anubhav Saxena
-    comment: Anubhav Saxena and I worked on Task 9 together. The functions in Task 4 and Task 6 was originally written by Anubhav Saxena, it operated using strings before. After having well-structured class breakdown, I edit the functions so that it operates using objects now. Task 9 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L91-109. Task 4 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L142-184. Task 6 Link https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L197-227.
+    comment: Anubhav Saxena and I worked on Task 9 together.
+    Task 4 and Task 6 was first written by Anubhav Saxena. However, it worked using strings before.
+    After having well-structured class breakdown, I edited the functions so that it operates using objects now.
+    Task 14 was first written by Anubhav Saxena. I reviewed and improved Task 14 afterwards.
+
+  - name: Rajin Hossain
+    comment: Task 11 and Task 13 was first written by Rajin Hossain. However, there were some limitations in the earily
+    version. For example, the function could only select the best step from a list of steps instead of the best move from
+    a list of moves. I improved the legalmoves function and propagateMove function to ensure it works appropriately.
+
+
+# I wish to submit the following classes as entirely my own (remove this if
+# you want to just submit methods):
+class:
+  - GameTree.java https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/GameTree.java#L1-104
 
 # I wish to submit the following methods as entirely my own (remove this if
 # you want to just submit classes):
 method:
-   - <State.java> isValidStepPur(State state, Step step) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Step.java#L61-101
-   - <Move.java> isValidMovePur(State state) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L38-79
-   - <State.java> toString() https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Step.java#L46-59
-   - <Move.java> toString() https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/core/Move.java#L30-36
+   - <Cublino.java> bestMove(State state, int difficulty) https://gitlab.cecs.anu.edu.au/u7313467/comp1140-ass2-tue09q/-/blob/master/src/comp1140/ass2/Cublino.java#L289-311
 
 # sign *your* name and uid here
 name: Haoting Chen
