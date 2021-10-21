@@ -31,12 +31,13 @@ public class Board extends Application {
     private static final int GAMEPANE_SIZE = 450;
     private static final String URI_BASE = "assets/";
 
-    private State prevGameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-    private State gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    private State prevGameState = new State("PWa1Wb4Wc7Wd7We7Wf7Wg7va7vb1vc4vd1ve1vf1vg1");
+    private State gameState = new State("PWa1Wb4Wc7Wd7We7Wf7Wg7va7vb1vc4vd1ve1vf1vg1");
 
     private final Group root = new Group();
     private final static Pane gamePane = new Pane();
     private final static Pane orientationPanel = new Pane();
+    private final static Pane gameSettingsOrientationPanel = new Pane();
     private final static Group gamePieces = new Group();
     private final static Group legalStepsGroup = new Group();
     private final Group controls = new Group();
@@ -47,6 +48,13 @@ public class Board extends Application {
     private final StringBuilder onGoingMove = new StringBuilder();
     private Dice onGoingDice;
     private Dice currentlySelectedDice;
+
+    // 0 is Human v Human
+    // 1 is Human v AI1
+    // 2 is Human v AI2
+    // 3 is AI1 v AI2
+    // 4 is AI2 v AI2
+    private int AIchoice = 0;
 
 
     private final OrientationTiles orientationTiles = new OrientationTiles();
@@ -65,8 +73,9 @@ public class Board extends Application {
         makeBoard();
         updateDices();
         makeOrientationPanel();
+        makeGameSettingsPanel();
 
-        root.getChildren().addAll(gamePane, controls, header, orientationPanel);
+        root.getChildren().addAll(gamePane, controls, header, orientationPanel, gameSettingsOrientationPanel);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -97,8 +106,23 @@ public class Board extends Application {
     public void updateDices() {
         gamePieces.getChildren().clear();
         gamePane.getChildren().remove(gamePieces);
+        orientationTiles.clearOrientation();
 
         dicePieces.clear();
+
+        // apply AI move here
+        if (AIchoice == 1 && !gameState.getPlayerTurn()) {
+            // APPLY AI MOVE
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
+        if (AIchoice == 2 && !gameState.getPlayerTurn()) {
+            // APPLY AI MOVE
+            gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
+            System.out.println("AI MOVED : " + gameState);
+        }
+
 
         for (Dice dice:gameState.getDices()) {
             gamePieces.getChildren().add(new PieceGUI(dice));
@@ -155,11 +179,64 @@ public class Board extends Application {
     private void makeOrientationPanel() {
         orientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"orientation.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         orientationPanel.setPrefSize(200, 200);
-        orientationPanel.setLayoutX(600);
+        orientationPanel.setLayoutX(575);
         orientationPanel.setLayoutY(365);
 
         // add default placeholders
         orientationTiles.show();
+    }
+
+    private void resetGame() {
+        gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+    }
+
+    private void makeGameSettingsPanel() {
+        gameSettingsOrientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"settings.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        gameSettingsOrientationPanel.setPrefSize(200, 230);
+        gameSettingsOrientationPanel.setLayoutX(575);
+        gameSettingsOrientationPanel.setLayoutY(115);
+
+        Label gameSettingsLabel = new Label("Game Settings");
+        gameSettingsLabel.setFont(new Font(15));
+
+
+        VBox player1ChoicesVbox = new VBox();
+        Label player1Label = new Label("Player 1 : ");
+        ChoiceBox<String> player1SettingChoice = new ChoiceBox<>();
+        player1SettingChoice.getItems().addAll("Human", "AI 1 (Greedy)", "AI 2 (Minimax w/ AB)");
+        player1SettingChoice.setValue("Human");
+        player1ChoicesVbox.getChildren().addAll(player1Label, player1SettingChoice);
+
+        VBox player2ChoicesVbox = new VBox();
+        Label player2Label = new Label("Player 2 : ");
+        ChoiceBox<String> player2SettingChoice = new ChoiceBox<>();
+        player2SettingChoice.getItems().addAll("Human", "AI 1 (Greedy)", "AI 2 (Minimax w/ AB)");
+        player2SettingChoice.setValue("Human");
+        player2ChoicesVbox.getChildren().addAll(player2Label, player2SettingChoice);
+
+        Button restartGameButton = new Button("Restart Game");
+        // restart the game with new settings
+        restartGameButton.setOnMouseClicked(mouseEvent -> {
+            gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+
+            if (player1SettingChoice.getValue().equals("Human") && player2SettingChoice.getValue().equals("Human")) {
+                AIchoice = 0;
+            } else if (player1SettingChoice.getValue().equals("Human") && player2SettingChoice.getValue().equals("AI 1 (Greedy)")) {
+                AIchoice = 1;
+            } else if (player1SettingChoice.getValue().equals("Human") && player2SettingChoice.getValue().equals("AI 2 (Minimax w/ AB)")) {
+                AIchoice = 2;
+            }
+
+            updateDices();
+        });
+
+        VBox settingsComponents = new VBox();
+        settingsComponents.setLayoutX(20);
+        settingsComponents.setLayoutY(30);
+        settingsComponents.setSpacing(10);
+        settingsComponents.getChildren().addAll(gameSettingsLabel, player1ChoicesVbox, player2ChoicesVbox, restartGameButton);
+
+        gameSettingsOrientationPanel.getChildren().add(settingsComponents);
     }
 
 
@@ -195,17 +272,27 @@ public class Board extends Application {
         }
 
         public void updateOrientation(Dice dice) {
-            String currentDiceColour = dice.isPlayer1() ? "w_" : "b_";
-            int[] currentDiceFaces = dice.getFaces();
+            if (dice != null) {
+                String currentDiceColour = dice.isPlayer1() ? "w_" : "b_";
+                int[] currentDiceFaces = dice.getFaces();
 
-            // update the images based on currently selected dice
-            orientationTileImages.get(0).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[0]+".png")); // top face
-            orientationTileImages.get(1).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[1]+".png")); // forward face
-            orientationTileImages.get(2).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[2]+".png")); // right face
-            orientationTileImages.get(3).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[3]+".png")); // bottom face
-            orientationTileImages.get(4).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[4]+".png")); // left face
+                // update the images based on currently selected dice
+                orientationTileImages.get(0).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[0]+".png")); // top face
+                orientationTileImages.get(1).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[1]+".png")); // forward face
+                orientationTileImages.get(2).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[2]+".png")); // right face
+                orientationTileImages.get(3).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[3]+".png")); // bottom face
+                orientationTileImages.get(4).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[4]+".png")); // left face
 
-            show();
+                show();
+            } else {
+                orientationTileImages.get(0).setImage(new Image(URI_BASE+"danger.png")); // top face
+                orientationTileImages.get(1).setImage(new Image(URI_BASE+"danger.png")); // forward face
+                orientationTileImages.get(2).setImage(new Image(URI_BASE+"danger.png")); // right face
+                orientationTileImages.get(3).setImage(new Image(URI_BASE+"danger.png")); // bottom face
+                orientationTileImages.get(4).setImage(new Image(URI_BASE+"danger.png")); // left face
+
+                show();
+            }
         }
 
         public void clearOrientation() {
@@ -214,6 +301,8 @@ public class Board extends Application {
             orientationTileImages.get(2).setImage(new Image(URI_BASE+"tile.png")); // right face
             orientationTileImages.get(3).setImage(new Image(URI_BASE+"tile.png")); // bottom face
             orientationTileImages.get(4).setImage(new Image(URI_BASE+"tile.png")); // left face
+
+            show();
         }
     }
 
@@ -270,10 +359,10 @@ public class Board extends Application {
 
         variantChoice.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
             if (t1.equals("Contra")) {
-                gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+                gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7"); // resets to a default Pur game
                 updateDices();
             } else if (t1.equals("Pur")) {
-                gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+                gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7"); // resets to a default Contra game
                 updateDices();
             }
         });
@@ -363,34 +452,32 @@ public class Board extends Application {
             this.setFitWidth(TILE_SIZE + 1);
             this.setFitHeight(TILE_SIZE + 1);
 
-            // display all the legal moves
             setOnMouseClicked(mouseEvent -> {
-
-
-                // remove effects from the other PieceGUIs
-                for (Node node:gamePieces.getChildren()) {
-                    if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
-                        ColorAdjust colorAdjust = new ColorAdjust();
-                        colorAdjust.setBrightness(0);
-                        node.setEffect(colorAdjust);
+                if (gameState.getPlayerTurn() == dice.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && dice.isPlayer1()) {
+                    // remove effects from the other PieceGUIs
+                    for (Node node:gamePieces.getChildren()) {
+                        if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
+                            ColorAdjust colorAdjust = new ColorAdjust();
+                            colorAdjust.setBrightness(0);
+                            node.setEffect(colorAdjust);
+                        }
                     }
+
+                    ColorAdjust colorAdjust = new ColorAdjust();
+                    colorAdjust.setBrightness(-0.25);
+                    this.setEffect(colorAdjust);
+
+                    generateLegalIndicators(dice);
+
+                    currentlySelectedDice = null;
+
+                    // select the current dice
+                    currentlySelectedDice = dice;
+                    System.out.println("Current Dice :" + currentlySelectedDice);
+
+                    // update the orientation pane
+                    orientationTiles.updateOrientation(currentlySelectedDice);
                 }
-
-                ColorAdjust colorAdjust = new ColorAdjust();
-                colorAdjust.setBrightness(-0.25);
-                this.setEffect(colorAdjust);
-
-                generateLegalIndicators(dice);
-
-                currentlySelectedDice = null;
-
-                // select the current dice
-                currentlySelectedDice = dice;
-                System.out.println("Current Dice :" + currentlySelectedDice);
-
-                // update the orientation pane
-                orientationTiles.updateOrientation(currentlySelectedDice);
-
             });
         }
     }
@@ -458,33 +545,40 @@ public class Board extends Application {
 
                         System.out.println("Potential Jumps: " + potentialNextState.legalJumpsPur());
 
+                        Dice diceAtEndPos = gameState.getDiceAt(step.getEndPosition());
+
                         if (gameState.getDiceAt(step.getEndPosition()) != null) {
                             ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
                             potentialJumpStates.removeIf(Step::isTip);
 
-                            // there are more steps that can happen in this current move
-                            if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
-                                for (Step jump: potentialJumpStates) {
-                                    if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
-                                        gameState = potentialNextState;
-                                        // update game board state
-                                        onGoingMove.append(jump.getStartPosition().toString());
-                                        updateDices();
-                                        System.out.println("on going");
-                                        for (Dice dice:dicePieces) {
-                                            if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
-                                                onGoingDice = dice;
-                                                generateLegalIndicators(dice);
-                                                break;
+                            if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1()) {
+
+                                // APPLY PLAYER MOVE
+
+                                // there are more steps that can happen in this current move
+                                if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
+                                    for (Step jump: potentialJumpStates) {
+                                        if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
+                                            gameState = potentialNextState;
+                                            // update game board state
+                                            onGoingMove.append(jump.getStartPosition().toString());
+                                            updateDices();
+                                            System.out.println("on going");
+                                            for (Dice dice:dicePieces) {
+                                                if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
+                                                    onGoingDice = dice;
+                                                    generateLegalIndicators(dice);
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
+                                    // there are no other possible steps that could occur (i.e. ends player turn)
+                                } else {
+                                    System.out.println("AAA");
+                                    onGoingMove.replace(0, onGoingMove.length(), "");
+                                    onGoingDice = null;
                                 }
-                                // there are no other possible steps that could occur (i.e. ends player turn)
-                            } else {
-                                System.out.println("AAA");
-                                onGoingMove.replace(0, onGoingMove.length(), "");
-                                onGoingDice = null;
                             }
                         }
 
