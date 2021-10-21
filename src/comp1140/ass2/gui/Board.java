@@ -17,6 +17,8 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
@@ -73,6 +75,7 @@ public class Board extends Application {
         primaryStage.setTitle("Cublino");
         primaryStage.setResizable(false);
         Scene scene = new Scene(root, BOARD_WIDTH, BOARD_HEIGHT);
+        scene.setFill(Color.web("#ECDBC2"));
 
         makeHeader();
         makeControls();
@@ -651,10 +654,7 @@ public class Board extends Application {
                             ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
                             potentialJumpStates.removeIf(Step::isTip);
 
-                            if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1()) {
-
-                                // APPLY PLAYER MOVE
-
+                            //if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1()) {
                                 // there are more steps that can happen in this current move
                                 if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
                                     for (Step jump: potentialJumpStates) {
@@ -679,7 +679,7 @@ public class Board extends Application {
                                     onGoingMove.replace(0, onGoingMove.length(), "");
                                     onGoingDice = null;
                                 }
-                            }
+                            //}
                         }
 
                         // update game board state
