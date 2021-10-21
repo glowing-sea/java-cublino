@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -75,7 +76,7 @@ public class Board extends Application {
         primaryStage.setTitle("Cublino");
         primaryStage.setResizable(false);
         Scene scene = new Scene(root, BOARD_WIDTH, BOARD_HEIGHT);
-        scene.setFill(Color.web("#ECDBC2"));
+        scene.setFill(Color.web("#E9C8A5"));
 
         makeHeader();
         makeControls();
@@ -84,9 +85,56 @@ public class Board extends Application {
         makeOrientationPanel();
         makeGameSettingsPanel();
 
-        root.getChildren().addAll(gamePane, controls, header, orientationPanel, gameSettingsOrientationPanel);
+        // Instruction Button
+        Button helpButton = new Button("Show Instructions");
+        helpButton.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
+        helpButton.setLayoutX(655);
+        helpButton.setLayoutY(40);
+        helpButton.setOnMouseClicked(mouseEvent -> showInstructions());
+
+
+        root.getChildren().addAll(gamePane, controls, header, orientationPanel, gameSettingsOrientationPanel, helpButton);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    private void showInstructions() {
+        final Stage gameStatusStage = new Stage();
+        gameStatusStage.initModality(Modality.APPLICATION_MODAL);
+        gameStatusStage.setTitle("Game Instructions");
+        gameStatusStage.setResizable(false);
+
+        VBox dialogVbox = new VBox();
+        dialogVbox.setAlignment(Pos.CENTER);
+        dialogVbox.setPadding(new Insets(30));
+        dialogVbox.setSpacing(10);
+        dialogVbox.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        ImageView purRulesImage = new ImageView(new Image(URI_BASE+"pur_rules.png"));
+        purRulesImage.setFitHeight(450);
+        purRulesImage.setFitWidth(450);
+        ImageView contraRulesImage = new ImageView(new Image(URI_BASE+"contra_rules.png"));
+        contraRulesImage.setFitHeight(450);
+        contraRulesImage.setFitWidth(450);
+        ImageView additionalInfoImage = new ImageView(new Image(URI_BASE+"additional_notes.png"));
+        additionalInfoImage.setFitWidth(400);
+        additionalInfoImage.setFitHeight(150);
+
+
+
+        Button closeButton = new Button("Close");
+        closeButton.setOnMouseClicked(mouseEvent -> gameStatusStage.close());
+
+
+        dialogVbox.getChildren().addAll((gameState.isPur() ? purRulesImage : contraRulesImage), additionalInfoImage, closeButton);
+
+
+        Scene dialogScene = new Scene(dialogVbox, 700, 700);
+        gameStatusStage.setScene(dialogScene);
+        gameStatusStage.show();
     }
 
     // (By Rajin)
@@ -211,7 +259,7 @@ public class Board extends Application {
             dialogVbox.getChildren().addAll(gameStatusLabel, restartGameButton);
 
 
-            Scene dialogScene = new Scene(dialogVbox, 300, 100);
+            Scene dialogScene = new Scene(dialogVbox, 500, 500);
             gameStatusStage.setScene(dialogScene);
             gameStatusStage.show();
 
@@ -455,9 +503,15 @@ public class Board extends Application {
         variantChoice.getSelectionModel().selectedItemProperty().addListener((observableValue, o, t1) -> {
             if (t1.equals("Contra")) {
                 gameState = new State("CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7"); // resets to a default Pur game
+                legalStepsGroup.getChildren().clear();
+                gamePane.getChildren().remove(legalStepsGroup);
+                gamePane.getChildren().add(legalStepsGroup);
                 updateDices();
             } else if (t1.equals("Pur")) {
                 gameState = new State("PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7"); // resets to a default Contra game
+                legalStepsGroup.getChildren().clear();
+                gamePane.getChildren().remove(legalStepsGroup);
+                gamePane.getChildren().add(legalStepsGroup);
                 updateDices();
             }
         });
@@ -597,9 +651,7 @@ public class Board extends Application {
                 orientationTiles.updateOrientation(potentialDice);
             });
 
-            setOnMouseExited(mouseEvent -> {
-                orientationTiles.updateOrientation(currentlySelectedDice);
-            });
+            setOnMouseExited(mouseEvent -> orientationTiles.updateOrientation(currentlySelectedDice));
         }
     }
 
@@ -648,38 +700,33 @@ public class Board extends Application {
 
                         System.out.println("Potential Jumps: " + potentialNextState.legalJumpsPur());
 
-                        Dice diceAtEndPos = gameState.getDiceAt(step.getEndPosition());
-
                         if (gameState.getDiceAt(step.getEndPosition()) != null) {
                             ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
                             potentialJumpStates.removeIf(Step::isTip);
 
-                            //if (gameState.getPlayerTurn() == diceAtEndPos.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && diceAtEndPos.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !diceAtEndPos.isPlayer1()) {
-                                // there are more steps that can happen in this current move
-                                if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
-                                    for (Step jump: potentialJumpStates) {
-                                        if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
-                                            gameState = potentialNextState;
-                                            // update game board state
-                                            onGoingMove.append(jump.getStartPosition().toString());
-                                            updateDices();
-                                            System.out.println("on going");
-                                            for (Dice dice:dicePieces) {
-                                                if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
-                                                    onGoingDice = dice;
-                                                    generateLegalIndicators(dice);
-                                                    break;
-                                                }
+                            if (gameState.isPur() && potentialJumpStates.size() != 0 ) {
+                                for (Step jump: potentialJumpStates) {
+                                    if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
+                                        gameState = potentialNextState;
+                                        // update game board state
+                                        onGoingMove.append(jump.getStartPosition().toString());
+                                        updateDices();
+                                        System.out.println("on going");
+                                        for (Dice dice:dicePieces) {
+                                            if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
+                                                onGoingDice = dice;
+                                                generateLegalIndicators(dice);
+                                                break;
                                             }
                                         }
                                     }
-                                    // there are no other possible steps that could occur (i.e. ends player turn)
-                                } else {
-                                    System.out.println("AAA");
-                                    onGoingMove.replace(0, onGoingMove.length(), "");
-                                    onGoingDice = null;
                                 }
-                            //}
+                                // there are no other possible steps that could occur (i.e. ends player turn)
+                            } else {
+                                System.out.println("AAA");
+                                onGoingMove.replace(0, onGoingMove.length(), "");
+                                onGoingDice = null;
+                            }
                         }
 
                         // update game board state
