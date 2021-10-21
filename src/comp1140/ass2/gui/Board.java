@@ -545,14 +545,14 @@ public class Board extends Application {
                     this.setEffect(colorAdjust);
 
                     generateLegalIndicators(dice);
-
-                    currentlySelectedDice = null;
-                    // Select the current dice
-                    currentlySelectedDice = dice;
-
-                    // Update the orientation pane
-                    orientationTiles.updateOrientation(currentlySelectedDice);
                 }
+
+                currentlySelectedDice = null;
+                // Select the current dice
+                currentlySelectedDice = dice;
+
+                // Update the orientation pane
+                orientationTiles.updateOrientation(currentlySelectedDice);
             });
         }
     }
