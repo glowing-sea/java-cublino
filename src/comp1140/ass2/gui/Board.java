@@ -13,21 +13,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
+// (By Rajin)
+// Main class that executes the game logic through GUIs made with JavaFX
 public class Board extends Application {
 
     private static final int BOARD_WIDTH = 933;
@@ -54,6 +51,7 @@ public class Board extends Application {
     private Dice onGoingDice;
     private Dice currentlySelectedDice;
 
+    // AI Choice Mapping
     // 0 is Human v Human
     // 1 is Human v AI1
     // 2 is Human v AI2
@@ -101,6 +99,8 @@ public class Board extends Application {
         primaryStage.show();
     }
 
+    // (By Rajin)
+    // Generates an instruction page depending on the current game variant
     private void showInstructions() {
         final Stage gameStatusStage = new Stage();
         gameStatusStage.initModality(Modality.APPLICATION_MODAL);
@@ -123,14 +123,10 @@ public class Board extends Application {
         additionalInfoImage.setFitWidth(400);
         additionalInfoImage.setFitHeight(150);
 
-
-
         Button closeButton = new Button("Close");
         closeButton.setOnMouseClicked(mouseEvent -> gameStatusStage.close());
 
-
         dialogVbox.getChildren().addAll((gameState.isPur() ? purRulesImage : contraRulesImage), additionalInfoImage, closeButton);
-
 
         Scene dialogScene = new Scene(dialogVbox, 700, 700);
         gameStatusStage.setScene(dialogScene);
@@ -138,7 +134,7 @@ public class Board extends Application {
     }
 
     // (By Rajin)
-    // creates a game board with the tile GUI
+    // Creates a game board with the tile GUI
     public void makeBoard() {
         gamePane.getChildren().clear();
         gamePane.setMinSize(GAMEPANE_SIZE,GAMEPANE_SIZE);
@@ -150,7 +146,7 @@ public class Board extends Application {
                 BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT)));
 
-        // make a 7x7 tile board
+        // Make a 7x7 tile board
         for (int i = 1; i < 8; i++) {
             for (int j = 1; j < 8; j++) {
                 gamePane.getChildren().add(new TileGUI(i,j));
@@ -159,7 +155,7 @@ public class Board extends Application {
     }
 
     // (By Rajin)
-    // populates a game board with dice GUIs at the default locations
+    // Populates a game board with dice GUIs at the default locations
     public void updateDices() {
         gamePieces.getChildren().clear();
         gamePane.getChildren().remove(gamePieces);
@@ -169,27 +165,19 @@ public class Board extends Application {
 
         // Apply AI Move (for games where AI vs Human)
         if (AIchoice == 1 && !gameState.getPlayerTurn()) {
-            // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 2 && !gameState.getPlayerTurn()) {
-            // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 5 && gameState.getPlayerTurn()) {
-            // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 6 && gameState.getPlayerTurn()) {
-            // APPLY AI MOVE
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
         // Apply AI Moves (for games where AI vs AI)
@@ -199,7 +187,6 @@ public class Board extends Application {
             } else {
                 gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
             }
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 4) {
@@ -208,20 +195,17 @@ public class Board extends Application {
             } else {
                 gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
             }
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 7) {
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 1).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 1).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
         if (AIchoice == 8) {
             gameState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), Cublino.bestMove(gameState, 2).toString()) : Cublino.applyMoveContra(gameState.toString(), Cublino.bestMove(gameState, 2).toString()));
-            System.out.println("AI MOVED : " + gameState);
         }
 
-
+        // Re render dices
         for (Dice dice:gameState.getDices()) {
             gamePieces.getChildren().add(new PieceGUI(dice));
             dicePieces.add(dice);
@@ -229,10 +213,8 @@ public class Board extends Application {
 
         gamePane.getChildren().add(gamePieces);
 
-        // check if game state is an end state and show pop up
-        if (gameState.isGameOver() == 1 || gameState.isGameOver() == 2 || gameState.isGameOver() == 3) { // if the game is over
-            System.out.println("Game Over : " + (gameState.isGameOver() == 1 ? "Player 1 Wins" : "Player 2 Wins"));
-
+        // Check if game state is an end state and show pop up
+        if (gameState.isGameOver() == 1 || gameState.isGameOver() == 2 || gameState.isGameOver() == 3) { // If the game is over
             final Stage gameStatusStage = new Stage();
             gameStatusStage.initModality(Modality.APPLICATION_MODAL);
             gameStatusStage.setTitle("Game Over");
@@ -246,30 +228,38 @@ public class Board extends Application {
             Label gameStatusLabel = new Label(gameState.isGameOver() == 1 ? "Player 1 Wins" : (gameState.isGameOver() == 2 ? "Player 2 Wins" : "It's a Draw") );
             gameStatusLabel.setFont(new Font(15));
             gameStatusLabel.relocate(100, 100);
+            gameStatusLabel.setStyle("""
+                -fx-font: 30px Tahoma;
+                    -fx-stroke: black;
+                    -fx-stroke-width: 3;
+                """);
 
             Button restartGameButton = new Button("Restart Game");
+            restartGameButton.setStyle("""
+                -fx-font: 13px Tahoma;
+                -fx-background-radius: 0.5em;
+                """);
+
             restartGameButton.setOnMouseClicked(mouseEvent -> {
                 variantChoice.setValue(gameState.isPur() ? "Pur" : "Contra");
                 gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
+
                 updateDices();
                 gameStatusStage.close();
             });
 
-
             dialogVbox.getChildren().addAll(gameStatusLabel, restartGameButton);
 
-
-            Scene dialogScene = new Scene(dialogVbox, 500, 500);
+            Scene dialogScene = new Scene(dialogVbox, 300, 200);
             gameStatusStage.setScene(dialogScene);
             gameStatusStage.show();
-
         }
 
         updateLabelUI();
     }
 
     // (By Rajin)
-    // updates the label UI
+    // Updates the label UI
     public void updateLabelUI() {
         playerTurnLabel.setText("Player Turn: "+ (gameState.getPlayerTurn() ? "White" : "Black"));
     }
@@ -280,14 +270,12 @@ public class Board extends Application {
         orientationPanel.setLayoutX(575);
         orientationPanel.setLayoutY(400);
 
-        // add default placeholders
+        // Add default placeholders
         orientationTiles.show();
     }
 
-    private void resetGame() {
-        gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
-    }
-
+    // (By Rajin)
+    // Generates the game settings panel
     private void makeGameSettingsPanel() {
         gameSettingsOrientationPanel.setBackground(new Background(new BackgroundImage(new Image(URI_BASE+"settings.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         gameSettingsOrientationPanel.setPrefSize(200, 230);
@@ -331,8 +319,13 @@ public class Board extends Application {
                 -fx-font: 13px Tahoma;
                 -fx-background-radius: 0.5em;
                 """);
-        // restart the game with new settings
+
+        // Restart the game with new settings
         restartGameButton.setOnMouseClicked(mouseEvent -> {
+            legalStepsGroup.getChildren().clear();
+            gamePane.getChildren().remove(legalStepsGroup);
+            gamePane.getChildren().add(legalStepsGroup);
+
             gameState = new State(gameState.isPur() ? "PWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7" : "CWa1Wb1Wc1Wd1We1Wf1Wg1va7vb7vc7vd7ve7vf7vg7");
 
             if (player1SettingChoice.getValue().equals("Human") && player2SettingChoice.getValue().equals("Human")) {
@@ -367,75 +360,8 @@ public class Board extends Application {
         gameSettingsOrientationPanel.getChildren().add(settingsComponents);
     }
 
-
-    class OrientationTiles  {
-        ArrayList<ImageView> orientationTileImages = new ArrayList<>();
-        OrientationTiles() {
-            ImageView topTile = new ImageView(new Image(URI_BASE + "tile.png"));
-            topTile.relocate(75, 75);
-            orientationTileImages.add(topTile);
-
-            ImageView forwardTile = new ImageView(new Image(URI_BASE + "tile.png"));
-            forwardTile.relocate(75, 15);
-            orientationTileImages.add(forwardTile);
-
-            ImageView rightTile = new ImageView(new Image(URI_BASE + "tile.png"));
-            rightTile.relocate(135, 75);
-            orientationTileImages.add(rightTile);
-
-            ImageView behindTile = new ImageView(new Image(URI_BASE + "tile.png"));
-            behindTile.relocate(75, 135);
-            orientationTileImages.add(behindTile);
-
-            ImageView leftTile = new ImageView(new Image(URI_BASE + "tile.png"));
-            leftTile.relocate(15, 75);
-            orientationTileImages.add(leftTile);
-        }
-
-        public void show() {
-            orientationPanel.getChildren().clear();
-            for (ImageView tile:orientationTiles.orientationTileImages) {
-                orientationPanel.getChildren().add(tile);
-            }
-        }
-
-        public void updateOrientation(Dice dice) {
-            if (dice != null) {
-                String currentDiceColour = dice.isPlayer1() ? "w_" : "b_";
-                int[] currentDiceFaces = dice.getFaces();
-
-                // update the images based on currently selected dice
-                orientationTileImages.get(0).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[0]+".png")); // top face
-                orientationTileImages.get(1).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[1]+".png")); // forward face
-                orientationTileImages.get(2).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[2]+".png")); // right face
-                orientationTileImages.get(3).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[3]+".png")); // bottom face
-                orientationTileImages.get(4).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[4]+".png")); // left face
-
-                show();
-            } else {
-                orientationTileImages.get(0).setImage(new Image(URI_BASE+"danger.png")); // top face
-                orientationTileImages.get(1).setImage(new Image(URI_BASE+"danger.png")); // forward face
-                orientationTileImages.get(2).setImage(new Image(URI_BASE+"danger.png")); // right face
-                orientationTileImages.get(3).setImage(new Image(URI_BASE+"danger.png")); // bottom face
-                orientationTileImages.get(4).setImage(new Image(URI_BASE+"danger.png")); // left face
-
-                show();
-            }
-        }
-
-        public void clearOrientation() {
-            orientationTileImages.get(0).setImage(new Image(URI_BASE+"tile.png")); // top face
-            orientationTileImages.get(1).setImage(new Image(URI_BASE+"tile.png")); // forward face
-            orientationTileImages.get(2).setImage(new Image(URI_BASE+"tile.png")); // right face
-            orientationTileImages.get(3).setImage(new Image(URI_BASE+"tile.png")); // bottom face
-            orientationTileImages.get(4).setImage(new Image(URI_BASE+"tile.png")); // left face
-
-            show();
-        }
-    }
-
-
     // (By Rajin)
+    // Generate control components
     private void makeControls() {
         Button endTurnButton = new Button("End Turn");
         endTurnButton.setStyle("""
@@ -448,14 +374,12 @@ public class Board extends Application {
                 if (!Cublino.isValidMovePur(prevGameState.toString(), onGoingMove.toString())) {
                     gameState = prevGameState;
                     gameState.setTurn(!gameState.getPlayerTurn());
-                    System.out.println("returned to previous state: " + gameState);
                     validityLabel.setText("Valid Move: Invalid");
                 } else {
                     validityLabel.setText("Valid Move: Valid");
                 }
             }
 
-            System.out.println("AAA");
             onGoingMove.replace(0, onGoingMove.length(), "");
             onGoingDice = null;
 
@@ -469,7 +393,6 @@ public class Board extends Application {
 
             legalStepsGroup.getChildren().clear();
 
-            System.out.println("Game State: "+gameState);
         });
 
         VBox vb = new VBox();
@@ -483,7 +406,7 @@ public class Board extends Application {
     }
 
     // (By Rajin)
-    // render the header
+    // Render the header
     public void makeHeader() {
         Label title = new Label("Cublino");
         title.setStyle("""
@@ -533,18 +456,16 @@ public class Board extends Application {
     }
 
     // (By Rajin)
-    // generate indicators for the possible legal moves
+    // Generate indicators for the possible legal moves
     public void generateLegalIndicators(Dice dice) {
-        // get legal steps based on whether the game mode is pur or contra
+        // Get legal steps based on whether the game mode is pur or contra
         ArrayList<Step> legalSteps = gameState.isPur() ? gameState.legalStepsPur(dice) : gameState.legalStepsContra(dice);
 
         legalStepsGroup.getChildren().clear();
         availableLegalSteps.clear();
 
-        System.out.println(legalSteps);
-        System.out.println(onGoingMove.length() > 0 && onGoingDice != null);
-
-        if (onGoingMove.length() > 0 && onGoingDice != null) {
+        // Render indicator at the location where the move ends
+        if (onGoingMove.length() > 0 && onGoingDice != null) { // if there is an ongoing move
             if (dice.compareTo(onGoingDice) == 0) {
                 legalSteps.removeIf(Step::isTip);
                 legalSteps.removeIf(step -> !step.getStartPosition().equals(onGoingDice.getPosition()));
@@ -558,7 +479,6 @@ public class Board extends Application {
                                 LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex, legalStep);
                                 legalStepsGroup.getChildren().add(legalIndicator);
                                 availableLegalSteps.add(legalStep);
-                                System.out.println(availableLegalSteps);
                             }
                         }
                     }
@@ -573,25 +493,24 @@ public class Board extends Application {
                             LegalIndicatorGUI legalIndicator = new LegalIndicatorGUI(tile.xIndex, tile.yIndex, legalStep);
                             legalStepsGroup.getChildren().add(legalIndicator);
                             availableLegalSteps.add(legalStep);
-                            System.out.println(availableLegalSteps);
                         }
                     }
                 }
             }
         }
 
-
         gamePane.getChildren().remove(legalStepsGroup);
         gamePane.getChildren().add(legalStepsGroup);
     }
 
 
+    // (By Rajin)
+    // Represents a piece an an ImageView
     class PieceGUI extends ImageView {
         final double xCoord, yCoord;
         TileGUI parentTile;
 
         PieceGUI(Dice dice) {
-
             for (Node node:gamePane.getChildren()) {
                 if (node instanceof TileGUI) {
                     TileGUI tile = (TileGUI) node;
@@ -611,7 +530,7 @@ public class Board extends Application {
 
             setOnMouseClicked(mouseEvent -> {
                 if (gameState.getPlayerTurn() == dice.isPlayer1() && AIchoice == 0 || AIchoice == 1 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 2 && gameState.getPlayerTurn() && dice.isPlayer1() || AIchoice == 5 && !gameState.getPlayerTurn() && !dice.isPlayer1() || AIchoice == 6 && !gameState.getPlayerTurn() && !dice.isPlayer1()) {
-                    // remove effects from the other PieceGUIs
+                    // Remove 'darken' effects from the other PieceGUIs
                     for (Node node:gamePieces.getChildren()) {
                         if (node instanceof PieceGUI && !(((PieceGUI) node).parentTile == this.parentTile)) {
                             ColorAdjust colorAdjust = new ColorAdjust();
@@ -620,6 +539,7 @@ public class Board extends Application {
                         }
                     }
 
+                    // Set the 'darken' effect on the current PieceGUI
                     ColorAdjust colorAdjust = new ColorAdjust();
                     colorAdjust.setBrightness(-0.25);
                     this.setEffect(colorAdjust);
@@ -627,23 +547,24 @@ public class Board extends Application {
                     generateLegalIndicators(dice);
 
                     currentlySelectedDice = null;
-
-                    // select the current dice
+                    // Select the current dice
                     currentlySelectedDice = dice;
-                    System.out.println("Current Dice :" + currentlySelectedDice);
 
-                    // update the orientation pane
+                    // Update the orientation pane
                     orientationTiles.updateOrientation(currentlySelectedDice);
                 }
             });
         }
     }
 
+    // (By Rajin)
+    // Represents the legal move indicator GUI
     class LegalIndicatorGUI extends TileGUI {
         LegalIndicatorGUI(int xIndex, int yIndex, Step legalStep) {
             super(xIndex, yIndex);
             setImage(new Image(URI_BASE+"legal.png"));
 
+            // Updates orientation panel with the potential dice orientation
             setOnMouseEntered(mouseEvent -> {
                 State potentialState = new State(gameState.isPur() ? Cublino.applyMovePur(gameState.toString(), legalStep.toString()) : Cublino.applyMoveContra(gameState.toString(), legalStep.toString()));
                 Dice potentialDice = potentialState.getDiceAt(legalStep.getEndPosition());
@@ -655,6 +576,8 @@ public class Board extends Application {
         }
     }
 
+    // (By Rajin)
+    // Represents a tile in the game board which acts as a parent location for the PieceGUI to snap to
     class TileGUI extends ImageView {
         final double xCoord, yCoord;
         final int xIndex, yIndex;
@@ -669,12 +592,10 @@ public class Board extends Application {
             this.setFitWidth(TILE_SIZE);
             this.setFitHeight(TILE_SIZE);
 
-            // try to apply move
+            // Try to apply move if the current tile pressed is a legal indicator
             setOnMouseClicked(mouseEvent -> {
-                // if the tile pressed is a legal move indicator
                 for (Step step:availableLegalSteps) {
                     if (step.getEndPosition().getX() == xIndex && step.getEndPosition().getY() == yIndex) {
-                        System.out.println("Pressed");
 
                         legalStepsGroup.getChildren().clear();
                         gamePane.getChildren().remove(legalStepsGroup);
@@ -697,9 +618,6 @@ public class Board extends Application {
                         potentialNextState.setTurn(!potentialNextState.getPlayerTurn());
 
 
-
-                        System.out.println("Potential Jumps: " + potentialNextState.legalJumpsPur());
-
                         if (gameState.getDiceAt(step.getEndPosition()) != null) {
                             ArrayList<Step> potentialJumpStates = new ArrayList<>(potentialNextState.legalStepsPur(gameState.getDiceAt(step.getEndPosition())));
                             potentialJumpStates.removeIf(Step::isTip);
@@ -708,11 +626,10 @@ public class Board extends Application {
                                 for (Step jump: potentialJumpStates) {
                                     if (jump.getStartPosition().getX() == xIndex && jump.getStartPosition().getY() == yIndex) {
                                         gameState = potentialNextState;
-                                        // update game board state
+                                        // Update game board state
                                         onGoingMove.append(jump.getStartPosition().toString());
                                         updateDices();
-                                        System.out.println("on going");
-                                        for (Dice dice:dicePieces) {
+                                        for (Dice dice : dicePieces) {
                                             if (dice.getPosition().getX() == xIndex && dice.getPosition().getY() == yIndex) {
                                                 onGoingDice = dice;
                                                 generateLegalIndicators(dice);
@@ -721,21 +638,90 @@ public class Board extends Application {
                                         }
                                     }
                                 }
-                                // there are no other possible steps that could occur (i.e. ends player turn)
-                            } else {
-                                System.out.println("AAA");
+                            } else { // There are no other possible steps that could occur (i.e. ends player turn)
                                 onGoingMove.replace(0, onGoingMove.length(), "");
                                 onGoingDice = null;
                             }
                         }
-
-                        // update game board state
+                        // Update game board state
                         updateDices();
                         break;
                     }
                 }
-                System.out.println("OnGoing Move : "+onGoingMove);
             });
         }
     }
+
+    // (By Rajin)
+    // Represents the orientation dice GUIs on the orientation panel
+    class OrientationTiles  {
+        ArrayList<ImageView> orientationTileImages = new ArrayList<>();
+
+        OrientationTiles() {
+            ImageView topTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            topTile.relocate(75, 75);
+            orientationTileImages.add(topTile);
+
+            ImageView forwardTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            forwardTile.relocate(75, 15);
+            orientationTileImages.add(forwardTile);
+
+            ImageView rightTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            rightTile.relocate(135, 75);
+            orientationTileImages.add(rightTile);
+
+            ImageView behindTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            behindTile.relocate(75, 135);
+            orientationTileImages.add(behindTile);
+
+            ImageView leftTile = new ImageView(new Image(URI_BASE + "tile.png"));
+            leftTile.relocate(15, 75);
+            orientationTileImages.add(leftTile);
+        }
+
+        // Displays the dice faces on the orientation panel
+        public void show() {
+            orientationPanel.getChildren().clear();
+            for (ImageView tile:orientationTiles.orientationTileImages) {
+                orientationPanel.getChildren().add(tile);
+            }
+        }
+
+        // Updates the dice faces on the orientation panel
+        public void updateOrientation(Dice dice) {
+            if (dice != null) {
+                String currentDiceColour = dice.isPlayer1() ? "w_" : "b_";
+                int[] currentDiceFaces = dice.getFaces();
+
+                // Update the images based on currently selected dice
+                orientationTileImages.get(0).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[0]+".png")); // top face
+                orientationTileImages.get(1).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[1]+".png")); // forward face
+                orientationTileImages.get(2).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[2]+".png")); // right face
+                orientationTileImages.get(3).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[3]+".png")); // bottom face
+                orientationTileImages.get(4).setImage(new Image(URI_BASE+currentDiceColour+"dice_"+currentDiceFaces[4]+".png")); // left face
+
+                show();
+            } else {
+                orientationTileImages.get(0).setImage(new Image(URI_BASE+"danger.png")); // top face
+                orientationTileImages.get(1).setImage(new Image(URI_BASE+"danger.png")); // forward face
+                orientationTileImages.get(2).setImage(new Image(URI_BASE+"danger.png")); // right face
+                orientationTileImages.get(3).setImage(new Image(URI_BASE+"danger.png")); // bottom face
+                orientationTileImages.get(4).setImage(new Image(URI_BASE+"danger.png")); // left face
+
+                show();
+            }
+        }
+
+        // Clears the dice faces from the orientation panel
+        public void clearOrientation() {
+            orientationTileImages.get(0).setImage(new Image(URI_BASE+"tile.png")); // top face
+            orientationTileImages.get(1).setImage(new Image(URI_BASE+"tile.png")); // forward face
+            orientationTileImages.get(2).setImage(new Image(URI_BASE+"tile.png")); // right face
+            orientationTileImages.get(3).setImage(new Image(URI_BASE+"tile.png")); // bottom face
+            orientationTileImages.get(4).setImage(new Image(URI_BASE+"tile.png")); // left face
+
+            show();
+        }
+    }
+
 }
